@@ -28,12 +28,12 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         let offset = req.params.offset;
 
         if (!blockchain.isHash(hash)) {
-            res.json({ error: errors.not_valid_hash });
+            res.status(400).json({ error: errors.not_valid_hash });
             return false;
         }
 
-        if (!blockchain.isSafePositiveInt(offset)) {
-            res.json({ error: errors.not_valid_int });
+        if (!blockchain.isInt(offset)) {
+            res.status(400).json({ error: errors.not_valid_int });
             return false;
         }
 
@@ -44,7 +44,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         const block = await blocks.findOne({ hash });
 
         if (!block) {
-            res.json({ error: errors.block_not_found });
+            res.status(400).json({ error: errors.block_not_found });
             return false;
         }
 

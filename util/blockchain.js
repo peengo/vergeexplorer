@@ -12,7 +12,7 @@ const blockchain = {
         return validator.isHash(string, 'sha256');
     },
 
-    isSafePositiveInt(string) {
+    isInt(string) {
         return validator.isInt(string, { min: 0, max: Number.MAX_SAFE_INTEGER });
     },
 
@@ -76,7 +76,8 @@ const blockchain = {
         let recipients = [];
 
         for (const vout of tx.vout) {
-            if (!(vout.scriptPubKey.type === 'nonstandard' || vout.scriptPubKey.type === 'nulldata')) {
+            // if (!(vout.scriptPubKey.type === 'nonstandard' || vout.scriptPubKey.type === 'nulldata')) {
+            if (Array.isArray(vout.scriptPubKey.addresses)) {
                 const address = vout.scriptPubKey.addresses[0];
                 const value = vout.value.toString();
 

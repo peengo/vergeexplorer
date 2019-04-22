@@ -8,7 +8,7 @@ router.get('/:txid', async (req, res) => {
         const txid = req.params.txid;
 
         if (!blockchain.isHash(txid)) {
-            res.json({ error: errors.not_valid_txid });
+            res.status(400).json({ error: errors.not_valid_txid });
             return false;
         }
 
@@ -16,7 +16,7 @@ router.get('/:txid', async (req, res) => {
             .findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            res.json({ error: errors.tx_not_found });
+            res.status(400).json({ error: errors.tx_not_found });
             return false;
         }
 
@@ -40,12 +40,12 @@ router.get('/:string/:txid/:offset', async (req, res) => {
         let offset = req.params.offset;
 
         if (!blockchain.isHash(txid)) {
-            res.json({ error: errors.not_valid_txid });
+            res.status(400).json({ error: errors.not_valid_txid });
             return false;
         }
 
-        if (!blockchain.isSafePositiveInt(offset)) {
-            res.json({ error: errors.not_valid_int });
+        if (!blockchain.isInt(offset)) {
+            res.status(400).json({ error: errors.not_valid_int });
             return false;
         }
 
@@ -55,7 +55,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
         const tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            res.json({ error: errors.tx_not_found });
+            res.status(400).json({ error: errors.tx_not_found });
             return false;
         }
 

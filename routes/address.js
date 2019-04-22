@@ -9,7 +9,7 @@ router.get('/:address', async (req, res) => {
         const address = req.params.address;
 
         if (!blockchain.isAddress(address)) {
-            res.json({ error: errors.not_valid_address });
+            res.status(400).json({ error: errors.not_valid_address });
             return false;
         }
 
@@ -17,7 +17,7 @@ router.get('/:address', async (req, res) => {
             .findOne({ address }, { projection: { _id: 0 } });
 
         if (!addr) {
-            res.json({ error: errors.address_not_found });
+            res.status(400).json({ error: errors.address_not_found });
             return false;
         }
 
@@ -37,12 +37,12 @@ router.get('/txs/:address/:offset', async (req, res) => {
         let offset = req.params.offset;
 
         if (!blockchain.isAddress(address)) {
-            res.json({ error: errors.not_valid_address });
+            res.status(400).json({ error: errors.not_valid_address });
             return false;
         }
 
-        if (!blockchain.isSafePositiveInt(offset)) {
-            res.json({ error: errors.not_valid_int });
+        if (!blockchain.isInt(offset)) {
+            res.status(400).json({ error: errors.not_valid_int });
             return false;
         }
 

@@ -2,21 +2,21 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const { rpc, statuses, config: { limit } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { rpc, config: { limit } } = req.app.locals;
+
         const loopback = '127.0.0.1';
 
         let peers = await rpc.getPeerInfo();
 
         peers = peers
-            .splice(0, limit)
             .sort((a, b) => b.conntime - a.conntime)
+            .slice(0, limit)
+            .filter(peer => !peer.addr.includes(loopback))
             .map(peer => {
-                if (!peer.addr.includes(loopback)) {
-                    peer.addr = peer.addr.split(':')[0];
-                    peer.subver = peer.subver.replace(/[/]/g, '');
-                }
+                peer.subver = peer.subver.replace(/[/]/g, '');
 
                 return peer;
             });

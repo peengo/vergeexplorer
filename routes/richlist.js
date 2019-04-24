@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const { db, statuses, config: { col, limit } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
-        const richlist = await db.collection(col.addresses)
+        const { collections: { addresses }, config: { limit } } = req.app.locals;
+
+        const richlist = await addresses
             .find({})
             .project({ _id: 0 })
             .sort({ balance: -1 })

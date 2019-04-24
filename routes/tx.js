@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/:txid', async (req, res) => {
-    const { blockchain, db, rpc, statuses, errors, config: { col } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { blockchain, collections: { txs, }, rpc, errors } = req.app.locals;
+
         const txid = req.params.txid;
 
         if (!blockchain.isHash(txid)) {
@@ -12,7 +14,7 @@ router.get('/:txid', async (req, res) => {
             return false;
         }
 
-        const tx = await db.collection(col.txs)
+        const tx = await txs
             .findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
@@ -32,9 +34,11 @@ router.get('/:txid', async (req, res) => {
 
 // inputs an recipients
 router.get('/:string/:txid/:offset', async (req, res) => {
-    const { db, blockchain, statuses, errors, config: { col } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { collections: { txs }, blockchain, errors } = req.app.locals;
+
         const string = req.params.string;
         const txid = req.params.txid;
         let offset = req.params.offset;
@@ -51,7 +55,6 @@ router.get('/:string/:txid/:offset', async (req, res) => {
 
         offset = Number(offset);
 
-        const txs = db.collection(col.txs);
         const tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {

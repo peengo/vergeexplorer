@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const { rpc, blockchain, db, statuses, errors, config: { col } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { rpc, blockchain, collections: { addresses, txs }, errors } = req.app.locals;
+
         const search = req.body.search.trim();
 
         if (blockchain.isInt(search)) {
@@ -20,7 +22,7 @@ router.post('/', async (req, res) => {
         }
 
         if (blockchain.isAddress(search)) {
-            const address = await db.collection(col.addresses).findOne({ address: search });
+            const address = await addresses.findOne({ address: search });
 
             if (address) {
                 res.json({ data: { redirect: 'address', address: address.address } });
@@ -38,7 +40,7 @@ router.post('/', async (req, res) => {
                 res.json({ data: { redirect: 'block', hash: block.hash } })
                 return false;
             } catch (error) {
-                const tx = await db.collection(col.txs).findOne({ txid: search });
+                const tx = await txs.findOne({ txid: search });
 
                 if (tx) {
                     res.json({ data: { redirect: 'tx', txid: tx.txid } })

@@ -1,6 +1,6 @@
 const config = {
     // db collection names
-    col: {
+    collections: {
         blocks: 'blocks',
         txs: 'txs',
         addresses: 'addr',

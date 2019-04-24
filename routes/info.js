@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const { db, rpc, statuses, config: { col } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { collections: { blocks }, rpc } = req.app.locals;
+
         let info = await rpc.getInfo();
-        const blocks_db = await db.collection(col.blocks).estimatedDocumentCount();
+        const blocks_db = await blocks.estimatedDocumentCount();
 
         info = {
             blocks_db,

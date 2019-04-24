@@ -3,9 +3,11 @@ const router = express.Router();
 
 // address info
 router.get('/:address', async (req, res) => {
-    const { blockchain, db, statuses, errors, config: { col } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { blockchain, collections: { addresses }, errors, } = req.app.locals;
+
         const address = req.params.address;
 
         if (!blockchain.isAddress(address)) {
@@ -13,7 +15,7 @@ router.get('/:address', async (req, res) => {
             return false;
         }
 
-        const addr = await db.collection(col.addresses)
+        const addr = await addresses
             .findOne({ address }, { projection: { _id: 0 } });
 
         if (!addr) {
@@ -30,9 +32,11 @@ router.get('/:address', async (req, res) => {
 
 // address txs
 router.get('/txs/:address/:offset', async (req, res) => {
-    const { blockchain, db, statuses, errors, config: { col, limit } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { blockchain, collections: { address_txs }, errors, config: { limit } } = req.app.locals;
+
         const address = req.params.address;
         let offset = req.params.offset;
 
@@ -48,7 +52,6 @@ router.get('/txs/:address/:offset', async (req, res) => {
 
         offset = Number(offset);
 
-        const address_txs = db.collection(col.address_txs);
         const total = await address_txs.find({ address }).count();
         const txs = await address_txs.find({ address })
             .project({ _id: 0, address: 0 })

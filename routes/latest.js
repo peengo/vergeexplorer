@@ -2,33 +2,35 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/:string', async (req, res) => {
-    const { blockchain, db, statuses, config: { col, latest } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { blockchain, collections: { blocks, txs }, config: { latest } } = req.app.locals;
+
         const string = req.params.string;
 
         switch (string) {
             case 'blocks':
-                const blocks = await db.collection(col.blocks)
+                const latestBlocks = await blocks
                     .find({})
                     .project({ _id: 0 })
                     .sort({ height: -1 })
                     .limit(latest)
                     .toArray();
 
-                res.json({ data: blocks });
+                res.json({ data: latestBlocks });
                 break;
             case 'txs':
-                const txs = await db.collection(col.txs)
+                const latestTxs = await txs
                     .find({})
                     .project({ _id: 0 })
                     .sort({ time: -1 })
                     .limit(latest)
                     .toArray();
 
-                blockchain.setVoutsSum(txs);
+                blockchain.setVoutsSum(latestTxs);
 
-                res.json({ data: txs });
+                res.json({ data: latestTxs });
                 break;
             default:
                 res.status(404).json(statuses[404]);

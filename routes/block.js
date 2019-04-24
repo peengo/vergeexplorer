@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/:hash', async (req, res) => {
-    const { blockchain, rpc, statuses, errors } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const { blockchain, rpc, errors } = req.app.locals;
+
         const hash = req.params.hash;
 
         if (!blockchain.isHash(hash)) {
@@ -21,9 +23,12 @@ router.get('/:hash', async (req, res) => {
 });
 
 router.get('/txs/:hash/:offset', async (req, res) => {
-    const { blockchain, db, statuses, errors, config: { col, limit } } = req.app.locals;
+    const { statuses } = req.app.locals;
 
     try {
+        const {
+            blockchain, collections: { blocks, txs }, errors, config: { limit } } = req.app.locals;
+
         const hash = req.params.hash;
         let offset = req.params.offset;
 
@@ -38,8 +43,6 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         }
 
         offset = Number(offset);
-        const blocks = db.collection(col.blocks);
-        const txs = db.collection(col.txs);
 
         const block = await blocks.findOne({ hash });
 

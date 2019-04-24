@@ -11,6 +11,8 @@ const blockchain = require('./util/blockchain');
 const mongoDb = require('mongodb').MongoClient;
 const BitcoinRpc = require('bitcoin-rpc-promise');
 
+const app = express();
+
 // RPC
 let rpc;
 try {
@@ -26,13 +28,19 @@ try {
         const db = client.db(process.env.DB_NAME);
         console.log('MongoDB connected');
 
-        app.locals.db = db;
+        const { collections } = config;
+        
+        app.locals.collections = {
+            blocks: db.collection(collections.blocks),
+            txs: db.collection(collections.txs),
+            addresses: db.collection(collections.addresses),
+            address_txs: db.collection(collections.address_txs),
+            searches: db.collection(collections.searches),
+        };
     } catch (error) {
         console.error(error);
     }
 })();
-
-const app = express();
 
 app.disable('x-powered-by');
 app.use(express.json());
@@ -47,7 +55,7 @@ const locals = {
     rpc
 };
 
-app.locals = Object.assign(app.locals, locals);
+Object.assign(app.locals, locals);
 
 const routes = [
     'info',

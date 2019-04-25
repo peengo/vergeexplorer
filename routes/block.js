@@ -15,9 +15,10 @@ router.get('/:hash', async (req, res) => {
         }
 
         const block = await rpc.getBlock(hash);
+        
         res.json({ data: block });
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });
@@ -76,7 +77,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         res.json({ data: transactions, total });
 
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });

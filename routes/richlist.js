@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
         res.json({ data: richlist });
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });

@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 
         res.status(400).json({ error: errors.invalid_search_param });
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });

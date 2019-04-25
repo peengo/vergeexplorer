@@ -27,7 +27,7 @@ router.get('/:txid', async (req, res) => {
 
         res.json({ data: tx });
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });
@@ -82,7 +82,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
                 break;
         }
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });

@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
         res.json({ data: info });
     } catch (error) {
-        console.error(error)
+        console.error(error.message);
         res.status(500).json(statuses[500]);
     }
 });

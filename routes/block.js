@@ -10,7 +10,7 @@ router.get('/:hash', async (req, res) => {
         const hash = req.params.hash;
 
         if (!blockchain.isHash(hash)) {
-            res.json({ error: errors.not_valid_hash });
+            res.status(400).json({ error: errors.not_valid_hash });
             return false;
         }
 

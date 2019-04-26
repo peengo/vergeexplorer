@@ -7,7 +7,9 @@ router.get('/', async (req, res) => {
     try {
         const { collections: { blocks }, rpc } = req.app.locals;
 
-        let info = await rpc.getInfo();
+        // let info = await rpc.getInfo();
+        let { result: info } = await rpc.getinfo();
+
         const blocks_db = await blocks.estimatedDocumentCount();
 
         info = {

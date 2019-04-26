@@ -6,11 +6,12 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon -L index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "bitcoin-rpc-promise": "^2.1.6",
     "cors": "^2.8.5",
     "decimal.js-light": "^2.5.0",
@@ -21,6 +22,9 @@
     "validator": "^10.11.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "mocha": "^6.1.4",
     "nodemon": "^1.18.11"
   }
 }

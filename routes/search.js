@@ -7,15 +7,18 @@ router.post('/', async (req, res) => {
     try {
         const { rpc, blockchain, collections: { addresses, txs }, errors } = req.app.locals;
 
-        const search = req.body.search.trim();
+        let search = req.body.search.trim();
 
         if (blockchain.isInt(search)) {
             try {
-                const block = await rpc.call('getblockbynumber', Number(search), true);
+                // const block = await rpc.call('getblockbynumber', Number(search), true);
+                let search = Number(search);
+                const { result: block } = await rpc.getblockbynumber(search, true);
+
                 res.json({ data: { redirect: 'block', hash: block.hash } });
                 return false;
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 res.status(400).json({ error: errors.block_not_found })
                 return false;
             }
@@ -35,7 +38,8 @@ router.post('/', async (req, res) => {
 
         if (blockchain.isHash(search)) {
             try {
-                const block = await rpc.getBlock(search);
+                // const block = await rpc.getBlock(search);
+                const { result: block } = await rpc.getblock(search);
 
                 res.json({ data: { redirect: 'block', hash: block.hash } })
                 return false;

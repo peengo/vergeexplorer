@@ -22,7 +22,8 @@ router.get('/:txid', async (req, res) => {
             return false;
         }
 
-        const blockRpc = await rpc.getBlock(tx.blockhash);
+        // const blockRpc = await rpc.getBlock(tx.blockhash);
+        const { result: blockRpc } = await rpc.getblock([tx.blockhash]);
         tx.confirmations = blockRpc.confirmations;
 
         res.json({ data: tx });

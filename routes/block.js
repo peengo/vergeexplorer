@@ -14,8 +14,9 @@ router.get('/:hash', async (req, res) => {
             return false;
         }
 
-        const block = await rpc.getBlock(hash);
-        
+        // const block = await rpc.getBlock(hash);
+        const { result: block } = await rpc.getblock([hash]);
+
         res.json({ data: block });
     } catch (error) {
         console.error(error);
@@ -51,8 +52,6 @@ router.get('/txs/:hash/:offset', async (req, res) => {
             res.status(400).json({ error: errors.block_not_found });
             return false;
         }
-
-        console.log('offset:', offset, typeof offset);
 
         const txids = block.tx;
         const total = await txs.find({ txid: { $in: txids } }).count();

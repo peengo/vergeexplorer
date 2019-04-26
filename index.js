@@ -7,19 +7,26 @@ const morgan = require('morgan');
 const config = require('./config');
 const statuses = require('./util/statuses');
 const errors = require('./util/errors');
+const Rpc = require('./util/rpc');
 const blockchain = require('./util/blockchain');
 const mongoDb = require('mongodb').MongoClient;
-const BitcoinRpc = require('bitcoin-rpc-promise');
+// const BitcoinRpc = require('bitcoin-rpc-promise');
 
 const app = express();
 
 // RPC
 let rpc;
-try {
-    rpc = new BitcoinRpc(`http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`);
-} catch (error) {
-    console.error(error);
-}
+
+(async () => {
+    try {
+        // rpc = new BitcoinRpc(`http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`);
+        rpc = new Rpc(`http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`);
+        await rpc.init();
+        console.log('RPC initialized');
+    } catch (error) {
+        console.error(error);
+    }
+})();
 
 // DB
 (async () => {

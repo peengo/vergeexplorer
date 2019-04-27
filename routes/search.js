@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
                 return false;
             } catch (error) {
                 console.error(error);
-                res.status(400).json({ error: errors.block_not_found })
+                res.json({ error: errors.block_not_found })
                 return false;
             }
         }
@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
                 res.json({ data: { redirect: 'address', address: address.address } });
                 return false;
             } else {
-                res.status(400).json({ error: errors.address_not_found });
+                res.json({ error: errors.address_not_found });
                 return false;
             }
         }
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
                     res.json({ data: { redirect: 'tx', txid: tx.txid } })
                     return false;
                 } else {
-                    res.status(400).json({ error: errors.block_tx_not_found })
+                    res.json({ error: errors.block_tx_not_found })
                     return false;
                 }
             }

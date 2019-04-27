@@ -36,7 +36,7 @@ let rpc;
         console.log('MongoDB connected');
 
         const { collections } = config;
-        
+
         app.locals.collections = {
             blocks: db.collection(collections.blocks),
             txs: db.collection(collections.txs),

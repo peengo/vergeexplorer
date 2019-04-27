@@ -15,7 +15,12 @@ router.get('/:hash', async (req, res) => {
         }
 
         // const block = await rpc.getBlock(hash);
-        const { result: block } = await rpc.getblock([hash]);
+        const { result: block, error } = await rpc.getblock([hash]);
+
+        if (error && error.message) {
+            res.json({ error: error.message });
+            return false;
+        }
 
         res.json({ data: block });
     } catch (error) {
@@ -49,7 +54,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         const block = await blocks.findOne({ hash });
 
         if (!block) {
-            res.status(400).json({ error: errors.block_not_found });
+            res.json({ error: errors.block_not_found });
             return false;
         }
 

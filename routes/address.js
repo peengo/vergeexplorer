@@ -19,7 +19,7 @@ router.get('/:address', async (req, res) => {
             .findOne({ address }, { projection: { _id: 0 } });
 
         if (!addr) {
-            res.status(400).json({ error: errors.address_not_found });
+            res.json({ error: errors.address_not_found });
             return false;
         }
 

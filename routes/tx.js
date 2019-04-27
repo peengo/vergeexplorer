@@ -18,7 +18,7 @@ router.get('/:txid', async (req, res) => {
             .findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            res.status(400).json({ error: errors.tx_not_found });
+            res.json({ error: errors.tx_not_found });
             return false;
         }
 
@@ -59,7 +59,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
         const tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            res.status(400).json({ error: errors.tx_not_found });
+            res.json({ error: errors.tx_not_found });
             return false;
         }
 

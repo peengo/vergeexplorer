@@ -1,43 +1,69 @@
 const axios = require('axios');
 
 class Rpc {
-    constructor(url) {
-        this.url = url;
+    constructor(url, methods = []) {
+        if (!typeof url === 'string') {
+            throw new Error(`${url} must be a string`)
+        }
+        this.url = url
+
+        if (!Array.isArray(methods)) {
+            throw new Error(`${methods} must be an array`)
+        }
+        this.methods = methods;
+
+        for (const method of this.methods) {
+            this[method] = (params) => {
+                return this.run(method, params);
+            }
+        }
     }
     async init() {
         try {
-            // get string of help information
             const help = await this.run('help');
             const result = help.result;
 
-            // split it by new lines
             const array = result.split('\n');
 
-            // split again by spaces and take the first string which is the method name
-            for (let item of array) {
+            for (const item of array) {
                 const [method] = item.split(' ');
-                
+
+                this.methods.push(method);
+            }
+
+            for (const method of this.methods) {
                 this[method] = (params) => {
                     return this.run(method, params);
                 }
             }
         } catch (error) {
-            throw new Error(error);
+            throw error;
         }
     }
-    async run(method, params) {
+    async run(method, params = []) {
+        if (!typeof method === 'string') {
+            throw new Error(`${method} must be a string`)
+        }
+        if (!Array.isArray(params)) {
+            throw new Error(`${params} must be an array`)
+        }
+
         try {
-            const request = await axios.post(
+            const response = await axios.post(
                 this.url,
                 {
                     method,
                     params
+                },
+                {
+                    // accept all statuses as resolved 
+                    validateStatus: () => true
                 }
             );
 
-            return request.data;
+            return response.data;
         } catch (error) {
-            throw new Error(error);
+            throw error;
         }
     }
 };

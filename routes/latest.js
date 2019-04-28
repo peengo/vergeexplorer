@@ -5,7 +5,7 @@ router.get('/:string', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const { blockchain, collections: { blocks, txs }, config: { latest } } = req.app.locals;
+        const { blockchain, collections: { blocks, txs }, config: { latest }, errors } = req.app.locals;
 
         const string = req.params.string;
 
@@ -33,7 +33,7 @@ router.get('/:string', async (req, res) => {
                 res.json({ data: latestTxs });
                 break;
             default:
-                res.status(404).json(statuses[404]);
+                res.status(400).json({ error: errors.invalid_parameter });
                 break;
         }
     } catch (error) {

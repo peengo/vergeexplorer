@@ -38,7 +38,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const { collections: { txs }, blockchain, errors } = req.app.locals;
+        const { collections: { txs }, blockchain, errors, config: { limit } } = req.app.locals;
 
         const string = req.params.string;
         const txid = req.params.txid;
@@ -67,14 +67,18 @@ router.get('/:string/:txid/:offset', async (req, res) => {
 
         switch (string) {
             case 'inputs':
-                const inputs = await blockchain.getInputs(txs, tx);
+                let inputs = await blockchain.getInputs(txs, tx);
                 total = inputs.length;
+
+                inputs = inputs.slice(offset, offset + limit);
 
                 res.json({ data: inputs, total });
                 break;
             case 'recipients':
-                const recipients = await blockchain.getRecipients(tx);
+                let recipients = await blockchain.getRecipients(tx);
                 total = recipients.length;
+
+                recipients = recipients.slice(offset, offset + limit);
 
                 res.json({ data: recipients, total });
                 break;

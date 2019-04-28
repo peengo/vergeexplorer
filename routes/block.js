@@ -33,8 +33,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const {
-            blockchain, collections: { blocks, txs }, errors, config: { limit } } = req.app.locals;
+        const { blockchain, collections: { blocks, txs }, errors, config: { limit } } = req.app.locals;
 
         const hash = req.params.hash;
         let offset = req.params.offset;
@@ -60,6 +59,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
 
         const txids = block.tx;
         const total = await txs.find({ txid: { $in: txids } }).count();
+
         const transactions = await txs
             .find({ txid: { $in: txids } })
             .project({ _id: 0 })

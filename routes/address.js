@@ -60,6 +60,11 @@ router.get('/txs/:address/:offset', async (req, res) => {
             .limit(limit)
             .toArray();
 
+        if (!total) {
+            res.json({ error: errors.address_not_found });
+            return false;
+        }
+
         // TODO template logic
 
         res.json({ data: txs, total });

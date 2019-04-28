@@ -7,45 +7,18 @@ const morgan = require('morgan');
 const config = require('./config');
 const statuses = require('./util/statuses');
 const errors = require('./util/errors');
-const Rpc = require('./util/rpc');
 const blockchain = require('./util/blockchain');
-const mongoDb = require('mongodb').MongoClient;
-// const BitcoinRpc = require('bitcoin-rpc-promise');
+const dbConnect = require('./db/connection');
+const rpcInit = require('./rpc/init');
 
 const app = express();
 
-// RPC
-let rpc;
-
 (async () => {
     try {
-        // rpc = new BitcoinRpc(`http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`);
-        rpc = new Rpc(`http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`);
-        await rpc.init();
-        console.log('RPC initialized');
+        app.locals.rpc = await rpcInit();
+        app.locals.collections = await dbConnect(config.collections);
     } catch (error) {
-        console.error(error);
-    }
-})();
-
-// DB
-(async () => {
-    try {
-        const client = await mongoDb.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, { useNewUrlParser: true });
-        const db = client.db(process.env.DB_NAME);
-        console.log('MongoDB connected');
-
-        const { collections } = config;
-
-        app.locals.collections = {
-            blocks: db.collection(collections.blocks),
-            txs: db.collection(collections.txs),
-            addresses: db.collection(collections.addresses),
-            address_txs: db.collection(collections.address_txs),
-            searches: db.collection(collections.searches),
-        };
-    } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 })();
 
@@ -54,14 +27,7 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 
-const locals = {
-    config,
-    statuses,
-    errors,
-    blockchain,
-    rpc
-};
-
+const locals = { config, statuses, errors, blockchain };
 Object.assign(app.locals, locals);
 
 const routes = [
@@ -93,4 +59,4 @@ app.use((error, req, res, next) => {
     }
 });
 
-app.listen(process.env.PORT, () => console.log(`Server started on port ${process.env.PORT}`));
+app.listen(process.env.PORT, () => console.log(`Server listening on port ${process.env.PORT}`));

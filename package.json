@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
-    "bitcoin-rpc-promise": "^2.1.6",
     "cors": "^2.8.5",
     "decimal.js-light": "^2.5.0",
     "dotenv": "^7.0.0",

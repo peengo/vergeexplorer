@@ -2,9 +2,6 @@ const axios = require('axios');
 
 class Rpc {
     constructor(url, methods = []) {
-        if (!typeof url === 'string') {
-            throw new Error(`${url} must be a string`)
-        }
         this.url = url
 
         if (!Array.isArray(methods)) {

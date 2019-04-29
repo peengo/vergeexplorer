@@ -5,7 +5,7 @@ router.get('/', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const { collections: { blocks }, rpc } = req.app.locals;
+        const { collections: { blocks }, rpc, price } = req.app.locals;
 
         // let info = await rpc.getInfo();
         let { result: info } = await rpc.getinfo();
@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
             blocks_db,
             blocks_rpc: info.blocks,
             moneysupply: info.moneysupply,
-            paytxfee: info.paytxfee
+            paytxfee: info.paytxfee,
+            price
         }
 
         res.json({ data: info });

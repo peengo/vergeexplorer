@@ -46,6 +46,7 @@ describe('API Tests', () => {
                     expect(res.body.data).to.have.property('blocks_rpc').to.be.a('number');
                     expect(res.body.data).to.have.property('moneysupply').to.be.a('number');
                     expect(res.body.data).to.have.property('paytxfee').to.be.a('number');
+                    expect(res.body.data).to.have.property('price').to.be.an('object');
                 } catch (error) {
                     throw error;
                 }

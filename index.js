@@ -4,12 +4,16 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const delay = require('delay');
+
 const config = require('./config');
 const statuses = require('./util/statuses');
 const errors = require('./util/errors');
 const blockchain = require('./util/blockchain');
+const price = require('./util/price');
 const dbConnect = require('./db/connection');
 const rpcInit = require('./rpc/init');
+const routes = require('./routes/routes');
 
 const app = express();
 
@@ -17,6 +21,11 @@ const app = express();
     try {
         app.locals.rpc = await rpcInit();
         app.locals.collections = await dbConnect(config.collections);
+
+        while (true) {
+            app.locals.price = await price();
+            await delay(60000);
+        }
     } catch (error) {
         console.log(error);
     }
@@ -30,20 +39,7 @@ app.use(morgan('dev'));
 const locals = { config, statuses, errors, blockchain };
 Object.assign(app.locals, locals);
 
-const routes = [
-    'info',
-    'latest',
-    'block',
-    'tx',
-    'richlist',
-    'peers',
-    'address',
-    'search'
-];
-
-for (const route of routes) {
-    app.use(`/${route}`, require(`./routes/${route}`));
-}
+routes(app);
 
 app.use((req, res, next) => {
     res.status(404).json(statuses[404]);
@@ -52,7 +48,8 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
     console.error(error.stack);
 
-    if (error.type === 'entity.parse.failed') {
+    // non valid JSON on POST check
+    if (req.method === 'POST' && error.type === 'entity.parse.failed') {
         res.status(400).json({ error: errors.not_valid_JSON });
     } else {
         res.status(500).json(statuses[500]);

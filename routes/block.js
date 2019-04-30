@@ -14,7 +14,6 @@ router.get('/:hash', async (req, res) => {
             return false;
         }
 
-        // const block = await rpc.getBlock(hash);
         const { result: block, error } = await rpc.getblock([hash]);
 
         if (error && error.message) {
@@ -58,28 +57,21 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         }
 
         const txids = block.tx;
-        const total = await txs.find({ txid: { $in: txids } }).count();
 
-        const transactions = await txs
-            .find({ txid: { $in: txids } })
-            .project({ _id: 0 })
-            .sort({ time: -1 })
-            .skip(offset)
-            .limit(limit)
-            .toArray();
+        const [total, transactions] = await Promise.all([
+            txs.find({ txid: { $in: txids } }).count(),
+            txs
+                .find({ txid: { $in: txids } })
+                .project({ _id: 0 })
+                .sort({ time: -1 })
+                .skip(offset)
+                .limit(limit)
+                .toArray()
+        ]);
 
         blockchain.setVoutsSum(transactions);
 
-        // const getAllPagesFetched = (offset, count) => {
-        //     let all;
-        //     (offset >= count - limit) ? all = true : all = false;
-        //     return all;
-        // }
-
-        // const all = getAllPagesFetched(offset, count);
-
         res.json({ data: transactions, total });
-
     } catch (error) {
         console.error(error);
         res.status(500).json(statuses[500]);

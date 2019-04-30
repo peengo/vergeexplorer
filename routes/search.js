@@ -11,8 +11,8 @@ router.post('/', async (req, res) => {
 
         if (blockchain.isInt(search)) {
             try {
-                // const block = await rpc.call('getblockbynumber', Number(search), true);
                 let search = Number(search);
+
                 const { result: block } = await rpc.getblockbynumber(search, true);
 
                 res.json({ data: { redirect: 'block', hash: block.hash } });
@@ -38,7 +38,6 @@ router.post('/', async (req, res) => {
 
         if (blockchain.isHash(search)) {
             try {
-                // const block = await rpc.getBlock(search);
                 const { result: block } = await rpc.getblock(search);
 
                 res.json({ data: { redirect: 'block', hash: block.hash } });

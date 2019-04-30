@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon -L index.js",
-    "test": "mocha"
+    "test": "mocha",
+    "loops" : "node ./benchmarks/loops.js"
   },
   "author": "peengo",
   "license": "MIT",

@@ -9,7 +9,7 @@ Decimal.set({
 const blockchain = {
     hashRegExp: /^([A-Fa-f0-9]{64})$/,
     addressRegExp: /^([A-Za-z0-9]{34})$/,
-    intRegExp: /^([0-9]{1,20})$/,
+    intRegExp: /^([0-9]{1,18})$/,
 
     isHash(string) {
         return this.hashRegExp.test(string);
@@ -76,11 +76,10 @@ const blockchain = {
         return inputs;
     },
     // tx = tx object
-    getRecipients(tx) {
+    async getRecipients(tx) {
         let recipients = [];
 
         for (const vout of tx.vout) {
-            // if (!(vout.scriptPubKey.type === 'nonstandard' || vout.scriptPubKey.type === 'nulldata')) {
             if (Array.isArray(vout.scriptPubKey.addresses)) {
                 const address = vout.scriptPubKey.addresses[0];
                 const value = vout.value.toString();

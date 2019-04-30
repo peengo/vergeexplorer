@@ -9,7 +9,6 @@ router.get('/', async (req, res) => {
 
         const loopback = '127.0.0.1';
 
-        // let peers = await rpc.getPeerInfo();
         let { result: peers } = await rpc.getpeerinfo();
 
         peers = peers

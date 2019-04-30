@@ -1,7 +1,7 @@
 require('dotenv').config();
-const Rpc = require('../util/rpc');
+const Rpc = require('../utils/rpc');
 
-const init = async () => {
+const rpcInit = async () => {
     try {
         const rpc = new Rpc(`http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`);
 
@@ -14,4 +14,4 @@ const init = async () => {
     }
 };
 
-module.exports = init;
+module.exports = rpcInit;

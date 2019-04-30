@@ -52,13 +52,16 @@ router.get('/txs/:address/:offset', async (req, res) => {
 
         offset = Number(offset);
 
-        const total = await address_txs.find({ address }).count();
-        const txs = await address_txs.find({ address })
-            .project({ _id: 0, address: 0 })
-            .sort({ time: -1, type: -1 })
-            .skip(offset)
-            .limit(limit)
-            .toArray();
+        const [total, txs] = await Promise.all([
+            address_txs.find({ address }).count(),
+            address_txs
+                .find({ address })
+                .project({ _id: 0, address: 0 })
+                .sort({ time: -1, type: -1 })
+                .skip(offset)
+                .limit(limit)
+                .toArray()
+        ]);
 
         if (total === 0) {
             res.json({ error: errors.address_not_found });

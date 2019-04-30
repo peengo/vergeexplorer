@@ -7,13 +7,15 @@ const morgan = require('morgan');
 const delay = require('delay');
 
 const config = require('./config');
-const statuses = require('./util/statuses');
-const errors = require('./util/errors');
-const blockchain = require('./util/blockchain');
-const price = require('./util/price');
-const dbConnect = require('./db/connection');
 const rpcInit = require('./rpc/init');
-const routes = require('./routes/routes');
+const dbConnect = require('./db/connection');
+const statuses = require('./utils/statuses');
+const errors = require('./utils/errors');
+const blockchain = require('./utils/blockchain');
+const getPrice = require('./utils/price');
+const buildRoutes = require('./routes/routes');
+const attachNotFound = require('./middlewares/not_found');
+const attachErrorHandler = require('./middlewares/error_handler');
 
 const app = express();
 
@@ -23,7 +25,7 @@ const app = express();
         app.locals.collections = await dbConnect(config.collections);
 
         for (; ;) {
-            app.locals.price = await price();
+            app.locals.price = await getPrice();
             await delay(60000);
         }
     } catch (error) {
@@ -36,29 +38,17 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 
-const locals = {
-    config,
-    statuses,
-    errors,
-    blockchain
-};
+const locals = { config, statuses, errors, blockchain };
 Object.assign(app.locals, locals);
 
-routes(app);
+// routes
+buildRoutes(app);
 
-app.use((req, res) => {
-    res.status(404).json(statuses[404]);
-});
+// middlewares
+attachNotFound(app);
+attachErrorHandler(app);
 
-app.use((error, req, res) => {
-    console.error(error.stack);
-
-    // non valid JSON on POST check
-    if (req.method === 'POST' && error.type === 'entity.parse.failed') {
-        res.status(400).json({ error: errors.not_valid_JSON });
-    } else {
-        res.status(500).json(statuses[500]);
-    }
-});
-
-app.listen(process.env.PORT, () => console.log(`Server listening on port ${process.env.PORT}`));
+app.listen(
+    process.env.PORT,
+    () => console.log(`Server listening on port ${process.env.PORT}`)
+);

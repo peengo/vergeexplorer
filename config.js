@@ -4,8 +4,7 @@ const config = {
         blocks: 'blocks',
         txs: 'txs',
         addresses: 'addr',
-        address_txs: 'addr_txs',
-        searches: 'search'
+        address_txs: 'addr_txs'
     },
     // for decimal.js-light
     // DON'T CHANGE!

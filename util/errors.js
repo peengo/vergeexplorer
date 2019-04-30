@@ -9,7 +9,7 @@ const errors = {
     not_valid_JSON: 'not a valid JSON',
     invalid_search_param: 'invalid search parameter',
     block_tx_not_found: 'block / transaction not found',
-    invalid_parameter: 'invalid parameter',
-}
+    invalid_parameter: 'invalid parameter'
+};
 
 module.exports = errors;

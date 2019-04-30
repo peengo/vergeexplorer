@@ -2,17 +2,17 @@ const axios = require('axios');
 
 class Rpc {
     constructor(url, methods = []) {
-        this.url = url
+        this.url = url;
 
         if (!Array.isArray(methods)) {
-            throw new Error(`${methods} must be an array`)
+            throw new Error(`${methods} must be an array`);
         }
         this.methods = methods;
 
         for (const method of this.methods) {
             this[method] = (params) => {
                 return this.run(method, params);
-            }
+            };
         }
     }
     async init() {
@@ -31,18 +31,18 @@ class Rpc {
             for (const method of this.methods) {
                 this[method] = (params) => {
                     return this.run(method, params);
-                }
+                };
             }
         } catch (error) {
             throw error;
         }
     }
     async run(method, params = []) {
-        if (!typeof method === 'string') {
-            throw new Error(`${method} must be a string`)
+        if (!(typeof method === 'string')) {
+            throw new Error(`${method} must be a string`);
         }
         if (!Array.isArray(params)) {
-            throw new Error(`${params} must be an array`)
+            throw new Error(`${params} must be an array`);
         }
 
         try {
@@ -63,6 +63,6 @@ class Rpc {
             throw error;
         }
     }
-};
+}
 
 module.exports = Rpc;

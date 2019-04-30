@@ -4,7 +4,7 @@ const mongoDb = require('mongodb').MongoClient;
 const connect = async (collections) => {
     const client = await mongoDb.connect(
         `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-        { useNewUrlParser: true }
+        { useNewUrlParser: true },
     );
 
     const db = client.db(process.env.DB_NAME);
@@ -15,7 +15,7 @@ const connect = async (collections) => {
         txs: db.collection(collections.txs),
         addresses: db.collection(collections.addresses),
         address_txs: db.collection(collections.address_txs),
-        searches: db.collection(collections.searches),
+        searches: db.collection(collections.searches)
     };
 };
 

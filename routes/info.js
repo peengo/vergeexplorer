@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
             moneysupply: info.moneysupply,
             paytxfee: info.paytxfee,
             price
-        }
+        };
 
         res.json({ data: info });
     } catch (error) {

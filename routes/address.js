@@ -6,7 +6,7 @@ router.get('/:address', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const { blockchain, collections: { addresses }, errors, } = req.app.locals;
+        const { blockchain, collections: { addresses }, errors } = req.app.locals;
 
         const address = req.params.address;
 
@@ -25,7 +25,7 @@ router.get('/:address', async (req, res) => {
 
         res.json({ data: addr });
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json(statuses[500]);
     }
 });

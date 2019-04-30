@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
                 return false;
             } catch (error) {
                 console.error(error);
-                res.json({ error: errors.block_not_found })
+                res.json({ error: errors.block_not_found });
                 return false;
             }
         }
@@ -41,16 +41,16 @@ router.post('/', async (req, res) => {
                 // const block = await rpc.getBlock(search);
                 const { result: block } = await rpc.getblock(search);
 
-                res.json({ data: { redirect: 'block', hash: block.hash } })
+                res.json({ data: { redirect: 'block', hash: block.hash } });
                 return false;
             } catch (error) {
                 const tx = await txs.findOne({ txid: search });
 
                 if (tx) {
-                    res.json({ data: { redirect: 'tx', txid: tx.txid } })
+                    res.json({ data: { redirect: 'tx', txid: tx.txid } });
                     return false;
                 } else {
-                    res.json({ error: errors.block_tx_not_found })
+                    res.json({ error: errors.block_tx_not_found });
                     return false;
                 }
             }

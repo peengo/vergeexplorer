@@ -5,7 +5,7 @@ router.get('/:txid', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const { blockchain, collections: { txs, }, rpc, errors } = req.app.locals;
+        const { blockchain, collections: { txs }, rpc, errors } = req.app.locals;
 
         const txid = req.params.txid;
 
@@ -65,26 +65,28 @@ router.get('/:string/:txid/:offset', async (req, res) => {
 
         let total;
 
+        let inputs, recipients;
+
         switch (string) {
-            case 'inputs':
-                let inputs = await blockchain.getInputs(txs, tx);
-                total = inputs.length;
+        case 'inputs':
+            inputs = await blockchain.getInputs(txs, tx);
+            total = inputs.length;
 
-                inputs = inputs.slice(offset, offset + limit);
+            inputs = inputs.slice(offset, offset + limit);
 
-                res.json({ data: inputs, total });
-                break;
-            case 'recipients':
-                let recipients = await blockchain.getRecipients(tx);
-                total = recipients.length;
+            res.json({ data: inputs, total });
+            break;
+        case 'recipients':
+            recipients = await blockchain.getRecipients(tx);
+            total = recipients.length;
 
-                recipients = recipients.slice(offset, offset + limit);
+            recipients = recipients.slice(offset, offset + limit);
 
-                res.json({ data: recipients, total });
-                break;
-            default:
-                res.status(404).json(statuses[404]);
-                break;
+            res.json({ data: recipients, total });
+            break;
+        default:
+            res.status(404).json(statuses[404]);
+            break;
         }
     } catch (error) {
         console.error(error);

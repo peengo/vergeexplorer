@@ -7,6 +7,6 @@ const statuses = {
         status: 500,
         message: 'Internal Server Error'
     }
-}
+};
 
 module.exports = statuses;

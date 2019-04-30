@@ -1,14 +1,13 @@
 require('dotenv').config();
 
-const chai = require('chai')
-const { assert, expect, should } = require('chai');
+const chai = require('chai');
+const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
 const url = 'http://localhost';
 const port = process.env.PORT;
-let path;
 
 const app = chai.request(`${url}:${port}`);
 
@@ -68,7 +67,7 @@ describe('API Tests', () => {
                     expect(res.body.data[0]).to.have.property('conntime').to.be.a('number');
                     expect(res.body.data[0]).to.have.property('version').to.be.a('number');
                     expect(res.body.data[0]).to.have.property('subver').to.be.a('string');
-                } catch (errot) {
+                } catch (error) {
                     throw error;
                 }
             });
@@ -117,7 +116,7 @@ describe('API Tests', () => {
         describe('/latest/txs', () => {
             it('should return latest txs', async () => {
                 try {
-                    const res = await app.get('/latest/txs')
+                    const res = await app.get('/latest/txs');
 
                     expect(res).to.have.status(200);
                     expect(res).to.have.header('content-type', contentType);
@@ -213,7 +212,7 @@ describe('API Tests', () => {
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data');
                         expect(res.body).to.include({ total: 11 });
-                        expect(res.body.data).to.be.an('array').to.have.lengthOf(11)
+                        expect(res.body.data).to.be.an('array').to.have.lengthOf(11);
                     } catch (error) {
                         throw error;
                     }
@@ -230,7 +229,7 @@ describe('API Tests', () => {
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data');
                         expect(res.body).to.include({ total: 11 });
-                        expect(res.body.data).to.be.an('array').to.have.lengthOf(6)
+                        expect(res.body.data).to.be.an('array').to.have.lengthOf(6);
                     } catch (error) {
                         throw error;
                     }
@@ -493,4 +492,3 @@ describe('API Tests', () => {
 
     });
 });
-

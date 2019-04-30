@@ -1,31 +1,35 @@
-const validator = require('validator');
 const { decimaljs } = require('./../config.js');
 const Decimal = require('decimal.js-light');
 
 Decimal.set({
     precision: decimaljs.precision,
-    toExpNeg: decimaljs.toExpNeg,
+    toExpNeg: decimaljs.toExpNeg
 });
 
 const blockchain = {
+    hashRegExp: /^([A-Fa-f0-9]{64})$/,
+    addressRegExp: /^([A-Za-z0-9]{34})$/,
+    intRegExp: /^([0-9]{1,20})$/,
+
     isHash(string) {
-        return validator.isHash(string, 'sha256');
+        return this.hashRegExp.test(string);
     },
 
     isInt(string) {
-        return validator.isInt(string, { min: 0, max: Number.MAX_SAFE_INTEGER });
+        return this.intRegExp.test(string);
     },
 
     addressLength: 34,
     isAddress(string) {
-        return validator.isAlphanumeric(string)
-            && validator.isLength(string, { min: this.addressLength, max: this.addressLength });
+        return this.addressRegExp.test(string);
     },
 
     // txs of a block
     setVoutsSum(txs) {
         for (let tx of txs) {
             let amount_out = Decimal(0);
+
+            let vout_value;
 
             for (let vout of tx.vout) {
                 vout_value = Decimal(vout.value.toFixed(8));
@@ -81,12 +85,12 @@ const blockchain = {
                 const address = vout.scriptPubKey.addresses[0];
                 const value = vout.value.toString();
 
-                this._findAndSum(recipients, address, value, tx)
+                this._findAndSum(recipients, address, value, tx);
             }
         }
 
         return recipients;
     }
-}
+};
 
 module.exports = blockchain;

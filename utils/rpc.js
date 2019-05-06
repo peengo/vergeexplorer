@@ -15,28 +15,28 @@ class Rpc {
             };
         }
     }
-    async init() {
-        try {
-            const help = await this.run('help');
-            const result = help.result;
+    // async init() {
+    //     try {
+    //         const help = await this.run('help');
+    //         const result = help.result;
 
-            const array = result.split('\n');
+    //         const array = result.split('\n');
 
-            for (const item of array) {
-                const [method] = item.split(' ');
+    //         for (const item of array) {
+    //             const [method] = item.split(' ');
 
-                this.methods.push(method);
-            }
+    //             this.methods.push(method);
+    //         }
 
-            for (const method of this.methods) {
-                this[method] = (params) => {
-                    return this.run(method, params);
-                };
-            }
-        } catch (error) {
-            throw error;
-        }
-    }
+    //         for (const method of this.methods) {
+    //             this[method] = (params) => {
+    //                 return this.run(method, params);
+    //             };
+    //         }
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
     async run(method, params = []) {
         if (!(typeof method === 'string')) {
             throw new Error(`${method} must be a string`);
@@ -53,7 +53,7 @@ class Rpc {
                     params
                 },
                 {
-                    // accept all statuses as resolved 
+                    // accept all HTTP statuses as resolved 
                     validateStatus: () => true
                 }
             );

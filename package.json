@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon -L index.js",
-    "test": "mocha",
-    "loops" : "node ./benchmarks/loops.js"
+    "dev": "./node_modules/.bin/nodemon -L index.js",
+    "debug": "./node_modules/.bin/nodemon --inspect-brk=0.0.0.0 -L index.js",
+    "test": "./node_modules/.bin/mocha",
+    "loops": "node ./benchmarks/loops.js",
+    "loops-debug": "node --inspect-brk=0.0.0.0 ./benchmarks/loops.js",
+    "sync": "node ./scripts/sync.js"
   },
   "author": "peengo",
   "license": "MIT",

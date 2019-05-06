@@ -14,7 +14,6 @@ const app = chai.request(`${url}:${port}`);
 const contentType = 'application/json; charset=utf-8';
 
 describe('API Tests', () => {
-
     describe('GET', () => {
         describe('/', () => {
             it('should return 404', async () => {
@@ -53,7 +52,6 @@ describe('API Tests', () => {
         });
 
         describe('/peers', function () {
-            this.timeout(5000);
             it('should return peers', async () => {
                 try {
                     const res = await app.get('/peers');
@@ -177,7 +175,7 @@ describe('API Tests', () => {
                     try {
                         const res = await app.get('/block/1c83275d9151711eec3aec37d829837cc3c2730b2bdfd00ec5e8e5dce675fd00');
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error');
@@ -490,5 +488,160 @@ describe('API Tests', () => {
 
         });
 
+
+        describe('SEARCH', () => {
+            describe('/search { "search": "1" }', () => {
+                it('should return the block with height 1 redirect data', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: '1' });
+
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('data').to.be.an('object');
+                        expect(res.body.data).to.have.property('redirect').to.be.a('string');
+                        expect(res.body.data).to.have.property('hash').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search { "search": "50000000000" }', () => {
+                it('should return block not found', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: '50000000000' });
+
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('error').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search { "search": "DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w" }', () => {
+                it('should return the address redirect data', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: 'DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w' });
+
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('data').to.be.an('object');
+                        expect(res.body.data).to.have.property('redirect').to.be.a('string');
+                        expect(res.body.data).to.have.property('address').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search { "search": "AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w" }', () => {
+                it('should return the address not found', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: 'AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w' });
+
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('error').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search { "search": "000007342680f4a3d7a3d34a9214b5b71c6f1bec3d633d6d2b84d474a6be55fd" }', () => {
+                it('should return the block with height 1 redirect data', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: '000007342680f4a3d7a3d34a9214b5b71c6f1bec3d633d6d2b84d474a6be55fd' });
+
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('data').to.be.an('object');
+                        expect(res.body.data).to.have.property('redirect').to.be.a('string');
+                        expect(res.body.data).to.have.property('hash').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search { "search": "5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef" }', () => {
+                it('should return the tx with redirect data', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: '5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef' });
+
+                        expect(res).to.have.status(200);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('data').to.be.an('object');
+                        expect(res.body.data).to.have.property('redirect').to.be.a('string');
+                        expect(res.body.data).to.have.property('txid').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search { "search": "9418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef" }', () => {
+                it('should return block / tx not found', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send({ search: '9418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef' });
+
+                        expect(res).to.have.status(404);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('error').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search "s: s"', () => {
+                it('should return not a valid JSON error', async () => {
+                    try {
+                        const res = await app.get('/search')
+                            .send('s: s');
+
+                        expect(res).to.have.status(400);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('error').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+            describe('/search', () => {
+                it('should return invalid search parameter', async () => {
+                    try {
+                        const res = await app.get('/search');
+
+                        expect(res).to.have.status(400);
+                        expect(res).to.have.header('content-type', contentType);
+                        expect(res).to.be.json;
+                        expect(res.body).to.have.property('error').to.be.a('string');
+                    } catch (error) {
+                        throw error;
+                    }
+                });
+            });
+
+        });
+        
     });
 });

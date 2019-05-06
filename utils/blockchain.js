@@ -8,8 +8,8 @@ Decimal.set({
 
 const blockchain = {
     hashRegExp: /^([A-Fa-f0-9]{64})$/,
-    addressRegExp: /^([A-Za-z0-9]{34})$/,
     intRegExp: /^([0-9]{1,18})$/,
+    addressRegExp: /^([A-Za-z0-9]{34})$/,
 
     isHash(string) {
         return this.hashRegExp.test(string);
@@ -24,21 +24,41 @@ const blockchain = {
         return this.addressRegExp.test(string);
     },
 
-    // txs of a block
+    // txs = txs of a block
     setVoutsSum(txs) {
         for (let tx of txs) {
             let amount_out = Decimal(0);
-
             let vout_value;
 
             for (let vout of tx.vout) {
                 vout_value = Decimal(vout.value.toFixed(8));
                 amount_out = amount_out.plus(vout_value);
             }
+
             tx.amount_out = amount_out.toString();
         }
     },
 
+    prepareBlock(block) {
+        block.tx = block.tx.map(tx => tx.txid);
+
+        return block;
+    },
+
+    // block = extended block from rpc
+    prepareTxs(block) {
+        const txs = block.tx;
+
+        txs.map(tx => {
+            tx.blockhash = block.hash;
+            tx.blocktime = block.time;
+            tx.blockheight = block.height;
+        });
+
+        return txs;
+    },
+
+    // array = inputs or recipients
     _findAndSum(array, address, value, tx) {
         let object = array.find(item => item.address === address);
 
@@ -75,6 +95,7 @@ const blockchain = {
 
         return inputs;
     },
+
     // tx = tx object
     async getRecipients(tx) {
         let recipients = [];

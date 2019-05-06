@@ -16,8 +16,8 @@ router.get('/:hash', async (req, res) => {
 
         const { result: block, error } = await rpc.getblock([hash]);
 
-        if (error && error.message) {
-            res.json({ error: error.message });
+        if (error) {
+            res.status(404).json({ error: error.message });
             return false;
         }
 

@@ -22,7 +22,13 @@ router.get('/:txid', async (req, res) => {
             return false;
         }
 
-        const { result: blockRpc } = await rpc.getblock([tx.blockhash]);
+        const { result: blockRpc, error } = await rpc.getblock([tx.blockhash]);
+
+        if (error) {
+            res.status(404).json({ error: error.message });
+            return false;
+        }
+
         tx.confirmations = blockRpc.confirmations;
 
         res.json({ data: tx });
@@ -67,25 +73,25 @@ router.get('/:string/:txid/:offset', async (req, res) => {
         let inputs, recipients;
 
         switch (string) {
-        case 'inputs':
-            inputs = await blockchain.getInputs(txs, tx);
-            total = inputs.length;
+            case 'inputs':
+                inputs = await blockchain.getInputs(txs, tx);
+                total = inputs.length;
 
-            inputs = inputs.slice(offset, offset + limit);
+                inputs = inputs.slice(offset, offset + limit);
 
-            res.json({ data: inputs, total });
-            break;
-        case 'recipients':
-            recipients = await blockchain.getRecipients(tx);
-            total = recipients.length;
+                res.json({ data: inputs, total });
+                break;
+            case 'recipients':
+                recipients = await blockchain.getRecipients(tx);
+                total = recipients.length;
 
-            recipients = recipients.slice(offset, offset + limit);
+                recipients = recipients.slice(offset, offset + limit);
 
-            res.json({ data: recipients, total });
-            break;
-        default:
-            res.status(404).json(statuses[404]);
-            break;
+                res.json({ data: recipients, total });
+                break;
+            default:
+                res.status(404).json(statuses[404]);
+                break;
         }
     } catch (error) {
         console.error(error);

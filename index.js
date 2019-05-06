@@ -8,7 +8,7 @@ const delay = require('delay');
 
 const config = require('./config');
 const rpcInit = require('./rpc/init');
-const dbConnect = require('./db/connection');
+const dbConnect = require('./db/connect');
 const statuses = require('./utils/statuses');
 const errors = require('./utils/errors');
 const blockchain = require('./utils/blockchain');
@@ -22,7 +22,12 @@ const app = express();
 (async () => {
     try {
         app.locals.rpc = await rpcInit();
-        app.locals.collections = await dbConnect(config.collections);
+        const dbLocals = await dbConnect();
+
+        if (dbLocals.client.isConnected)
+            console.log('MongoDB connected');
+
+        Object.assign(app.locals, dbLocals);
 
         for (; ;) {
             app.locals.price = await getPrice();
@@ -33,18 +38,16 @@ const app = express();
     }
 })();
 
-app.disable('x-powered-by');
-app.use(express.json());
-app.use(cors());
 app.use(morgan('dev'));
+app.disable('x-powered-by');
+app.use(cors());
+app.use('/search', express.json());
 
 const locals = { config, statuses, errors, blockchain };
 Object.assign(app.locals, locals);
 
-// routes
 buildRoutes(app);
 
-// middlewares
 attachNotFound(app);
 attachErrorHandler(app);
 

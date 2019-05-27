@@ -10,7 +10,10 @@
     "test": "./node_modules/.bin/mocha",
     "loops": "node ./benchmarks/loops.js",
     "loops-debug": "node --inspect-brk=0.0.0.0 ./benchmarks/loops.js",
-    "sync": "node ./scripts/sync.js"
+    "sync": "node ./scripts/sync.js",
+    "sync-debug": "node --inspect-brk=0.0.0.0 ./scripts/sync.js",
+    "eslint": "./node_modules/.bin/eslint .",
+    "rpc": "node ./benchmarks/rpc.js"
   },
   "author": "peengo",
   "license": "MIT",

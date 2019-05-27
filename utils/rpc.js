@@ -11,32 +11,10 @@ class Rpc {
 
         for (const method of this.methods) {
             this[method] = (params) => {
-                return this.run(method, params);
+                return this.run(method.toLowerCase(), params);
             };
         }
     }
-    // async init() {
-    //     try {
-    //         const help = await this.run('help');
-    //         const result = help.result;
-
-    //         const array = result.split('\n');
-
-    //         for (const item of array) {
-    //             const [method] = item.split(' ');
-
-    //             this.methods.push(method);
-    //         }
-
-    //         for (const method of this.methods) {
-    //             this[method] = (params) => {
-    //                 return this.run(method, params);
-    //             };
-    //         }
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
     async run(method, params = []) {
         if (!(typeof method === 'string')) {
             throw new Error(`${method} must be a string`);

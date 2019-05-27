@@ -29,7 +29,7 @@ const app = express();
 
         Object.assign(app.locals, dbLocals);
 
-        for (; ;) {
+        while (true) {
             app.locals.price = await getPrice();
             await delay(60000);
         }

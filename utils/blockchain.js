@@ -19,12 +19,11 @@ const blockchain = {
         return this.intRegExp.test(string);
     },
 
-    addressLength: 34,
     isAddress(string) {
         return this.addressRegExp.test(string);
     },
 
-    // txs = txs of a block
+    // txs = txs array of a block
     setVoutsSum(txs) {
         for (let tx of txs) {
             let amount_out = Decimal(0);
@@ -39,26 +38,30 @@ const blockchain = {
         }
     },
 
+    // block = extended block object from rpc
     prepareBlock(block) {
+        block._id = block.height;
         block.tx = block.tx.map(tx => tx.txid);
+        delete block.confirmations;
 
         return block;
     },
 
-    // block = extended block from rpc
+    // block = extended block object from rpc
     prepareTxs(block) {
         const txs = block.tx;
 
         txs.map(tx => {
+            tx._id = tx.txid;
             tx.blockhash = block.hash;
             tx.blocktime = block.time;
-            tx.blockheight = block.height;
+            // tx.blockheight = block.height;
         });
 
         return txs;
     },
 
-    // array = inputs or recipients
+    // array = inputs or recipients, address & value & tx = current
     _findAndSum(array, address, value, tx) {
         let object = array.find(item => item.address === address);
 
@@ -110,6 +113,34 @@ const blockchain = {
         }
 
         return recipients;
+    },
+
+    // tx = tx object, addresses & address_txs = collections, session = mongodb session for transactions
+    async prepareVouts(tx, addresses, address_txs, session) {
+        const recipients = await this.getRecipients(tx);
+
+        const voutOffsets = [];
+
+        for (const recipient of recipients) {
+            const address = recipient.address;
+            let value = recipient.value;
+
+            let addressTx = await address_txs.findOne({ txid: tx.txid, address, type: 'vout' });
+            if (!addressTx) {
+                const addressTx = {
+                    txid: tx.txid,
+                    address,
+                    type: 'vout',
+                    value: value,
+                    time: recipient.time
+                };
+                await address_txs.insertOne(addressTx, { session });
+
+                voutOffsets.push({ address, value });
+            }
+        }
+
+        return voutOffsets;
     }
 };
 

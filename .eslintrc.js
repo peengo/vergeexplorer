@@ -35,6 +35,7 @@ module.exports = {
         ],
         // ADDED
         'no-console': 'off',
+        'no-constant-condition': 'off',
         'comma-dangle': [
             'error',
             'never'

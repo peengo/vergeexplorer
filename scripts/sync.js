@@ -3,13 +3,6 @@ const rpcInit = require('../rpc/init');
 const dbConnect = require('../db/connect');
 const blockchain = require('../utils/blockchain');
 const delay = require('delay');
-const { decimaljs } = require('./../config.js');
-const Decimal = require('decimal.js-light');
-
-Decimal.set({
-    precision: decimaljs.precision,
-    toExpNeg: decimaljs.toExpNeg
-});
 
 console.log('#######################');
 console.log('Sync script starting...');
@@ -42,117 +35,67 @@ console.log(`Time: ${new Date().toJSON()}`);
             console.time('loop');
             if (blockDiff !== 0) {
                 for (let height = dbBlockCount; height < rpcBlockCount; height++) {
-
                     const { result: hash } = await rpc.getblockhash([height]);
-                    // let { result: block } = await rpc.getblock([hash, 2]);  // 2 for transaction data
 
-                    // const transactions = blockchain.prepareTxs(block);
-                    // block = blockchain.prepareBlock(block);
-
-                    let { result: block } = await rpc.getblock([hash, 1]);
+                    const { result: block } = await rpc.getblock([hash, 1]);
 
                     let transactions = await Promise.all(block.tx.map(async tx => {
                         const { result: transaction, error } = await rpc.getrawtransaction([tx, 1]);
+
                         if (!error) return transaction;
                     }));
 
-                    transactions = transactions
-                        .filter(tx => typeof tx !== 'undefined');
-                    // .map(tx => {
-                    //     tx._id = tx.txid;
-                    //     delete tx.confirmations;
+                    transactions = transactions.filter(tx => typeof tx !== 'undefined');
 
-                    //     return tx;
-                    // });
-
-                    // block._id = block.hash;
-                    // delete block.confirmations;
-
-                    // if (height === 1194) {
-                    //     debugger;
-                    // }
-
-                    // starting the transaction
+                    // starting session & transaction
                     const session = client.startSession();
+
                     session.startTransaction();
 
                     try {
+                        // block insert
                         await blocks.insertOne(block, { session });
 
-                        if (transactions.length > 0) {
+                        // txs insert
+                        if (transactions.length > 0)
                             await txs.insertMany(transactions, { session });
-                        }
 
+                        // VINS TODO
+
+                        // VOUTS
                         const vouts = [];
 
                         for (const tx of transactions) {
-                            const voutOffsets = await blockchain.prepareVouts(tx, addresses, address_txs, session);
+                            const { addressTxInserts, voutOffsets } = blockchain.getVoutInsertsAndOffsets(tx);
 
-                            for (const voutOffset of voutOffsets) {
-                                const index = vouts.findIndex(vout => vout.address === voutOffset.address);
+                            blockchain.findAndUpdateValueOffsets(vouts, voutOffsets);
 
-                                if (index === -1) {
-                                    vouts.push(voutOffset);
-                                } else {
-                                    vouts[index].value = Decimal(vouts[index].value).plus(Decimal(voutOffset.value)).toString();
-                                }
-                            }
+                            // vouts inserts
+                            if (addressTxInserts > 0)
+                                await address_txs.insertMany(addressTxInserts, { session });
                         }
 
-                        const inserts = [], updates = [];
+                        const {
+                            inserts: addressVoutInserts,
+                            updates: addressVoutUpdates
+                        } = await blockchain.getAddressInsertsAndUpdates(vouts, addresses);
 
-                        for (const vout of vouts) {
-                            const address = await addresses.findOne({ address: vout.address });
+                        // address inserts
+                        if (addressVoutInserts.length > 0)
+                            await addresses.insertMany(addressVoutInserts, { session });
 
-                            if (address) {
-                                updates.push(vout);
-                            } else {
-                                inserts.push(vout);
-                            }
+                        // address updates
+                        for (const { filter, document } of addressVoutUpdates) {
+                            await addresses.findOneAndUpdate(filter, { $set: document }, { session });
                         }
 
-                        for (const insert of inserts) {
-                            await addresses.insertOne(
-                                {
-                                    address: insert.address,
-                                    sent: '0',
-                                    received: insert.value,
-                                    balance: insert.value
-                                },
-                                { session }
-                            );
-                        }
-
-                        for (const update of updates) {
-                            const address = await addresses.findOne({ address: update.address });
-
-                            const receivedSum = Decimal(update.value);
-
-                            let received = Decimal(address.received);
-                            let balance = Decimal(address.balance);
-
-                            received = received.plus(receivedSum).toString();
-                            balance = balance.plus(receivedSum).toString();
-
-                            await addresses.updateOne(
-                                { address: update.address },
-                                {
-                                    $set: {
-                                        received,
-                                        balance
-                                    }
-                                },
-                                { session }
-                            );
-                        }
-
-                        // commiting the transaction
+                        // commiting transaction & ending session
                         await session.commitTransaction();
                         session.endSession();
                     } catch (error) {
                         console.error(error);
 
-                        // aborting the transaction
+                        // aborting transaction & ending session
                         await session.abortTransaction();
                         session.endSession();
 

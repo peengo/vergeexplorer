@@ -39,6 +39,14 @@ module.exports = {
         'comma-dangle': [
             'error',
             'never'
+        ],
+        'eol-last': [
+            'error',
+            'always'
+        ],
+        'newline-after-var': [
+            'error',
+            'always'
         ]
     }
 };

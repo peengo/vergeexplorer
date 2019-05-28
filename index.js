@@ -44,6 +44,7 @@ app.use(cors());
 app.use('/search', express.json());
 
 const locals = { config, statuses, errors, blockchain };
+
 Object.assign(app.locals, locals);
 
 buildRoutes(app);

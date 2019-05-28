@@ -39,43 +39,43 @@ const blockchain = {
     },
 
     // block = extended block object from rpc
-    prepareBlock(block) {
-        block._id = block.height;
-        block.tx = block.tx.map(tx => tx.txid);
-        delete block.confirmations;
+    // prepareBlock(block) {
+    //     block._id = block.height;
+    //     block.tx = block.tx.map(tx => tx.txid);
+    //     delete block.confirmations;
 
-        return block;
-    },
+    //     return block;
+    // },
 
-    // block = extended block object from rpc
-    prepareTxs(block) {
-        const txs = block.tx;
+    // // block = extended block object from rpc
+    // prepareTxs(block) {
+    //     const txs = block.tx;
 
-        txs.map(tx => {
-            tx._id = tx.txid;
-            tx.blockhash = block.hash;
-            tx.blocktime = block.time;
-            // tx.blockheight = block.height;
-        });
+    //     txs.map(tx => {
+    //         tx._id = tx.txid;
+    //         tx.blockhash = block.hash;
+    //         tx.blocktime = block.time;
+    //         // tx.blockheight = block.height;
+    //     });
 
-        return txs;
-    },
+    //     return txs;
+    // },
 
     // array = inputs or recipients, address & value & tx = current
     _findAndSum(array, address, value, tx) {
-        let object = array.find(item => item.address === address);
+        const index = array.findIndex(item => item.address === address);
 
-        if (object === undefined) {
+        if (index === -1) {
             array.push({
-                address: address,
-                value: value,
+                address,
+                value,
                 time: tx.blocktime,
                 txid: tx.txid
             });
         } else {
-            let index = array.indexOf(object);
-            const sum = Decimal(object.value).plus(Decimal(value));
-            array.fill(object.value = sum.toString(), index, index++);
+            const sum = Decimal(array[index].value).plus(Decimal(value));
+
+            array[index] = sum.toString();
         }
     },
 
@@ -100,7 +100,7 @@ const blockchain = {
     },
 
     // tx = tx object
-    async getRecipients(tx) {
+    getRecipients(tx) {
         let recipients = [];
 
         for (const vout of tx.vout) {
@@ -116,31 +116,67 @@ const blockchain = {
     },
 
     // tx = tx object, addresses & address_txs = collections, session = mongodb session for transactions
-    async prepareVouts(tx, addresses, address_txs, session) {
-        const recipients = await this.getRecipients(tx);
+    getVoutInsertsAndOffsets(tx) {
+        const recipients = this.getRecipients(tx);
 
-        const voutOffsets = [];
+        const addressTxInserts = recipients.map(({ address, value, time }) => ({
+            txid: tx.txid,
+            address,
+            type: 'vout',
+            value,
+            time
+        }));
 
-        for (const recipient of recipients) {
-            const address = recipient.address;
-            let value = recipient.value;
+        const voutOffsets = recipients.map(({ address, value }) => ({
+            address,
+            value
+        }));
 
-            let addressTx = await address_txs.findOne({ txid: tx.txid, address, type: 'vout' });
-            if (!addressTx) {
-                const addressTx = {
-                    txid: tx.txid,
-                    address,
-                    type: 'vout',
-                    value: value,
-                    time: recipient.time
-                };
-                await address_txs.insertOne(addressTx, { session });
+        return { addressTxInserts, voutOffsets };
+    },
 
-                voutOffsets.push({ address, value });
+    findAndUpdateValueOffsets(array, offsets) {
+        for (const offset of offsets) {
+            const index = array.findIndex(array => array.address === offset.address);
+
+            if (index === -1) {
+                array.push(offset);
+            } else {
+                array[index].value = Decimal(array[index].value).plus(Decimal(offset.value)).toString();
             }
         }
 
-        return voutOffsets;
+        return array;
+    },
+
+    async getAddressInsertsAndUpdates(array, addresses) {
+        const inserts = [], updates = [];
+
+        for (const item of array) {
+            const address = await addresses.findOne({ address: item.address });
+
+            if (!address) {
+                inserts.push({
+                    address: item.address,
+                    sent: '0',
+                    received: item.value,
+                    balance: item.value
+                });
+            } else {
+                const received = (Decimal(address.received).plus(Decimal(item.value))).toString();
+                const balance = (Decimal(address.balance).plus(Decimal(item.value))).toString();
+
+                updates.push({
+                    filter: { address: item.address },
+                    document: {
+                        received,
+                        balance
+                    }
+                });
+            }
+        }
+
+        return { inserts, updates };
     }
 };
 

@@ -70,7 +70,7 @@ const blockchain = require('../utils/blockchain');
                 const tx = await db.txs.findOne({ txid });
 
                 const inputs = await blockchain.getInputs(db.txs, tx);
-                const recipients = await blockchain.getRecipients(tx);
+                const recipients = blockchain.getRecipients(tx);
 
                 allInputs.push(inputs);
                 allRecipients.push(recipients);

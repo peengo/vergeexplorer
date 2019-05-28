@@ -82,7 +82,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
                 res.json({ data: inputs, total });
                 break;
             case 'recipients':
-                recipients = await blockchain.getRecipients(tx);
+                recipients = blockchain.getRecipients(tx);
                 total = recipients.length;
 
                 recipients = recipients.slice(offset, offset + limit);

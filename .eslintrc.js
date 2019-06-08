@@ -47,6 +47,7 @@ module.exports = {
         'newline-after-var': [
             'error',
             'always'
-        ]
+        ],
+        'dot-notation': ['error']
     }
 };

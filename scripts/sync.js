@@ -2,7 +2,9 @@
 const rpcInit = require('../rpc/init');
 const dbConnect = require('../db/connect');
 const blockchain = require('../utils/blockchain');
-const delay = require('delay');
+const { promisify } = require('util');
+
+const delay = promisify(setTimeout);
 
 console.log('#######################');
 console.log('Sync script starting...');
@@ -24,7 +26,7 @@ console.log(`Time: ${new Date().toJSON()}`);
                 }
             } = await dbConnect();
 
-            const dbBlockCount = await blocks.estimatedDocumentCount();
+            let dbBlockCount = await blocks.countDocuments({});
             const { result: rpcBlockCount } = await rpc.getblockcount();
             const blockDiff = rpcBlockCount - dbBlockCount;
 
@@ -32,21 +34,45 @@ console.log(`Time: ${new Date().toJSON()}`);
             console.log(`Blocks in Blockchain: ${rpcBlockCount}`);
             console.log(`Block difference: ${blockDiff}`);
 
-            console.time('loop');
-            if (blockDiff !== 0) {
+            if (blockDiff > 0) {
                 for (let height = dbBlockCount; height < rpcBlockCount; height++) {
                     const { result: hash } = await rpc.getblockhash([height]);
-
                     const { result: block } = await rpc.getblock([hash, 1]);
 
-                    let transactions = await Promise.all(block.tx.map(async tx => {
-                        const { result: transaction, error } = await rpc.getrawtransaction([tx, 1]);
+                    if (height > 0) {
+                        const prevBlock = await blocks.findOne({ height: height - 1 });
 
-                        if (!error) return transaction;
-                    }));
+                        if (!prevBlock) {
+                            console.log('previous block not found at height:', height - 1);
+                            process.exit();
+                        }
+                    }
 
-                    transactions = transactions.filter(tx => typeof tx !== 'undefined');
+                    const txids = block.tx;
 
+                    const getTx = async txid => {
+                        return await await rpc.getrawtransaction([txid, 1]);
+                    };
+
+                    let transactions = [];
+
+                    if (height > 0) {
+                        transactions = await Promise.all(txids.map(txid => getTx(txid)));
+
+                        const errors = transactions.find(tx => tx.error !== null);
+
+                        if (!errors) {
+                            transactions = transactions.map(tx => tx.result);
+
+                            if (transactions.length !== txids.length) {
+                                console.log('tx count does not match');
+                                process.exit();
+                            }
+                        } else {
+                            console.error(errors);
+                            process.exit();
+                        }
+                    }
                     // starting session & transaction
                     const session = client.startSession();
 
@@ -60,62 +86,60 @@ console.log(`Time: ${new Date().toJSON()}`);
                         if (transactions.length > 0)
                             await txs.insertMany(transactions, { session });
 
-                        // VINS TODO
-
-                        // VOUTS
-                        const vouts = [];
+                        // address inserts & updates
+                        let blockIOOffsets = [];
 
                         for (const tx of transactions) {
-                            const { addressTxInserts, voutOffsets } = blockchain.getVoutInsertsAndOffsets(tx);
+                            const { addressTxInserts, txIOOffsets } = await blockchain.getIOInsertsAndOffsets(tx, txs, transactions, blockIOOffsets);
 
-                            blockchain.findAndUpdateValueOffsets(vouts, voutOffsets);
+                            blockIOOffsets = blockchain.sumAddressOffsets(txIOOffsets, blockIOOffsets);
 
-                            // vouts inserts
-                            if (addressTxInserts > 0)
+                            if (addressTxInserts.length > 0)
                                 await address_txs.insertMany(addressTxInserts, { session });
                         }
 
-                        const {
-                            inserts: addressVoutInserts,
-                            updates: addressVoutUpdates
-                        } = await blockchain.getAddressInsertsAndUpdates(vouts, addresses);
+                        const addressList = blockIOOffsets.map(offset => offset.address);
+                        let addressUpdatesDb = await addresses.find({ address: { $in: addressList } }).toArray();
 
-                        // address inserts
-                        if (addressVoutInserts.length > 0)
-                            await addresses.insertMany(addressVoutInserts, { session });
+                        addressUpdatesDb.sort((a, b) => a.address.localeCompare(b.address));
 
-                        // address updates
-                        for (const { filter, document } of addressVoutUpdates) {
-                            await addresses.findOneAndUpdate(filter, { $set: document }, { session });
+
+                        let addressUpdates = blockIOOffsets.filter(o => addressUpdatesDb.find(o2 => o.address === o2.address)).sort((a, b) => a.address.localeCompare(b.address));
+                        let addressInserts = blockIOOffsets.filter(o => !addressUpdatesDb.find(o2 => o.address === o2.address));
+
+                        if (addressUpdatesDb.length > 0) {
+                            addressUpdatesDb = blockchain.calculateUpdateBalances(addressUpdatesDb, addressUpdates);
+
+                            for (const addressUpdate of addressUpdatesDb) {
+                                await addresses.findOneAndReplace({ address: addressUpdate.address }, addressUpdate, { session });
+                            }
+                        }
+
+                        if (addressInserts.length > 0) {
+                            addressInserts = blockchain.calculateInsertBalances(addressInserts);
+
+                            await addresses.insertMany(addressInserts, { session });
                         }
 
                         // commiting transaction & ending session
                         await session.commitTransaction();
                         session.endSession();
                     } catch (error) {
-                        console.error(error);
-
                         // aborting transaction & ending session
                         await session.abortTransaction();
                         session.endSession();
 
-                        process.exit();
+                        throw error;
                     }
-
                     console.log(`height: ${height} hash: ${hash}`);
-
-                    // if (height === 0) break;
-                    if (height === 2000) break;
                 }
             }
-            console.timeEnd('loop');
-            process.exit();
         } catch (error) {
             console.error(error);
-            process.exit();
         } finally {
             console.log('...Sleeping...');
             await delay(60000);
         }
     }
 })();
+

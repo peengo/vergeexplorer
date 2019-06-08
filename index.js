@@ -4,7 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const delay = require('delay');
+const { promisify } = require('util');
 
 const config = require('./config');
 const rpcInit = require('./rpc/init');
@@ -16,6 +16,8 @@ const getPrice = require('./utils/price');
 const buildRoutes = require('./routes/routes');
 const attachNotFound = require('./middlewares/not_found');
 const attachErrorHandler = require('./middlewares/error_handler');
+
+const delay = promisify(setTimeout);
 
 const app = express();
 

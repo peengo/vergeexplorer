@@ -26,7 +26,7 @@ const blockchain = require('../utils/blockchain');
                 const tx = await db.txs.findOne({ txid });
 
                 const [inputs, recipients] = await Promise.all([
-                    blockchain.getInputs(db.txs, tx),
+                    blockchain.getInputs(tx, db.txs),
                     blockchain.getRecipients(tx)
                 ]);
 
@@ -48,7 +48,7 @@ const blockchain = require('../utils/blockchain');
                 const tx = await db.txs.findOne({ txid });
 
                 const [inputs, recipients] = await Promise.all([
-                    blockchain.getInputs(db.txs, tx),
+                    blockchain.getInputs(tx, db.txs),
                     blockchain.getRecipients(tx)
                 ]);
 
@@ -69,7 +69,7 @@ const blockchain = require('../utils/blockchain');
             for (const txid of block.tx) {
                 const tx = await db.txs.findOne({ txid });
 
-                const inputs = await blockchain.getInputs(db.txs, tx);
+                const inputs = await blockchain.getInputs(tx, db.txs);
                 const recipients = blockchain.getRecipients(tx);
 
                 allInputs.push(inputs);
@@ -90,7 +90,7 @@ const blockchain = require('../utils/blockchain');
                 const tx = await db.txs.findOne({ txid });
 
                 const [inputs, recipients] = await Promise.all([
-                    blockchain.getInputs(db.txs, tx),
+                    blockchain.getInputs(tx, db.txs),
                     blockchain.getRecipients(tx)
                 ]);
 
@@ -112,7 +112,7 @@ const blockchain = require('../utils/blockchain');
 
             for (const tx of transactions) {
                 const [inputs, recipients] = await Promise.all([
-                    blockchain.getInputs(db.txs, tx),
+                    blockchain.getInputs(tx, db.txs),
                     blockchain.getRecipients(tx)
                 ]);
 

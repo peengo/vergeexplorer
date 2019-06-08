@@ -31,7 +31,7 @@ describe('API Tests', () => {
         });
 
         describe('/info', function () {
-            this.timeout(5000);
+            this.timeout(10000);
             it('should return info', async () => {
                 try {
                     const res = await app.get('/info');
@@ -124,7 +124,6 @@ describe('API Tests', () => {
                     expect(res.body.data[0]).to.have.property('txid').to.be.a('string');
                     expect(res.body.data[0]).to.have.property('time').to.be.a('number');
                     expect(res.body.data[0]).to.have.property('blockhash').to.be.a('string');
-                    expect(res.body.data[0]).to.have.property('height').to.be.a('number');
                     expect(res.body.data[0]).to.have.property('amount_out').to.be.a('string');
                     expect(res.body.data[0].vin).to.be.an('array').to.have.lengthOf.above(0);
                     expect(res.body.data[0].vout).to.be.an('array').to.have.lengthOf.above(0);
@@ -642,6 +641,6 @@ describe('API Tests', () => {
             });
 
         });
-        
+
     });
 });

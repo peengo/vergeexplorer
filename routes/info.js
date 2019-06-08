@@ -7,15 +7,16 @@ router.get('/', async (req, res) => {
     try {
         const { collections: { blocks }, rpc, price } = req.app.locals;
 
-        let [{ result: info }, blocks_db] = await Promise.all([
+        let [{ result: info }, { result: gettxoutsetinfo }, blocks_db] = await Promise.all([
             rpc.getinfo(),
-            await blocks.estimatedDocumentCount()
+            rpc.gettxoutsetinfo(),
+            blocks.countDocuments({})
         ]);
 
         info = {
             blocks_db,
             blocks_rpc: info.blocks,
-            moneysupply: info.moneysupply,
+            moneysupply: gettxoutsetinfo.total_amount,
             paytxfee: info.paytxfee,
             price
         };

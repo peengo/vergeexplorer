@@ -74,7 +74,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
 
         switch (string) {
             case 'inputs':
-                inputs = await blockchain.getInputs(txs, tx);
+                inputs = await blockchain.getInputs(tx, txs);
                 total = inputs.length;
 
                 inputs = inputs.slice(offset, offset + limit);

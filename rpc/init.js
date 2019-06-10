@@ -5,7 +5,7 @@ const rpcInit = async () => {
     try {
         const rpc = new Rpc(
             `http://${process.env.RPC_USER}:${process.env.RPC_PASS}@${process.env.RPC_HOST}:${process.env.RPC_PORT}`,
-            ['getinfo', 'gettxoutsetinfo', 'getpeerinfo', 'getblockbynumber', 'getblock', 'getblockcount', 'getblockhash', 'getrawtransaction']
+            ['getTxOutSetInfo', 'getpeerinfo', 'getblockcount', 'getblockhash', 'getblock', 'getrawtransaction']
         );
 
         return rpc;

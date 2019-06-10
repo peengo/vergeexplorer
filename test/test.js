@@ -43,7 +43,6 @@ describe('API Tests', () => {
                     expect(res.body.data).to.have.property('blocks_db').to.be.a('number');
                     expect(res.body.data).to.have.property('blocks_rpc').to.be.a('number');
                     expect(res.body.data).to.have.property('moneysupply').to.be.a('number');
-                    expect(res.body.data).to.have.property('paytxfee').to.be.a('number');
                     expect(res.body.data).to.have.property('price').to.be.an('object');
                 } catch (error) {
                     throw error;
@@ -199,10 +198,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/block/txs/1b94b012596e52ce78923ce4947acbdc6172f7664f721a35b687cb898eb0b987/0', () => {
+            describe('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/0', () => {
                 it('should return block transactions with 0 offset', async () => {
                     try {
-                        const res = await app.get('/block/txs/1b94b012596e52ce78923ce4947acbdc6172f7664f721a35b687cb898eb0b987/0');
+                        const res = await app.get('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/0');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -216,10 +215,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/block/txs/1b94b012596e52ce78923ce4947acbdc6172f7664f721a35b687cb898eb0b987/5', () => {
+            describe('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/5', () => {
                 it('should return block transactions with 5 offset', async () => {
                     try {
-                        const res = await app.get('/block/txs/1b94b012596e52ce78923ce4947acbdc6172f7664f721a35b687cb898eb0b987/5');
+                        const res = await app.get('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/5');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -251,18 +250,18 @@ describe('API Tests', () => {
 
 
         describe('TXS', () => {
-            describe('/tx/1c83275d9151711eec3aec37d829837cc3c2730b2bdfd00ec5e8e5dce675fd00', () => {
-                it('should return genesis tx', async () => {
+            describe('/tx/5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef', () => {
+                it('should return 1st tx (not genesis)', async () => {
                     try {
-                        const res = await app.get('/tx/1c83275d9151711eec3aec37d829837cc3c2730b2bdfd00ec5e8e5dce675fd00');
+                        const res = await app.get('/tx/5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data');
                         expect(res.body.data).to.include({
-                            txid: '1c83275d9151711eec3aec37d829837cc3c2730b2bdfd00ec5e8e5dce675fd00',
-                            height: 0
+                            txid: '5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef',
+                            blockhash: '000007342680f4a3d7a3d34a9214b5b71c6f1bec3d633d6d2b84d474a6be55fd'
                         });
                         expect(res.body.data.vin).to.be.an('array').to.have.lengthOf.above(0);
                         expect(res.body.data.vout).to.be.an('array').to.have.lengthOf.above(0);
@@ -433,10 +432,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/address/txs/DB5MvtQaEY1JfCYLKWtL4XqRKt54y7GX4j/0', () => {
+            describe('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0', () => {
                 it('should return latest transactions of the address', async () => {
                     try {
-                        const res = await app.get('/address/txs/DB5MvtQaEY1JfCYLKWtL4XqRKt54y7GX4j/0');
+                        const res = await app.get('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);

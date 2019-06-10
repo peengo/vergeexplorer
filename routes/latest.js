@@ -31,7 +31,7 @@ router.get('/:string', async (req, res) => {
                     .limit(latest)
                     .toArray();
 
-                blockchain.setVoutsSum(latestTxs);
+                latestTxs = blockchain.setVoutsSum(latestTxs);
 
                 res.json({ data: latestTxs });
                 break;

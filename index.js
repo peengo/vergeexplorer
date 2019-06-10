@@ -32,11 +32,16 @@ const app = express();
         Object.assign(app.locals, dbLocals);
 
         while (true) {
-            app.locals.price = await getPrice();
+            const [{ result: getTxOutSetInfo }, price] = await Promise.all([
+                app.locals.rpc.getTxOutSetInfo(),
+                getPrice()
+            ]);
+
+            Object.assign(app.locals, { getTxOutSetInfo, price });
             await delay(60000);
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 })();
 

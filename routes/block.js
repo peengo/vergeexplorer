@@ -58,7 +58,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
 
         const txids = block.tx;
 
-        const [total, transactions] = await Promise.all([
+        let [total, transactions] = await Promise.all([
             txs.find({ txid: { $in: txids } }).count(),
             txs
                 .find({ txid: { $in: txids } })
@@ -69,7 +69,7 @@ router.get('/txs/:hash/:offset', async (req, res) => {
                 .toArray()
         ]);
 
-        blockchain.setVoutsSum(transactions);
+        transactions = blockchain.setVoutsSum(transactions);
 
         res.json({ data: transactions, total });
     } catch (error) {

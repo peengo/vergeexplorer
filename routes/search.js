@@ -15,20 +15,20 @@ router.get('/', async (req, res) => {
             try {
                 search = Number(search);
 
-                const { result: block, error } = await rpc.getblockbynumber([search]);
+                const { result: hash, error: hashError } = await rpc.getblockhash([search]);
 
-                if (error) {
-                    res.json({ error: error.message });
-                    return false;
-                }
+                if (hashError) throw hashError;
+
+                const { result: block, error: blockError } = await rpc.getblock([hash]);
+
+                if (blockError) throw hashError;
 
                 res.json({ data: { redirect: 'block', hash: block.hash } });
                 return false;
             } catch (error) {
-                // console.error(error);
-                // res.json({ error: errors.block_not_found });
+                res.json({ error: error.message });
+                
                 console.error(error);
-                res.status(500).json(statuses[500]);
                 return false;
             }
         }
@@ -53,15 +53,25 @@ router.get('/', async (req, res) => {
                 return false;
             }
 
-            const { result: block } = await rpc.getblock([search]);
+            try {
+                const { result: block, error } = await rpc.getblock([search]);
 
-            if (block) {
-                res.json({ data: { redirect: 'block', hash: block.hash } });
+                if (error) throw error;
+
+                if (block) {
+                    res.json({ data: { redirect: 'block', hash: block.hash } });
+                    return false;
+                }
+            } catch (error) {
+                if (typeof error.code !== 'undefined' && error.code === -5) {
+                    res.status(404).json({ error: error.message });
+                } else {
+                    res.status(400).json({ error: error.message });
+                }
+
+                console.error(error);
                 return false;
             }
-
-            res.status(404).json({ error: errors.block_tx_not_found });
-            return false;
         }
 
         res.status(400).json({ error: errors.invalid_search_param });

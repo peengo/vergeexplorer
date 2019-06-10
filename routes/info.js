@@ -5,19 +5,14 @@ router.get('/', async (req, res) => {
     const { statuses } = req.app.locals;
 
     try {
-        const { collections: { blocks }, rpc, price } = req.app.locals;
+        const { collections: { blocks }, getTxOutSetInfo, price } = req.app.locals;
+        const blocks_db = await blocks.estimatedDocumentCount();
 
-        let [{ result: info }, { result: gettxoutsetinfo }, blocks_db] = await Promise.all([
-            rpc.getinfo(),
-            rpc.gettxoutsetinfo(),
-            blocks.countDocuments({})
-        ]);
-
-        info = {
+        const info = {
             blocks_db,
-            blocks_rpc: info.blocks,
-            moneysupply: gettxoutsetinfo.total_amount,
-            paytxfee: info.paytxfee,
+            blocks_rpc: getTxOutSetInfo.height,
+            transactions: getTxOutSetInfo.transactions,
+            moneysupply: getTxOutSetInfo.total_amount,
             price
         };
 

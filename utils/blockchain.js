@@ -24,18 +24,18 @@ const blockchain = {
     },
 
     // txs = txs array of a block
-    setVoutsSum(txs) {
-        for (let tx of txs) {
-            let amount_out = Decimal(0);
-            let vout_value;
+    setVoutsSum(transactions) {
+        return transactions.map(tx => {
+            tx.amount_out = tx.vout.map(vout => vout.value).reduce((acc, cur) => {
+                const accValue = Decimal(acc);
+                const curValue = Decimal(cur);
+                const sumValue = accValue.plus(curValue).toString();
 
-            for (let vout of tx.vout) {
-                vout_value = Decimal(vout.value.toFixed(8));
-                amount_out = amount_out.plus(vout_value);
-            }
+                return sumValue;
+            });
 
-            tx.amount_out = amount_out.toString();
-        }
+            return tx;
+        });
     },
 
     // array = inputs or recipients, address & value & tx = current
@@ -73,7 +73,8 @@ const blockchain = {
                 }
 
                 if (vin === undefined) {
-                    throw 'TX NOT FOUND';
+                    console.error('TX NOT FOUND');
+                    process.exit();
                 }
 
                 const address = vin.vout[v.vout].scriptPubKey.addresses[0];

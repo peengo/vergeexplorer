@@ -1,11 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/', async (ctx) => {
     try {
-        const { collections: { blocks }, getTxOutSetInfo, price } = req.app.locals;
+        const { collections: { blocks }, getTxOutSetInfo, price } = ctx.locals;
         const blocks_db = await blocks.estimatedDocumentCount();
 
         const info = {
@@ -16,10 +14,9 @@ router.get('/', async (req, res) => {
             price
         };
 
-        res.json({ data: info });
+        ctx.body = { data: info };
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

@@ -5,7 +5,7 @@ const { MongoClient } = require('mongodb');
 const dbConnect = async (database = process.env.DB_NAME) => {
     const client = await MongoClient.connect(
         `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/${database}`,
-        { useNewUrlParser: true, replicaSet: 'rs0' },
+        { useNewUrlParser: true, replicaSet: 'rs0', poolSize: 10 },
     );
 
     const db = client.db();
@@ -16,8 +16,8 @@ const dbConnect = async (database = process.env.DB_NAME) => {
         collections: {
             blocks: db.collection(collections.blocks),
             txs: db.collection(collections.txs),
-            addresses: db.collection(collections.addresses),
-            address_txs: db.collection(collections.address_txs)
+            ios: db.collection(collections.ios),
+            addresses: db.collection(collections.addresses)
         }
     };
 };

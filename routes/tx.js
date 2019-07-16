@@ -1,16 +1,15 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/:txid', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/:txid', async (ctx) => {
     try {
-        const { blockchain, collections: { txs }, rpc, errors } = req.app.locals;
+        const { blockchain, collections: { txs }, rpc, errors } = ctx.locals;
 
-        const txid = req.params.txid;
+        const txid = ctx.params.txid;
 
         if (!blockchain.isHash(txid)) {
-            res.status(400).json({ error: errors.not_valid_txid });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_txid };
             return false;
         }
 
@@ -18,44 +17,50 @@ router.get('/:txid', async (req, res) => {
             .findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            res.json({ error: errors.tx_not_found });
+            ctx.status = 404;
+            ctx.body = { error: errors.tx_not_found };
             return false;
         }
 
-        const { result: blockRpc, error } = await rpc.getblock([tx.blockhash]);
+        const { result: blockRpc, error } = await rpc.getBlock([tx.blockhash]);
 
         if (error) {
-            res.status(404).json({ error: error.message });
+            ctx.status = 400;
+            ctx.body = { error: error.message };
             return false;
         }
 
         tx.confirmations = blockRpc.confirmations;
 
-        res.json({ data: tx });
+        ctx.body = { data: tx };
     } catch (error) {
         console.error(error);
-        res.status(500).json(statuses[500]);
+        ctx.status = 500;
+        ctx.body = {
+            status: ctx.status,
+            message: ctx.message
+        };
     }
 });
 
 // inputs an recipients
-router.get('/:string/:txid/:offset', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/:string/:txid/:offset', async (ctx) => {
     try {
-        const { collections: { txs }, blockchain, errors, config: { limit } } = req.app.locals;
+        const { collections: { txs }, blockchain, errors, config: { limit } } = ctx.locals;
 
-        const string = req.params.string;
-        const txid = req.params.txid;
-        let offset = req.params.offset;
+        const string = ctx.params.string;
+        const txid = ctx.params.txid;
+        let offset = ctx.params.offset;
 
         if (!blockchain.isHash(txid)) {
-            res.status(400).json({ error: errors.not_valid_txid });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_txid };
             return false;
         }
 
         if (!blockchain.isInt(offset)) {
-            res.status(400).json({ error: errors.not_valid_int });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_int };
             return false;
         }
 
@@ -64,7 +69,8 @@ router.get('/:string/:txid/:offset', async (req, res) => {
         const tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            res.json({ error: errors.tx_not_found });
+            ctx.status = 404;
+            ctx.body = { error: errors.tx_not_found };
             return false;
         }
 
@@ -79,7 +85,7 @@ router.get('/:string/:txid/:offset', async (req, res) => {
 
                 inputs = inputs.slice(offset, offset + limit);
 
-                res.json({ data: inputs, total });
+                ctx.body = { data: inputs, total };
                 break;
             case 'recipients':
                 recipients = blockchain.getRecipients(tx);
@@ -87,15 +93,15 @@ router.get('/:string/:txid/:offset', async (req, res) => {
 
                 recipients = recipients.slice(offset, offset + limit);
 
-                res.json({ data: recipients, total });
+                ctx.body = { data: recipients, total };
                 break;
             default:
-                res.status(404).json(statuses[404]);
+                ctx.status = 400;
+                ctx.body = { error: errors.invalid_parameter };
                 break;
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

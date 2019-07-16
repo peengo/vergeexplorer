@@ -9,9 +9,9 @@ const routes = [
     'search'
 ];
 
-const buildRoutes = app => {
+const buildRoutes = router => {
     for (const route of routes) {
-        app.use(`/${route}`, require(`./${route}`));
+        router.use(`/${route}`, require(`./${route}`).routes());
     }
 };
 

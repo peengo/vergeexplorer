@@ -1,10 +1,14 @@
-const { decimaljs } = require('./../config.js');
+const { decimaljs } = require('./../config');
 const Decimal = require('decimal.js-light');
 
 Decimal.set({
     precision: decimaljs.precision,
     toExpNeg: decimaljs.toExpNeg
 });
+
+const VIN = 'vin',
+    VOUT = 'vout',
+    COINBASE = 'coinbase';
 
 const blockchain = {
     hashRegExp: /^([A-Fa-f0-9]{64})$/,
@@ -26,13 +30,15 @@ const blockchain = {
     // txs = txs array of a block
     setVoutsSum(transactions) {
         return transactions.map(tx => {
-            tx.amount_out = tx.vout.map(vout => vout.value).reduce((acc, cur) => {
+            tx.amountout = tx.vout.map(vout => vout.value).reduce((acc, cur) => {
                 const accValue = Decimal(acc);
                 const curValue = Decimal(cur);
                 const sumValue = accValue.plus(curValue).toString();
 
                 return sumValue;
             });
+
+            tx.amountout = Decimal(tx.amountout).toString();
 
             return tx;
         });
@@ -56,26 +62,28 @@ const blockchain = {
         }
     },
 
-    // tx = tx object, txs = txs collection
-    async getInputs(tx, txs, localTransactions) {
+    // tx = tx object, txs = txs collection, localTxs = txs within same block
+    async getInputs(tx, txs, localTxs) {
         let inputs = [];
 
         for (const v of tx.vin) {
-            if (v.hasOwnProperty('coinbase')) {
+            if (v.hasOwnProperty(COINBASE)) {
                 inputs.push(v);
             } else {
                 let vin;
 
                 vin = await txs.findOne({ txid: v.txid });
 
-                if (!vin && localTransactions) {
-                    vin = localTransactions.find(item => item.txid === v.txid);
+                if (!vin && localTxs) {
+                    vin = localTxs.find(item => item.txid === v.txid);
                 }
 
-                if (vin === undefined) {
-                    console.error('TX NOT FOUND');
-                    process.exit();
-                }
+                // if (vin === undefined) {
+                //     // throw { missingTx: v.txid };
+
+                //     console.error('TX NOT FOUND:', v.txid);
+                //     process.exit();
+                // }
 
                 const address = vin.vout[v.vout].scriptPubKey.addresses[0];
                 const value = vin.vout[v.vout].value.toString();
@@ -101,16 +109,6 @@ const blockchain = {
         }
 
         return recipients;
-    },
-
-    _getIOInserts(array, tx, type) {
-        return array.map(({ address, value, time }) => ({
-            txid: tx.txid,
-            address,
-            type,
-            value,
-            time
-        }));
     },
 
     sumAddressOffsets(txIOOffsets, blockIOOffsets) {
@@ -146,37 +144,45 @@ const blockchain = {
         }));
     },
 
-    // tx = tx object, txs = txs collection, localTransactions = txs within same block
-    async getIOInsertsAndOffsets(tx, txs, localTransactions) {
-        const inputs = await this.getInputs(tx, txs, localTransactions);
-        const recipients = this.getRecipients(tx);
+    calculateUpdateInvalidBalances(addressUpdatesDb, addressUpdates) {
+        return addressUpdatesDb.map((item, index) => ({
+            address: item.address,
+            sent: Decimal(item.sent).minus(Decimal(addressUpdates[index].sent)).toString(),
+            received: Decimal(item.received).minus(Decimal(addressUpdates[index].received)).toString(),
+            balance: Decimal(item.balance).minus(Decimal(addressUpdates[index].received)).plus(Decimal(addressUpdates[index].sent)).toString()
+        }));
+    },
 
-        let vinTxInserts = [], txIOOffsets = [];
+    // array = inputs / recipients, tx = transaction, type = vin / vout
+    _getIOInserts(array, tx, type) {
+        return array.map(({ address, value, time }) => ({
+            txid: tx.txid,
+            address,
+            type,
+            value,
+            time
+        }));
+    },
 
-        if (!inputs[0].hasOwnProperty('coinbase')) {
-            vinTxInserts = this._getIOInserts(inputs, tx, 'vin');
-        }
+    findAndUpdateOffsets(offsets) {
+        let txIOOffsets = [];
 
-        const voutTxInserts = this._getIOInserts(recipients, tx, 'vout');
-
-        const addressTxInserts = [...vinTxInserts, ...voutTxInserts];
-
-        for (const txInsert of addressTxInserts) {
-            let io = txIOOffsets.find(offset => offset.address === txInsert.address);
+        for (const offset of offsets) {
+            let io = txIOOffsets.find(item => item.address === offset.address);
 
             if (io === undefined) {
-                switch (txInsert.type) {
-                    case 'vin':
+                switch (offset.type) {
+                    case VIN:
                         txIOOffsets.push({
-                            address: txInsert.address,
+                            address: offset.address,
                             received: '0',
-                            sent: Decimal(txInsert.value).toString()
+                            sent: Decimal(offset.value).toString()
                         });
                         break;
-                    case 'vout':
+                    case VOUT:
                         txIOOffsets.push({
-                            address: txInsert.address,
-                            received: Decimal(txInsert.value).toString(),
+                            address: offset.address,
+                            received: Decimal(offset.value).toString(),
                             sent: '0'
                         });
                         break;
@@ -184,12 +190,12 @@ const blockchain = {
                         break;
                 }
             } else {
-                switch (txInsert.type) {
-                    case 'vin':
-                        io.sent = Decimal(io.sent).plus(txInsert.value).toString();
+                switch (offset.type) {
+                    case VIN:
+                        io.sent = Decimal(io.sent).plus(offset.value).toString();
                         break;
-                    case 'vout':
-                        io.received = Decimal(io.received).plus(txInsert.value).toString();
+                    case VOUT:
+                        io.received = Decimal(io.received).plus(offset.value).toString();
                         break;
                     default:
                         break;
@@ -197,24 +203,28 @@ const blockchain = {
             }
         }
 
+        return txIOOffsets;
+    },
+
+    // tx = tx object, txs = txs collection, localTxs = txs within same block
+    async getIOInsertsAndOffsets(tx, txs, localTxs) {
+        const inputs = await this.getInputs(tx, txs, localTxs);
+        const recipients = this.getRecipients(tx);
+
+        let vinTxInserts = [];
+
+        if (!inputs[0].hasOwnProperty(COINBASE)) {
+            vinTxInserts = this._getIOInserts(inputs, tx, VIN);
+        }
+
+        const voutTxInserts = this._getIOInserts(recipients, tx, VOUT);
+        const addressTxInserts = [...vinTxInserts, ...voutTxInserts];
+        const txIOOffsets = this.findAndUpdateOffsets(addressTxInserts);
+
         return {
             addressTxInserts,
             txIOOffsets
         };
-    },
-
-    _findAndUpdateOffsets(array, offsets) {
-        for (const offset of offsets) {
-            const item = array.find(array => array.address === offset.address);
-
-            if (item === undefined) {
-                array.push(offset);
-            } else {
-                item.value = Decimal(item.value).plus(Decimal(offset.value)).toString();
-            }
-        }
-
-        return array;
     }
 };
 

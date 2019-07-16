@@ -123,7 +123,7 @@ describe('API Tests', () => {
                     expect(res.body.data[0]).to.have.property('txid').to.be.a('string');
                     expect(res.body.data[0]).to.have.property('time').to.be.a('number');
                     expect(res.body.data[0]).to.have.property('blockhash').to.be.a('string');
-                    expect(res.body.data[0]).to.have.property('amount_out').to.be.a('string');
+                    expect(res.body.data[0]).to.have.property('amountout').to.be.a('string');
                     expect(res.body.data[0].vin).to.be.an('array').to.have.lengthOf.above(0);
                     expect(res.body.data[0].vout).to.be.an('array').to.have.lengthOf.above(0);
                 } catch (error) {
@@ -237,7 +237,7 @@ describe('API Tests', () => {
                     try {
                         const res = await app.get('/block/txs/2b94b012596e52ce78923ce4947acbdc6172f7664f721a35b687cb898eb0b987/0');
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error');
@@ -276,7 +276,7 @@ describe('API Tests', () => {
                     try {
                         const res = await app.get('/tx/1c83275d9151711eec3aec37d829837cc3c2730b2bdfd00ec5e8e5dce675fd01');
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error');
@@ -407,7 +407,7 @@ describe('API Tests', () => {
                     try {
                         const res = await app.get('/address/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1a');
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error').to.be.a('string');
@@ -470,11 +470,11 @@ describe('API Tests', () => {
             });
 
             describe('/address/txs/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0', () => {
-                it('should return latest transactions of the address', async () => {
+                it('should return address not found', async () => {
                     try {
                         const res = await app.get('/address/txs/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0');
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error').to.be.a('string');
@@ -512,7 +512,7 @@ describe('API Tests', () => {
                         const res = await app.get('/search')
                             .send({ search: '50000000000' });
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error').to.be.a('string');
@@ -546,7 +546,7 @@ describe('API Tests', () => {
                         const res = await app.get('/search')
                             .send({ search: 'AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w' });
 
-                        expect(res).to.have.status(200);
+                        expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('error').to.be.a('string');

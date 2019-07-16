@@ -1,11 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/', async (ctx) => {
     try {
-        const { collections: { addresses }, config: { limit } } = req.app.locals;
+        const { collections: { addresses }, config: { limit } } = ctx.locals;
 
         const richlist = await addresses
             .find({})
@@ -15,10 +13,9 @@ router.get('/', async (req, res) => {
             .limit(limit)
             .toArray();
 
-        res.json({ data: richlist });
+        ctx.body = { data: richlist };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

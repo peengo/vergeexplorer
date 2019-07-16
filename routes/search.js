@@ -1,33 +1,37 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/', async (ctx) => {
     try {
-        const { rpc, blockchain, collections: { addresses, txs }, errors } = req.app.locals;
+        const { rpc, blockchain, collections: { addresses, txs }, errors } = ctx.locals;
 
-        let search = req.body.search;
+        let search = '';
 
-        if (typeof search !== 'string') search = '';
+        if (ctx.request.body && ctx.request.body.search)
+            search = ctx.request.body.search;
+
+        // let search = ctx.request.body.search;
+
+        // if (typeof search !== 'string') search = '';
 
         if (blockchain.isInt(search)) {
             try {
                 search = Number(search);
 
-                const { result: hash, error: hashError } = await rpc.getblockhash([search]);
+                const { result: hash, error: hashError } = await rpc.getBlockHash([search]);
 
                 if (hashError) throw hashError;
 
-                const { result: block, error: blockError } = await rpc.getblock([hash]);
+                const { result: block, error: blockError } = await rpc.getBlock([hash]);
 
                 if (blockError) throw hashError;
 
-                res.json({ data: { redirect: 'block', hash: block.hash } });
+                ctx.body = { data: { redirect: 'block', hash: block.hash } };
                 return false;
             } catch (error) {
-                res.json({ error: error.message });
-                
+                ctx.status = 404;
+                ctx.body = { error: error.message };
+
                 console.error(error);
                 return false;
             }
@@ -37,10 +41,11 @@ router.get('/', async (req, res) => {
             const address = await addresses.findOne({ address: search });
 
             if (address) {
-                res.json({ data: { redirect: 'address', address: address.address } });
+                ctx.body = { data: { redirect: 'address', address: address.address } };
                 return false;
             } else {
-                res.json({ error: errors.address_not_found });
+                ctx.status = 404;
+                ctx.body = { error: errors.address_not_found };
                 return false;
             }
         }
@@ -49,24 +54,26 @@ router.get('/', async (req, res) => {
             const tx = await txs.findOne({ txid: search });
 
             if (tx) {
-                res.json({ data: { redirect: 'tx', txid: tx.txid } });
+                ctx.body = { data: { redirect: 'tx', txid: tx.txid } };
                 return false;
             }
 
             try {
-                const { result: block, error } = await rpc.getblock([search]);
+                const { result: block, error } = await rpc.getBlock([search]);
 
                 if (error) throw error;
 
                 if (block) {
-                    res.json({ data: { redirect: 'block', hash: block.hash } });
+                    ctx.body = { data: { redirect: 'block', hash: block.hash } };
                     return false;
                 }
             } catch (error) {
                 if (typeof error.code !== 'undefined' && error.code === -5) {
-                    res.status(404).json({ error: error.message });
+                    ctx.status = 404;
+                    ctx.body = { error: error.message };
                 } else {
-                    res.status(400).json({ error: error.message });
+                    ctx.status = 400;
+                    ctx.body = { error: error.message };
                 }
 
                 console.error(error);
@@ -74,10 +81,10 @@ router.get('/', async (req, res) => {
             }
         }
 
-        res.status(400).json({ error: errors.invalid_search_param });
+        ctx.status = 400;
+        ctx.body = { error: errors.invalid_search_param };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

@@ -2,9 +2,9 @@ const config = {
     // db collection names
     collections: {
         blocks: 'blocks',
-        txs: 'txs',
-        addresses: 'addr',
-        address_txs: 'addr_txs'
+        txs: 'txs', // transactions
+        ios: 'ios', // inputs & outputs
+        addresses: 'addresses'
     },
     // for decimal.js-light
     // DON'T CHANGE!

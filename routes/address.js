@@ -1,17 +1,16 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
 // address info
-router.get('/:address', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/:address', async (ctx) => {
     try {
-        const { blockchain, collections: { addresses }, errors } = req.app.locals;
+        const { blockchain, collections: { addresses }, errors } = ctx.locals;
 
-        const address = req.params.address;
+        const address = ctx.params.address;
 
         if (!blockchain.isAddress(address)) {
-            res.status(400).json({ error: errors.not_valid_address });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_address };
             return false;
         }
 
@@ -19,42 +18,42 @@ router.get('/:address', async (req, res) => {
             .findOne({ address }, { projection: { _id: 0 } });
 
         if (!addr) {
-            res.json({ error: errors.address_not_found });
+            ctx.status = 404;
+            ctx.body = { error: errors.address_not_found };
             return false;
         }
 
-        res.json({ data: addr });
+        ctx.body = { data: addr };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 
 // address txs
-router.get('/txs/:address/:offset', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/txs/:address/:offset', async (ctx) => {
     try {
-        const { blockchain, collections: { address_txs }, errors, config: { limit } } = req.app.locals;
+        const { blockchain, collections: { ios }, errors, config: { limit } } = ctx.locals;
 
-        const address = req.params.address;
-        let offset = req.params.offset;
+        const address = ctx.params.address;
+        let offset = ctx.params.offset;
 
         if (!blockchain.isAddress(address)) {
-            res.status(400).json({ error: errors.not_valid_address });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_address };
             return false;
         }
 
         if (!blockchain.isInt(offset)) {
-            res.status(400).json({ error: errors.not_valid_int });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_int };
             return false;
         }
 
         offset = Number(offset);
 
         const [total, txs] = await Promise.all([
-            address_txs.find({ address }).count(),
-            address_txs
+            ios.find({ address }).count(),
+            ios
                 .find({ address })
                 .project({ _id: 0, address: 0 })
                 .sort({ time: -1, type: -1 })
@@ -64,16 +63,16 @@ router.get('/txs/:address/:offset', async (req, res) => {
         ]);
 
         if (total === 0) {
-            res.json({ error: errors.address_not_found });
+            ctx.status = 404;
+            ctx.body = { error: errors.address_not_found };
             return false;
         }
 
         // TODO template logic
 
-        res.json({ data: txs, total });
+        ctx.body = { data: txs, total };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

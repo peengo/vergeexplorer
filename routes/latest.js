@@ -1,13 +1,11 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/:string', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/:string', async (ctx) => {
     try {
-        const { blockchain, collections: { blocks, txs }, config: { latest }, errors } = req.app.locals;
+        const { blockchain, collections: { blocks, txs }, config: { latest }, errors } = ctx.locals;
 
-        const string = req.params.string;
+        const string = ctx.params.string;
 
         let latestBlocks;
         let latestTxs;
@@ -21,7 +19,7 @@ router.get('/:string', async (req, res) => {
                     .limit(latest)
                     .toArray();
 
-                res.json({ data: latestBlocks });
+                ctx.body = { data: latestBlocks };
                 break;
             case 'txs':
                 latestTxs = await txs
@@ -33,15 +31,15 @@ router.get('/:string', async (req, res) => {
 
                 latestTxs = blockchain.setVoutsSum(latestTxs);
 
-                res.json({ data: latestTxs });
+                ctx.body = { data: latestTxs };
                 break;
             default:
-                res.status(400).json({ error: errors.invalid_parameter });
+                ctx.status = 400;
+                ctx.body = { error: errors.invalid_parameter };
                 break;
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

@@ -1,32 +1,29 @@
 {
     "name": "vergeexplorer",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "",
     "main": "index.js",
+    "type": "module",
     "scripts": {
         "start": "node index.js",
         "dev": "./node_modules/.bin/nodemon -L index.js",
         "debug": "./node_modules/.bin/nodemon --inspect-brk=0.0.0.0 -L index.js",
         "test": "./node_modules/.bin/mocha",
-        "loops": "node ./benchmarks/loops.js",
-        "loops-debug": "node --inspect-brk=0.0.0.0 ./benchmarks/loops.js",
         "sync": "node ./scripts/sync.js",
-        "sync-debug": "node --inspect-brk=0.0.0.0 ./scripts/sync.js",
-        "eslint": "./node_modules/.bin/eslint .",
-        "eslint-fix": "./node_modules/.bin/eslint . --fix",
-        "rpc": "node ./benchmarks/rpc.js",
-        "env": "node ./scripts/env.js"
+        "lint": "./node_modules/.bin/eslint . --fix"
     },
     "author": "peengo",
     "license": "MIT",
     "dependencies": {
+        "@koa/cors": "^2.2.3",
         "axios": "^0.18.1",
-        "cors": "^2.8.5",
         "decimal.js-light": "^2.5.0",
         "dotenv": "^7.0.0",
-        "express": "^4.17.1",
-        "mongodb": "^3.2.7",
-        "morgan": "^1.9.1"
+        "koa": "^2.7.0",
+        "koa-bodyparser": "^4.2.1",
+        "koa-logger": "^3.2.0",
+        "koa-router": "^7.4.0",
+        "mongodb": "^3.2.7"
     },
     "devDependencies": {
         "chai": "^4.2.0",

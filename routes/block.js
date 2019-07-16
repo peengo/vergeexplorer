@@ -1,49 +1,48 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/:hash', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/:hash', async (ctx) => {
     try {
-        const { blockchain, rpc, errors } = req.app.locals;
+        const { blockchain, rpc, errors } = ctx.locals;
 
-        const hash = req.params.hash;
+        const hash = ctx.params.hash;
 
         if (!blockchain.isHash(hash)) {
-            res.status(400).json({ error: errors.not_valid_hash });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_hash };
             return false;
         }
 
-        const { result: block, error } = await rpc.getblock([hash]);
+        const { result: block, error } = await rpc.getBlock([hash]);
 
         if (error) {
-            res.status(404).json({ error: error.message });
+            ctx.status = 404;
+            ctx.body = { error: error.message };
             return false;
         }
 
-        res.json({ data: block });
+        ctx.body = { data: block };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 
-router.get('/txs/:hash/:offset', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/txs/:hash/:offset', async (ctx) => {
     try {
-        const { blockchain, collections: { blocks, txs }, errors, config: { limit } } = req.app.locals;
+        const { blockchain, collections: { blocks, txs }, errors, config: { limit } } = ctx.locals;
 
-        const hash = req.params.hash;
-        let offset = req.params.offset;
+        const hash = ctx.params.hash;
+        let offset = ctx.params.offset;
 
         if (!blockchain.isHash(hash)) {
-            res.status(400).json({ error: errors.not_valid_hash });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_hash };
             return false;
         }
 
         if (!blockchain.isInt(offset)) {
-            res.status(400).json({ error: errors.not_valid_int });
+            ctx.status = 400;
+            ctx.body = { error: errors.not_valid_int };
             return false;
         }
 
@@ -52,7 +51,8 @@ router.get('/txs/:hash/:offset', async (req, res) => {
         const block = await blocks.findOne({ hash });
 
         if (!block) {
-            res.json({ error: errors.block_not_found });
+            ctx.status = 404;
+            ctx.body = { error: errors.block_not_found };
             return false;
         }
 
@@ -71,10 +71,9 @@ router.get('/txs/:hash/:offset', async (req, res) => {
 
         transactions = blockchain.setVoutsSum(transactions);
 
-        res.json({ data: transactions, total });
+        ctx.body = { data: transactions, total };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

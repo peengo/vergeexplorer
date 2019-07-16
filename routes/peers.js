@@ -1,15 +1,13 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('koa-router');
+const router = new Router();
 
-router.get('/', async (req, res) => {
-    const { statuses } = req.app.locals;
-
+router.get('/', async (ctx) => {
     try {
-        const { rpc, config: { limit } } = req.app.locals;
+        const { rpc, config: { limit } } = ctx.locals;
 
         const loopback = '127.0.0.1';
 
-        let { result: peers } = await rpc.getpeerinfo();
+        let { result: peers } = await rpc.getPeerInfo();
 
         peers = peers
             .sort((a, b) => b.conntime - a.conntime)
@@ -21,10 +19,9 @@ router.get('/', async (req, res) => {
                 return peer;
             });
 
-        res.json({ data: peers });
+        ctx.body = { data: peers };
     } catch (error) {
-        console.error(error);
-        res.status(500).json(statuses[500]);
+        throw new Error(error);
     }
 });
 

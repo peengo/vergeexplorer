@@ -6,9 +6,7 @@ const errors = {
     block_not_found: 'block not found',
     not_valid_address: 'not a valid address',
     address_not_found: 'address not found',
-    not_valid_JSON: 'not a valid JSON',
     invalid_search_param: 'invalid search parameter',
-    // block_tx_not_found: 'block / transaction not found',
     invalid_parameter: 'invalid parameter'
 };
 

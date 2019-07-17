@@ -127,30 +127,54 @@ const blockchain = {
     },
 
     calculateInsertBalances(addressInserts) {
-        return addressInserts = addressInserts.map(insert => ({
-            address: insert.address,
-            sent: insert.sent,
-            received: insert.received,
-            balance: Decimal(insert.received).minus(Decimal(insert.sent)).toString()
-        }));
+        return addressInserts = addressInserts.map(insert => {
+
+            if (Decimal(insert.received).minus(Decimal(insert.sent)).isNegative()) {
+                console.log('calculateInsertBalances negative balance');
+                process.exit();
+            }
+
+            return {
+                address: insert.address,
+                sent: insert.sent,
+                received: insert.received,
+                balance: Decimal(insert.received).minus(Decimal(insert.sent)).toString()
+            };
+        });
     },
 
     calculateUpdateBalances(addressUpdatesDb, addressUpdates) {
-        return addressUpdatesDb.map((item, index) => ({
-            address: item.address,
-            sent: Decimal(item.sent).plus(Decimal(addressUpdates[index].sent)).toString(),
-            received: Decimal(item.received).plus(Decimal(addressUpdates[index].received)).toString(),
-            balance: Decimal(item.balance).plus(Decimal(addressUpdates[index].received)).minus(Decimal(addressUpdates[index].sent)).toString()
-        }));
+        return addressUpdatesDb.map((item, index) => {
+
+            if (Decimal(item.balance).plus(Decimal(addressUpdates[index].received)).minus(Decimal(addressUpdates[index].sent)).isNegative()) {
+                console.log('calculateUpdateBalances negative balance');
+                process.exit();
+            }
+
+            return {
+                address: item.address,
+                sent: Decimal(item.sent).plus(Decimal(addressUpdates[index].sent)).toString(),
+                received: Decimal(item.received).plus(Decimal(addressUpdates[index].received)).toString(),
+                balance: Decimal(item.balance).plus(Decimal(addressUpdates[index].received)).minus(Decimal(addressUpdates[index].sent)).toString()
+            };
+        });
     },
 
     calculateUpdateInvalidBalances(addressUpdatesDb, addressUpdates) {
-        return addressUpdatesDb.map((item, index) => ({
-            address: item.address,
-            sent: Decimal(item.sent).minus(Decimal(addressUpdates[index].sent)).toString(),
-            received: Decimal(item.received).minus(Decimal(addressUpdates[index].received)).toString(),
-            balance: Decimal(item.balance).minus(Decimal(addressUpdates[index].received)).plus(Decimal(addressUpdates[index].sent)).toString()
-        }));
+        return addressUpdatesDb.map((item, index) => {
+
+            if (Decimal(item.balance).minus(Decimal(addressUpdates[index].received)).plus(Decimal(addressUpdates[index].sent)).isNegative()) {
+                console.log('calculateUpdateInvalidBalances negative balance');
+                process.exit();
+            }
+
+            return {
+                address: item.address,
+                sent: Decimal(item.sent).minus(Decimal(addressUpdates[index].sent)).toString(),
+                received: Decimal(item.received).minus(Decimal(addressUpdates[index].received)).toString(),
+                balance: Decimal(item.balance).minus(Decimal(addressUpdates[index].received)).plus(Decimal(addressUpdates[index].sent)).toString()
+            };
+        });
     },
 
     // array = inputs / recipients, tx = transaction, type = vin / vout

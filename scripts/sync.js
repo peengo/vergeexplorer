@@ -46,7 +46,7 @@ console.log(`Time: ${new Date().toJSON()}`);
                 if (dbBlockCount > blockScanOffset) {
                     const blockScanStart = dbBlockCount - blockScanOffset;
 
-                    for (let scanHeight = blockScanStart; scanHeight < dbBlockCount; scanHeight++) {
+                    for (let scanHeight = dbBlockCount - 1; scanHeight > blockScanStart; scanHeight--) {
                         const { result: rpcBlockHash, error: blockHashError } = await rpc.getBlockHash([scanHeight]);
 
                         if (blockHashError) throw blockHashError;
@@ -54,7 +54,7 @@ console.log(`Time: ${new Date().toJSON()}`);
                         const { hash: dbBlockHash } = await blocks.findOne({ height: scanHeight });
 
                         if (rpcBlockHash !== dbBlockHash) {
-                            console.log('Invalid block found!');
+                            console.log(`Invalid block found at height ${scanHeight}`);
                             console.log(`Blockchain: ${rpcBlockHash} | DB: ${dbBlockHash}`);
                             const { result: rpcBlock, error: blockError } = await rpc.getBlock([rpcBlockHash, 1]);
 

@@ -25,7 +25,8 @@ router.get('/:address', async (ctx) => {
 
         ctx.body = { data: addr };
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        ctx.throw(500);
     }
 });
 
@@ -72,7 +73,8 @@ router.get('/txs/:address/:offset', async (ctx) => {
 
         ctx.body = { data: txs, total };
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        ctx.throw(500);
     }
 });
 

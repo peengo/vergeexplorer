@@ -35,11 +35,7 @@ router.get('/:txid', async (ctx) => {
         ctx.body = { data: tx };
     } catch (error) {
         console.error(error);
-        ctx.status = 500;
-        ctx.body = {
-            status: ctx.status,
-            message: ctx.message
-        };
+        ctx.throw(500);
     }
 });
 
@@ -101,7 +97,8 @@ router.get('/:string/:txid/:offset', async (ctx) => {
                 break;
         }
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        ctx.throw(500);
     }
 });
 

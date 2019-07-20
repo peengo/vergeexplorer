@@ -23,7 +23,8 @@ router.get('/:hash', async (ctx) => {
 
         ctx.body = { data: block };
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        ctx.throw(500);
     }
 });
 
@@ -73,7 +74,8 @@ router.get('/txs/:hash/:offset', async (ctx) => {
 
         ctx.body = { data: transactions, total };
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        ctx.throw(500);
     }
 });
 

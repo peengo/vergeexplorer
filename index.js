@@ -6,6 +6,7 @@ const bodyparser = require('koa-bodyparser');
 const Router = require('koa-router');
 const cors = require('@koa/cors');
 const logger = require('koa-logger');
+const error = require('koa-json-error');
 const { promisify } = require('util');
 
 const config = require('./config');
@@ -14,7 +15,6 @@ const dbConnect = require('./db/connect');
 const errors = require('./utils/errors');
 const blockchain = require('./utils/blockchain');
 const getPrice = require('./utils/price');
-const buildRoutes = require('./routes/routes');
 
 const delay = promisify(setTimeout);
 
@@ -47,50 +47,32 @@ app.context.locals = {}; // local vars
     }
 })();
 
-app.use(logger());
+Object.assign(app.context.locals, { config, errors, blockchain });
+
+function formatError(error) {
+    console.error(error);
+    return {
+        status: error.status,
+        message: error.message
+    };
+}
+
 app.use(cors());
-app.use(bodyparser({
-    onerror: (error, ctx) => {
-        console.error(error);
+app.use(logger());
+app.use(bodyparser());
+app.use(error(formatError));
 
-        ctx.status = 500;
-        ctx.body = {
-            status: ctx.status,
-            message: ctx.message
-        };
-    }
-}));
+router.use('/address', require('./routes/address').routes());
+router.use('/block', require('./routes/block').routes());
+router.use('/info', require('./routes/info').routes());
+router.use('/latest', require('./routes/latest').routes());
+router.use('/peers', require('./routes/peers').routes());
+router.use('/richlist', require('./routes/richlist').routes());
+router.use('/search', require('./routes/search').routes());
+router.use('/tx', require('./routes/tx').routes());
 
-const locals = { config, errors, blockchain };
-
-Object.assign(app.context.locals, locals);
-
-// error handler
-app.use(async (ctx, next) => {
-    try {
-        await next();
-    } catch (error) {
-        console.error(error);
-        ctx.status = error.status || 500;
-        ctx.body = {
-            status: ctx.status,
-            message: ctx.message
-        };
-    }
-});
-
-buildRoutes(router);
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-// 404 handler
-app.use(async (ctx) => {
-    ctx.status = 404;
-    ctx.body = {
-        status: ctx.status,
-        message: ctx.message
-    };
-});
 
 const PORT = process.env.PORT || 5000;
 

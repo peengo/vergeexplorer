@@ -84,7 +84,8 @@ router.get('/', async (ctx) => {
         ctx.status = 400;
         ctx.body = { error: errors.invalid_search_param };
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        ctx.throw(500);
     }
 });
 

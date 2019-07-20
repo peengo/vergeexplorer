@@ -127,52 +127,110 @@ const blockchain = {
     },
 
     calculateInsertBalances(addressInserts) {
-        return addressInserts = addressInserts.map(insert => {
+        return addressInserts = addressInserts.map(({ address, received, sent }) => {
 
-            if (Decimal(insert.received).minus(Decimal(insert.sent)).isNegative()) {
+            const dReceived = Decimal(received);
+            const dSent = Decimal(sent);
+            const dBalance = dReceived.minus(dSent);
+            const balance = dBalance.toString();
+
+            if (dBalance.isNegative()) {
                 console.log('calculateInsertBalances negative balance');
+                console.log('received:', dReceived.toString());
+                console.log('sent:', dSent.toString());
+                console.log('balance:', balance);
                 process.exit();
             }
 
             return {
-                address: insert.address,
-                sent: insert.sent,
-                received: insert.received,
-                balance: Decimal(insert.received).minus(Decimal(insert.sent)).toString()
+                address,
+                sent,
+                received,
+                balance
             };
         });
     },
 
     calculateUpdateBalances(addressUpdatesDb, addressUpdates) {
         return addressUpdatesDb.map((item, index) => {
+            if (addressUpdatesDb.length != addressUpdates.length) {
+                console.log('calculateUpdateBalances lengths do not match');
+                process.exit();
+            }
 
-            if (Decimal(item.balance).plus(Decimal(addressUpdates[index].received)).minus(Decimal(addressUpdates[index].sent)).isNegative()) {
-                console.log('calculateUpdateBalances negative balance');
+            if (item.address !== addressUpdates[index].address) {
+                console.log('calculateUpdateBalances addresses do not match', item.address, addressUpdates[index].address);
+                process.exit();
+            }
+
+            const dItemSent = Decimal(item.sent);
+            const dUpdatesSent = Decimal(addressUpdates[index].sent);
+            const dSent = dItemSent.plus(dUpdatesSent);
+            const sent = dSent.toString();
+
+            const dItemReceived = Decimal(item.received);
+            const dUpdatesReceived = Decimal(addressUpdates[index].received);
+            const dReceived = dItemReceived.plus(dUpdatesReceived);
+            const received = dReceived.toString();
+
+            const dItemBalance = Decimal(item.balance);
+            const dBalance = dItemBalance.plus(dUpdatesReceived).minus(dUpdatesSent);
+            const balance = dBalance.toString();
+
+            if (dSent.isNegative() || dReceived.isNegative() || dBalance.isNegative()) {
+                console.log('sent:', sent);
+                console.log('received:', received);
+                console.log('balance:', balance);
                 process.exit();
             }
 
             return {
                 address: item.address,
-                sent: Decimal(item.sent).plus(Decimal(addressUpdates[index].sent)).toString(),
-                received: Decimal(item.received).plus(Decimal(addressUpdates[index].received)).toString(),
-                balance: Decimal(item.balance).plus(Decimal(addressUpdates[index].received)).minus(Decimal(addressUpdates[index].sent)).toString()
+                sent,
+                received,
+                balance
             };
         });
     },
 
     calculateUpdateInvalidBalances(addressUpdatesDb, addressUpdates) {
         return addressUpdatesDb.map((item, index) => {
+            if (addressUpdatesDb.length != addressUpdates.length) {
+                console.log('calculateUpdateInvalidBalances lengths do not match');
+                process.exit();
+            }
 
-            if (Decimal(item.balance).minus(Decimal(addressUpdates[index].received)).plus(Decimal(addressUpdates[index].sent)).isNegative()) {
-                console.log('calculateUpdateInvalidBalances negative balance');
+            if (item.address !== addressUpdates[index].address) {
+                console.log('calculateUpdateInvalidBalances addresses do not match', item.address, addressUpdates[index].address);
+                process.exit();
+            }
+
+            const dItemSent = Decimal(item.sent);
+            const dUpdatesSent = Decimal(addressUpdates[index].sent);
+            const dSent = dItemSent.minus(dUpdatesSent);
+            const sent = dSent.toString();
+
+            const dItemReceived = Decimal(item.received);
+            const dUpdatesReceived = Decimal(addressUpdates[index].received);
+            const dReceived = dItemReceived.minus(dUpdatesReceived);
+            const received = dReceived.toString();
+
+            const dItemBalance = Decimal(item.balance);
+            const dBalance = dItemBalance.minus(dUpdatesReceived).plus(dUpdatesSent);
+            const balance = dBalance.toString();
+
+            if (dSent.isNegative() || dReceived.isNegative() || dBalance.isNegative()) {
+                console.log('sent:', sent);
+                console.log('received:', received);
+                console.log('balance:', balance);
                 process.exit();
             }
 
             return {
                 address: item.address,
-                sent: Decimal(item.sent).minus(Decimal(addressUpdates[index].sent)).toString(),
-                received: Decimal(item.received).minus(Decimal(addressUpdates[index].received)).toString(),
-                balance: Decimal(item.balance).minus(Decimal(addressUpdates[index].received)).plus(Decimal(addressUpdates[index].sent)).toString()
+                sent,
+                received,
+                balance
             };
         });
     },

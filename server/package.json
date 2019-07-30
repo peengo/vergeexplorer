@@ -1,0 +1,36 @@
+{
+    "name": "vergeexplorer",
+    "version": "2.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "./node_modules/.bin/nodemon -L index.js",
+        "debug": "./node_modules/.bin/nodemon --inspect-brk=0.0.0.0 -L index.js",
+        "test": "./node_modules/.bin/mocha",
+        "sync": "node ./scripts/sync.js",
+        "lint": "./node_modules/.bin/eslint . --fix"
+    },
+    "author": "peengo",
+    "license": "MIT",
+    "dependencies": {
+        "@koa/cors": "^2.2.3",
+        "axios": "^0.18.1",
+        "decimal.js-light": "^2.5.0",
+        "dotenv": "^7.0.0",
+        "koa": "^2.7.0",
+        "koa-bodyparser": "^4.2.1",
+        "koa-json-error": "^3.1.2",
+        "koa-logger": "^3.2.0",
+        "koa-router": "^7.4.0",
+        "mongodb": "^3.2.7"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "chai-http": "^4.2.1",
+        "eslint": "^5.16.0",
+        "mocha": "^6.1.4",
+        "nodemon": "^1.19.1"
+    }
+}

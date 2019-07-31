@@ -19,14 +19,12 @@ export default {
   }),
   created() {
     this.$http
-      .get(`${this.$host}/address/${this.$route.params.address}`)
+      .get(`/api/address/${this.$route.params.address}`)
       .then(({ data: { data: address } }) => (this.address = address))
       .catch(error => console.log(error));
 
     this.$http
-      .get(
-        `${this.$host}/address/txs/${this.$route.params.address}/${this.txs.length}`
-      )
+      .get(`/api/address/txs/${this.$route.params.address}/${this.txs.length}`)
       .then(({ data: { data: txs, total } }) => {
         this.txs = txs;
         this.txs_total = total;

@@ -121,7 +121,7 @@ export default {
     try {
       let {
         data: { data: richlist }
-      } = await this.$http.get(`${this.$host}/richlist`);
+      } = await this.$http.get('/api/richlist');
 
       this.richlist = richlist;
       this.isRichlistLoading = false;
@@ -130,7 +130,7 @@ export default {
         data: {
           data: { moneysupply }
         }
-      } = await this.$http.get(`${this.$host}/info`);
+      } = await this.$http.get('/api/info');
 
       this.richlist = this.richlist.map(item => ({
         ...item,
@@ -140,7 +140,7 @@ export default {
       this.isInfoLoading = false;
 
       const coingeckoUrl =
-        "https://api.coingecko.com/api/v3/simple/price?ids=verge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true";
+        'https://api.coingecko.com/api/v3/simple/price?ids=verge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true';
 
       const {
         data: {

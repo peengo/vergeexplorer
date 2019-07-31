@@ -50,7 +50,8 @@ app.context.locals = {}; // local vars
 Object.assign(app.context.locals, { config, errors, blockchain });
 
 function formatError(error) {
-    console.error(error);
+    if (error.status !== 404)
+        console.error(error);
     return {
         status: error.status,
         message: error.message

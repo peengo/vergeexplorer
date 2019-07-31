@@ -99,7 +99,7 @@ export default {
   }),
   created() {
     this.$http
-      .get(`${this.$host}/peers`)
+      .get('/api/peers')
       .then(({ data: { data: peers } }) => {
         this.peers = peers;
         this.isLoading = !this.isLoading;

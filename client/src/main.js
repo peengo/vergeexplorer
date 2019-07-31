@@ -8,7 +8,6 @@ import "vuetify/dist/vuetify.min.css"; // Ensure you are using css-loader
 import axios from "axios";
 
 Vue.prototype.$http = axios;
-Vue.prototype.$host = "http://verge:5000";
 
 Vue.use(Vuetify, {
   iconfont: 'fa',

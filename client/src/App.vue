@@ -39,6 +39,10 @@ export default {
   font-family: "Roboto Mono", monospace;
 }
 
+.break-all {
+  word-break: break-all;
+}
+
 /* #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

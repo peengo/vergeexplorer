@@ -6,89 +6,111 @@
       </h1>
     </v-layout>
 
-    <v-layout align-center justify-center v-if="isRichlistLoading">
-      <v-progress-circular :size="50" dark indeterminate></v-progress-circular>
-    </v-layout>
+    <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
     <template v-else>
-      <v-data-table
-        :headers="headers"
-        :items="richlist"
-        :pagination.sync="pagination"
-        hide-actions
-        class="elevation-1 hidden-sm-and-down"
-      >
-        <template v-slot:items="props">
-          <td class="body-2">#{{ props.index + 1 }}</td>
-          <td class="body-2 monospace font-weight-bold">
-            <a :href="`/address/${props.item.address }`">{{ props.item.address }}</a>
-            <v-progress-circular class="ml-4" :value="props.item.percentage" width="10"></v-progress-circular>
-          </td>
-          <td class="body-2 text-xs-right">{{ props.item.balance | formatBalance }}</td>
-          <td class="body-2 text-xs-right">
-            <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
-            {{ props.item.usd | formatUSD }}
-          </td>
-          <td class="body-2 text-xs-right">
-            <v-progress-circular dark indeterminate v-if="isInfoLoading"></v-progress-circular>
-            {{ props.item.percentage }}
-          </td>
-        </template>
-      </v-data-table>
+      <v-layout align-center justify-center v-if="isRichlistLoading">
+        <v-progress-circular :size="50" dark indeterminate></v-progress-circular>
+      </v-layout>
 
-      <v-container fluid grid-list-md hidden-md-and-up>
-        <v-data-iterator :items="richlist" hide-actions content-tag="v-layout" row wrap>
-          <template v-slot:item="props">
-            <v-flex xs12 sm6 md4 lg3>
-              <v-card>
-                <v-list-tile>
-                  <v-list-tile-content class="align-center font-weight-bold">#{{ props.index + 1 }}</v-list-tile-content>
-                </v-list-tile>
-                <v-divider></v-divider>
-                <v-list dense>
+      <template v-else>
+        <v-data-table
+          :headers="headers"
+          :items="richlist"
+          :pagination.sync="pagination"
+          hide-actions
+          class="elevation-1 hidden-sm-and-down"
+        >
+          <template v-slot:items="props">
+            <td class="body-2">#{{ props.index + 1 }}</td>
+            <td class="body-2 monospace font-weight-bold">
+              <router-link
+                :to="{ name: 'address', params: { address: props.item.address }}"
+              >{{ props.item.address }}</router-link>
+              <!-- <a :href="`/address/${props.item.address }`">{{ props.item.address }}</a> -->
+              <v-progress-circular class="ml-4" :value="props.item.percentage" width="10"></v-progress-circular>
+            </td>
+            <td class="body-2 text-xs-right">{{ props.item.balance | formatAmount }}</td>
+            <td class="body-2 text-xs-right">
+              <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
+              {{ props.item.usd | formatUSD }}
+            </td>
+            <td class="body-2 text-xs-right">
+              <v-progress-circular dark indeterminate v-if="isInfoLoading"></v-progress-circular>
+              {{ props.item.percentage }}
+            </td>
+          </template>
+        </v-data-table>
+
+        <v-container fluid grid-list-md hidden-md-and-up>
+          <v-data-iterator :items="richlist" hide-actions content-tag="v-layout" row wrap>
+            <template v-slot:item="props">
+              <v-flex xs12 sm6 md4 lg3>
+                <v-card>
                   <v-list-tile>
-                    <v-list-tile-content class="align-center font-weight-bold">Address</v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile>
-                    <v-list-tile-content class="align-center monospace font-weight-bold">
-                      <a :href="`/address/${props.item.address }`">{{ props.item.address }}</a>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider></v-divider>
-                  <v-list-tile>
-                    <v-list-tile-content>Balance</v-list-tile-content>
-                    <v-list-tile-content
-                      class="align-end"
-                    >{{ props.item.balance | formatBalance }} XVG</v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile>
-                    <v-list-tile-content>Estimated Worth</v-list-tile-content>
-                    <v-list-tile-content class="align-end">
-                      <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
-                      {{ props.item.usd | formatUSD }}
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-list-tile>
-                    <v-list-tile-content>
-                      <v-progress-circular :value="props.item.percentage" width="10"></v-progress-circular>
-                    </v-list-tile-content>
-                    <v-list-tile-content class="align-end">
+                    <v-list-tile-sub-title class="text-xs-center">
+                      #{{ props.index + 1 }}
+                      <v-progress-circular :value="props.item.percentage" width="10" class="mx-4"></v-progress-circular>
                       <v-progress-circular dark indeterminate v-if="isInfoLoading"></v-progress-circular>
                       {{ props.item.percentage }} %
-                    </v-list-tile-content>
+                    </v-list-tile-sub-title>
                   </v-list-tile>
-                </v-list>
-              </v-card>
-            </v-flex>
-          </template>
-        </v-data-iterator>
-      </v-container>
+                  <v-divider></v-divider>
+                  <v-list dense>
+                    <!-- <v-list-tile>
+                      <v-list-tile-content class="align-center font-weight-bold">Address</v-list-tile-content>
+                    </v-list-tile>-->
+                    <v-list-tile>
+                      <v-list-tile-content>
+                        <router-link
+                          :to="{ name: 'address', params: { address: props.item.address }}"
+                          class="monospace break-all caption font-weight-bold"
+                        >{{ props.item.address }}</router-link>
+                        <!-- <a
+                          :href="`/address/${props.item.address }`"
+                          class="monospace break-all caption font-weight-bold"
+                        >{{ props.item.address }}</a>-->
+                      </v-list-tile-content>
+                    </v-list-tile>
+                    <v-divider></v-divider>
+                    <v-list-tile>
+                      <v-list-tile-content>Balance</v-list-tile-content>
+                      <v-list-tile-content
+                        class="align-end"
+                      >{{ props.item.balance | formatAmount }} XVG</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile>
+                      <v-list-tile-content>Estimated Worth</v-list-tile-content>
+                      <v-list-tile-content class="align-end">
+                        <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
+                        {{ props.item.usd | formatUSD }}
+                      </v-list-tile-content>
+                    </v-list-tile>
+                    <!-- <v-list-tile>
+                      <v-list-tile-content>
+                        <v-progress-circular :value="props.item.percentage" width="10"></v-progress-circular>
+                      </v-list-tile-content>
+                      <v-list-tile-content class="align-end">
+                        <v-progress-circular dark indeterminate v-if="isInfoLoading"></v-progress-circular>
+                        {{ props.item.percentage }} %
+                      </v-list-tile-content>
+                    </v-list-tile>-->
+                  </v-list>
+                </v-card>
+              </v-flex>
+            </template>
+          </v-data-iterator>
+        </v-container>
+      </template>
     </template>
   </div>
 </template>
 
 <script>
+import { getUSD } from "../mixins.js";
+
 export default {
+  mixins: [getUSD],
   data: () => ({
     headers: [
       { text: "#", value: "index", sortable: false },
@@ -113,65 +135,57 @@ export default {
       rowsPerPage: -1
     },
     richlist: [],
+    error: "There was an error.",
+    isError: false,
     isRichlistLoading: true,
     isInfoLoading: true,
     isPriceLoading: true
   }),
   async created() {
     try {
-      let {
-        data: { data: richlist }
-      } = await this.$http.get('/api/richlist');
+      this.richlist = await this.getRichlist();
 
-      this.richlist = richlist;
       this.isRichlistLoading = false;
 
+      const [moneysupply, usd] = await Promise.all([
+        this.getMoneySupply(),
+        this.getUSD()
+      ]);
+
+      this.richlist = this.richlist.map(item => ({
+        ...item,
+        percentage: ((item.balance / moneysupply) * 100).toFixed(2),
+        usd: (item.balance * usd).toFixed(2)
+      }));
+
+      this.isInfoLoading = false;
+      this.isPriceLoading = false;
+    } catch (error) {
+      this.isError = true;
+      console.log(error);
+    } finally {
+      this.isRichlistLoading = false;
+      this.isInfoLoading = false;
+      this.isPriceLoading = false;
+    }
+  },
+  methods: {
+    async getRichlist() {
+      const {
+        data: { data: richlist }
+      } = await this.$http.get("/api/richlist");
+
+      return richlist;
+    },
+
+    async getMoneySupply() {
       const {
         data: {
           data: { moneysupply }
         }
-      } = await this.$http.get('/api/info');
+      } = await this.$http.get("/api/info");
 
-      this.richlist = this.richlist.map(item => ({
-        ...item,
-        percentage: ((item.balance / moneysupply) * 100).toFixed(2)
-      }));
-
-      this.isInfoLoading = false;
-
-      const coingeckoUrl =
-        'https://api.coingecko.com/api/v3/simple/price?ids=verge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true';
-
-      const {
-        data: {
-          verge: { usd }
-        }
-      } = await this.$http.get(coingeckoUrl);
-
-      this.richlist = this.richlist.map(item => ({
-        ...item,
-        usd: (item.balance * usd).toFixed(2)
-      }));
-
-      this.isPriceLoading = false;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  filters: {
-    formatBalance(balance) {
-      return new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 8,
-        maximumFractionDigits: 8
-      }).format(balance);
-    },
-    formatUSD(usd) {
-      if (usd) {
-        return new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD"
-        }).format(usd);
-      }
+      return moneysupply;
     }
   }
 };

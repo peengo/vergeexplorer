@@ -5,6 +5,8 @@ import router from "./router";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css"; // Ensure you are using css-loader
 
+import "./filters";
+
 import axios from "axios";
 
 Vue.prototype.$http = axios;

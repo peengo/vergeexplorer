@@ -30,8 +30,6 @@
 </template>
 
 <script>
-console.log(process.env.BASE_URL);
-
 export default {
   data: () => ({
     items: [

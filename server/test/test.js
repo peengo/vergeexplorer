@@ -31,7 +31,6 @@ describe('API Tests', () => {
         });
 
         describe('/info', function () {
-            this.timeout(10000);
             it('should return info', async () => {
                 try {
                     const res = await app.get('/info');
@@ -43,7 +42,6 @@ describe('API Tests', () => {
                     expect(res.body.data).to.have.property('blocks_db').to.be.a('number');
                     expect(res.body.data).to.have.property('blocks_rpc').to.be.a('number');
                     expect(res.body.data).to.have.property('moneysupply').to.be.a('number');
-                    expect(res.body.data).to.have.property('price').to.be.an('object');
                 } catch (error) {
                     throw error;
                 }
@@ -176,7 +174,7 @@ describe('API Tests', () => {
                         expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
-                        expect(res.body).to.have.property('error');
+                        expect(res.body).to.have.property('message');
                     } catch (error) {
                         throw error;
                     }
@@ -507,15 +505,15 @@ describe('API Tests', () => {
             });
 
             describe('/search { "search": "50000000000" }', () => {
-                it('should return block not found', async () => {
+                it('should return JSON integer out of range', async () => {
                     try {
                         const res = await app.get('/search')
                             .send({ search: '50000000000' });
 
-                        expect(res).to.have.status(404);
+                        expect(res).to.have.status(400);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
-                        expect(res.body).to.have.property('error').to.be.a('string');
+                        expect(res.body).to.have.property('message').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }
@@ -601,7 +599,7 @@ describe('API Tests', () => {
                         expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
-                        expect(res.body).to.have.property('error').to.be.a('string');
+                        expect(res.body).to.have.property('message').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }

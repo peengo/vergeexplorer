@@ -14,7 +14,6 @@ const rpcInit = require('./rpc/init');
 const dbConnect = require('./db/connect');
 const errors = require('./utils/errors');
 const blockchain = require('./utils/blockchain');
-const getPrice = require('./utils/price');
 
 const delay = promisify(setTimeout);
 
@@ -34,12 +33,9 @@ app.context.locals = {}; // local vars
         Object.assign(app.context.locals, dbLocals);
 
         while (true) {
-            const [{ result: getTxOutSetInfo }, price] = await Promise.all([
-                app.context.locals.rpc.getTxOutSetInfo(),
-                getPrice()
-            ]);
+            const { result: getTxOutSetInfo } = await app.context.locals.rpc.getTxOutSetInfo();
 
-            Object.assign(app.context.locals, { getTxOutSetInfo, price });
+            Object.assign(app.context.locals, { getTxOutSetInfo });
             await delay(60000);
         }
     } catch (error) {
@@ -50,8 +46,6 @@ app.context.locals = {}; // local vars
 Object.assign(app.context.locals, { config, errors, blockchain });
 
 function formatError(error) {
-    if (error.status !== 404)
-        console.error(error);
     return {
         status: error.status,
         message: error.message

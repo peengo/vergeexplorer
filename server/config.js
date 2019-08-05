@@ -15,9 +15,7 @@ const config = {
     // latest n blocks & transactions on homepage
     latest: 10,
     // limit for pagers, peers, richlist...
-    limit: 50,
-    // CoinGecko API URL for price
-    pricesUrl: 'https://api.coingecko.com/api/v3/simple/price?ids=verge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true'
+    limit: 50
 };
 
 module.exports = config;

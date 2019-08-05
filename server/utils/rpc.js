@@ -18,12 +18,18 @@ module.exports = class Rpc {
                 this.url,
                 { method, params },
                 // accept all HTTP statuses as resolved 
-                { validateStatus: () => true }
+                // { validateStatus: () => true }
             );
 
             return response.data;
         } catch (error) {
-            throw error;
+            if (error.response) {
+                throw error.response;
+            } else if (error.request) {
+                throw error.request;
+            } else {
+                throw error.message;
+            }
         }
     }
 };

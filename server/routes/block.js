@@ -23,8 +23,16 @@ router.get('/:hash', async (ctx) => {
 
         ctx.body = { data: block };
     } catch (error) {
-        console.error(error);
-        ctx.throw(500);
+        if (error.data.error.code && error.data.error.message) {
+            if (error.data.error.code == -5) {
+                ctx.throw(404, error.data.error.message);
+            } else {
+                ctx.throw(error.status, error.data.error.message);
+            }
+        } else {
+            // console.error(error.status);
+            ctx.throw(500);
+        }
     }
 });
 

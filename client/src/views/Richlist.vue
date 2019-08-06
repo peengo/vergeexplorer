@@ -9,9 +9,7 @@
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
     <template v-else>
-      <v-layout align-center justify-center v-if="isRichlistLoading">
-        <v-progress-circular :size="50" dark indeterminate></v-progress-circular>
-      </v-layout>
+      <ProgressCircular v-if="isRichlistLoading"></ProgressCircular>
 
       <template v-else>
         <v-data-table
@@ -27,7 +25,6 @@
               <router-link
                 :to="{ name: 'address', params: { address: props.item.address }}"
               >{{ props.item.address }}</router-link>
-              <!-- <a :href="`/address/${props.item.address }`">{{ props.item.address }}</a> -->
               <v-progress-circular class="ml-4" :value="props.item.percentage" width="10"></v-progress-circular>
             </td>
             <td class="body-2 text-xs-right">{{ props.item.balance | formatAmount }}</td>
@@ -57,19 +54,12 @@
                   </v-list-tile>
                   <v-divider></v-divider>
                   <v-list dense>
-                    <!-- <v-list-tile>
-                      <v-list-tile-content class="align-center font-weight-bold">Address</v-list-tile-content>
-                    </v-list-tile>-->
                     <v-list-tile>
                       <v-list-tile-content>
                         <router-link
                           :to="{ name: 'address', params: { address: props.item.address }}"
                           class="monospace break-all caption font-weight-bold"
                         >{{ props.item.address }}</router-link>
-                        <!-- <a
-                          :href="`/address/${props.item.address }`"
-                          class="monospace break-all caption font-weight-bold"
-                        >{{ props.item.address }}</a>-->
                       </v-list-tile-content>
                     </v-list-tile>
                     <v-divider></v-divider>
@@ -107,10 +97,14 @@
 </template>
 
 <script>
+import ProgressCircular from "../components/ProgressCircular.vue";
 import { getUSD } from "../mixins.js";
 
 export default {
   mixins: [getUSD],
+  components: {
+    ProgressCircular
+  },
   data: () => ({
     headers: [
       { text: "#", value: "index", sortable: false },

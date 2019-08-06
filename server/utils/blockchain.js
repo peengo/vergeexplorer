@@ -8,7 +8,8 @@ Decimal.set({
 
 const VIN = 'vin',
     VOUT = 'vout',
-    COINBASE = 'coinbase';
+    COINBASE = 'coinbase',
+    BOTH = 'both';
 
 const blockchain = {
     hashRegExp: /^([A-Fa-f0-9]{64})$/,
@@ -307,6 +308,24 @@ const blockchain = {
             addressTxInserts,
             txIOOffsets
         };
+    },
+
+    // values = [ {type: 'vin', value}, {type: 'vout', value } ]
+    getIOsValuesDiff(values) {
+        let type, value;
+
+        if (values.length == 2) {
+            const vin = values.find(item => item.type === VIN);
+            const vout = values.find(item => item.type === VOUT);
+
+            type = BOTH;
+            value = Decimal(vout.value).minus(Decimal(vin.value)).toString();
+        } else {
+            type = values[0].type;
+            value = values[0].value;
+        }
+
+        return { type, value };
     }
 };
 

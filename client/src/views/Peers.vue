@@ -9,9 +9,7 @@
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
     <template v-else>
-      <v-layout align-center justify-center v-if="isLoading">
-        <v-progress-circular :size="50" dark indeterminate></v-progress-circular>
-      </v-layout>
+      <ProgressCircular v-if="isLoading"></ProgressCircular>
 
       <template v-else>
         <v-data-table
@@ -42,11 +40,6 @@
           <template v-slot:item="props">
             <v-flex xs12 class="pa-1">
               <v-card>
-                <!-- <v-card-title>
-                  <v-list-tile-content>Address</v-list-tile-content>
-                  <v-list-tile-content>{{props.item.addr | formatAddress }}</v-list-tile-content>
-                </v-card-title>
-                <v-divider></v-divider>-->
                 <v-list>
                   <v-list-tile>
                     <v-list-tile-content>Address</v-list-tile-content>
@@ -79,9 +72,13 @@
 </template>
 
 <script>
-import { /* format, */ distanceInWordsStrict } from "date-fns";
+import ProgressCircular from "../components/ProgressCircular.vue";
+import { distanceInWordsStrict } from "date-fns";
 
 export default {
+  components: {
+    ProgressCircular
+  },
   data: () => ({
     headers: [
       { text: "Address", value: "addr", sortable: false },
@@ -118,7 +115,6 @@ export default {
       return addr.split(":")[0];
     },
     formatDate(conntime) {
-      // return format(new Date(conntime * 1000), "DD MMM YYYY - HH:mm A");
       return distanceInWordsStrict(Date.now(), new Date(conntime * 1000), {
         addSuffix: true
       });

@@ -3,7 +3,7 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
     try {
-        const { collections: { addresses }, config: { limit } } = ctx.locals;
+        const { collections: { addresses }, config: { limits: { richlist: limit } } } = ctx.locals;
 
         const richlist = await addresses
             .find({})

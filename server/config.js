@@ -15,7 +15,11 @@ const config = {
     // latest n blocks & transactions on homepage
     latest: 10,
     // limit for pagers, peers, richlist...
-    limit: 50
+    limit: 50,
+    limits: {
+        richlist: 50,
+        address: 50
+    }
 };
 
 module.exports = config;

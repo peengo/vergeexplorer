@@ -31,12 +31,13 @@ router.get('/:address', async (ctx) => {
 });
 
 // address txs
-router.get('/txs/:address/:offset', async (ctx) => {
+router.get('/txs/:address/:skip/:limit', async (ctx) => {
     try {
-        const { blockchain, collections: { ios }, errors, config: { limit } } = ctx.locals;
+        const { blockchain, collections: { ios }, errors, config: { limits: { address: allowedLimit } } } = ctx.locals;
 
         const address = ctx.params.address;
-        let offset = ctx.params.offset;
+        let skip = ctx.params.skip;
+        let limit = ctx.params.limit;
 
         if (!blockchain.isAddress(address)) {
             ctx.status = 400;
@@ -44,24 +45,18 @@ router.get('/txs/:address/:offset', async (ctx) => {
             return false;
         }
 
-        if (!blockchain.isInt(offset)) {
+        if (!blockchain.isInt(skip) && !blockchain.isInt(limit)) {
             ctx.status = 400;
             ctx.body = { error: errors.not_valid_int };
             return false;
         }
 
-        offset = Number(offset);
+        skip = Number(skip);
+        limit = Number(limit);
 
-        // const [total, txs] = await Promise.all([
-        //     ios.find({ address }).count(),
-        //     ios
-        //         .find({ address })
-        //         .project({ _id: 0, address: 0 })
-        //         .sort({ time: -1, type: -1 })
-        //         .skip(offset)
-        //         .limit(limit)
-        //         .toArray()
-        // ]);
+        console.log(allowedLimit);
+
+        limit = (limit >= 1 && limit <= allowedLimit) ? limit : allowedLimit;
 
         const aggrTotal = ios.aggregate([
             { $match: { address } },
@@ -72,9 +67,9 @@ router.get('/txs/:address/:offset', async (ctx) => {
             { $match: { address } },
             { $group: { _id: { txid: '$txid', time: '$time' }, values: { $push: { type: '$type', value: '$value' } } } },
             { $sort: { '_id.time': -1 } },
-            { $skip: offset },
+            { $skip: skip },
             { $limit: limit }
-        ]).toArray();
+        ], { allowDiskUse: true }).toArray();
 
         let [total, txs] = await Promise.all([aggrTotal, aggrIOs]);
 
@@ -90,8 +85,6 @@ router.get('/txs/:address/:offset', async (ctx) => {
                 value
             };
         });
-
-        console.log(total);
 
         if (total === 0) {
             ctx.status = 404;

@@ -69,7 +69,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content>Transactions</v-list-tile-content>
-                <v-list-tile-content class="align-end font-weight-bold">{{ total }}</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ total }}</v-list-tile-content>
               </v-list-tile>
             </v-list>
           </v-card>
@@ -84,7 +84,7 @@
 
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
-      <v-data-iterator
+      <!-- <v-data-iterator
         :items="txs"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
@@ -112,35 +112,73 @@
                   color="info"
                 >fas fa-minus-square</v-icon>
                 <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
-                {{ props.item.value | formatAmount }} XVG
+                {{ props.item.value | removeMinus | formatAmount }} XVG
               </div>
               <div class="grey--text py-2">{{ props.item.time | formatTime }}</div>
               <v-divider></v-divider>
             </div>
           </v-flex>
         </template>
-      </v-data-iterator>
+      </v-data-iterator>-->
 
-      <!-- <template v-for="tx in txs">
-        <div class="pb-2 break-all" v-bind:key="tx.txid">
-          <div class="info--text monospace">{{ tx.txid }}</div>
-          <div v-if="tx.type ==='vin'" class="error--text">
-            <v-icon small left color="error">fas fa-minus-square</v-icon>
-            {{ tx.value | formatAmount }} XVG
+      <!-- <div v-else class="text-xs-center">
+        <v-layout justify-center>
+          <v-flex xs12>
+            <v-card>
+              <v-card-text>
+                <v-pagination
+                  v-model="page"
+                  prev-icon="fas fa-angle-left"
+                  next-icon="fas fa-angle-right"
+                  :length="Math.ceil(total/50)"
+                  total-visible="4"
+                  @input="input"
+                ></v-pagination>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </div>-->
+
+      <ProgressCircular v-if="areTxsLoading"></ProgressCircular>
+
+      <template v-else>
+        <template v-for="tx in txs">
+          <div class="pb-2 break-all" v-bind:key="tx.txid">
+            <div class="info--text monospace">{{ tx.txid }}</div>
+            <div v-if="tx.type ==='vin'" class="error--text">
+              <v-icon small left color="error">fas fa-minus-square</v-icon>
+              {{ tx.value | formatAmount }} XVG
+            </div>
+            <div v-else-if="tx.type ==='vout'" class="success--text">
+              <v-icon small left color="success">fas fa-plus-square</v-icon>
+              {{ tx.value | formatAmount }} XVG
+            </div>
+            <div v-else-if="tx.type ==='both'" class="info--text">
+              <v-icon v-if="tx.value.charAt(0) === '-'" small left color="info">fas fa-minus-square</v-icon>
+              <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
+              {{ tx.value | removeMinus | formatAmount }} XVG
+            </div>
+            <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
+            <v-divider></v-divider>
           </div>
-          <div v-else-if="tx.type ==='vout'" class="success--text">
-            <v-icon small left color="success">fas fa-plus-square</v-icon>
-            {{ tx.value | formatAmount }} XVG
-          </div>
-          <div v-else-if="tx.type ==='both'" class="info--text">
-            <v-icon v-if="tx.value.charAt(0) === '-'" small left color="info">fas fa-minus-square</v-icon>
-            <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
-            {{ tx.value | formatAmount }} XVG
-          </div>
-          <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
-          <v-divider></v-divider>
-        </div>
-      </template>-->
+        </template>
+      </template>
+
+      <div v-if="!isLoading" class="text-xs-center">
+        <v-layout justify-center>
+          <v-flex xs12>
+            <v-pagination
+              v-model="page"
+              prev-icon="fas fa-angle-left"
+              next-icon="fas fa-angle-right"
+              :length="Math.ceil(total/50)"
+              total-visible="5"
+              @input="input"
+            ></v-pagination>
+          </v-flex>
+        </v-layout>
+      </div>
     </template>
   </div>
 </template>
@@ -156,12 +194,12 @@ export default {
     ProgressCircular
   },
   data: () => ({
-    headers: [
-      { text: "Address", value: "address", sortable: false },
-      { text: "Balance", value: "balance", sortable: false },
-      { text: "Received", value: "received", sortable: false },
-      { text: "Sent", value: "sent", sortable: false }
-    ],
+    // headers: [
+    //   { text: "Address", value: "address", sortable: false },
+    //   { text: "Balance", value: "balance", sortable: false },
+    //   { text: "Received", value: "received", sortable: false },
+    //   { text: "Sent", value: "sent", sortable: false }
+    // ],
     address: {},
     rowsPerPageItems: [25, 50, 100],
     pagination: {
@@ -169,9 +207,12 @@ export default {
     },
     txs: [],
     total: 0,
+    page: 1,
+    limit: 50,
     qrlink: "",
     dialog: false,
     isLoading: true,
+    areTxsLoading: false,
     error: "",
     isError: false
   }),
@@ -185,7 +226,8 @@ export default {
 
       ({ txs: this.txs, total: this.total } = await this.getAddressTxs(
         this.$route.params.address,
-        this.txs.length
+        this.txs.length,
+        this.limit
       ));
 
       this.isLoading = false;
@@ -209,17 +251,38 @@ export default {
       return addressData;
     },
 
-    async getAddressTxs(address, offset) {
+    async getAddressTxs(address, skip, limit) {
       const {
         data: { data: txs, total }
-      } = await this.$http.get(`/api/address/txs/${address}/${offset}`);
+      } = await this.$http.get(`/api/address/txs/${address}/${skip}/${limit}`);
 
       return { txs, total };
+    },
+
+    // prevPage() {
+    //   console.log("prev");
+    // },
+    // nextPage() {
+    //   console.log("next");
+    // },
+    async input(page) {
+      this.areTxsLoading = true;
+
+      ({ txs: this.txs, total: this.total } = await this.getAddressTxs(
+        this.$route.params.address,
+        page * this.limit - this.limit,
+        this.limit
+      ));
+
+      this.areTxsLoading = false;
     }
   },
   filters: {
     formatTime(time) {
       return format(new Date(time * 1000), "D MMM YYYY - HH:mm A");
+    },
+    removeMinus(str) {
+      return str.charAt(0) === "-" ? str.slice(1) : str;
     }
   }
 };

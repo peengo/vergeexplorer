@@ -3,7 +3,7 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
     try {
-        const { rpc, config: { limit } } = ctx.locals;
+        const { rpc } = ctx.locals;
 
         // const loopback = '127.0.0.1';
 

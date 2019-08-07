@@ -430,10 +430,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0', () => {
+            describe('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0/50', () => {
                 it('should return latest transactions of the address', async () => {
                     try {
-                        const res = await app.get('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0');
+                        const res = await app.get('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -449,10 +449,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/50', () => {
+            describe('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/50/50', () => {
                 it('should return latest transactions of the address', async () => {
                     try {
-                        const res = await app.get('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/50');
+                        const res = await app.get('/address/txs/DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/50/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -467,10 +467,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/address/txs/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0', () => {
+            describe('/address/txs/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0/50', () => {
                 it('should return address not found', async () => {
                     try {
-                        const res = await app.get('/address/txs/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0');
+                        const res = await app.get('/address/txs/AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w/0/50');
 
                         expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);

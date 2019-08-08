@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Heading v-bind:heading="heading" />
+    <Heading :heading="heading" />
 
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 

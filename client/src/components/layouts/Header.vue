@@ -16,7 +16,7 @@
 
       <v-menu>
         <template v-slot:activator="{ on }">
-          <v-toolbar-side-icon v-on="on" class="hidden-sm-and-up"></v-toolbar-side-icon>
+          <v-toolbar-side-icon @="on" class="hidden-sm-and-up"></v-toolbar-side-icon>
         </template>
         <v-list>
           <v-list-tile v-for="(item, i) in items" :key="i" :to="item.to">

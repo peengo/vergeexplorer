@@ -5,10 +5,10 @@
     </v-layout>
 
     <v-layout row wrap>
-      <!-- <Heading v-bind:heading="headingBlocks" /> -->
+      <!-- <Heading :heading="headingBlocks" /> -->
 
       <v-flex xs12 md6>
-        <Heading v-bind:heading="headingBlocks" />
+        <Heading :heading="headingBlocks" />
 
         <v-flex xs12 class="text-xs-right">
           <v-btn
@@ -25,7 +25,7 @@
         <ProgressCircular v-if="areBlocksLoading"></ProgressCircular>
 
         <template v-else v-for="(block, index) in blocks">
-          <div class="pb-2 break-all" v-bind:key="block.hash">
+          <div class="pb-2 break-all" :key="block.hash">
             <div class="mb-2">
               <v-icon small class="mr-2">fas fa-cube</v-icon>
               {{ block.height }}
@@ -47,7 +47,7 @@
       </v-flex>
 
       <v-flex xs12 md6>
-        <Heading v-bind:heading="headingTxs" />
+        <Heading :heading="headingTxs" />
 
         <v-flex xs12 class="text-xs-right">
           <v-btn
@@ -64,7 +64,7 @@
         <ProgressCircular v-if="areTxsLoading"></ProgressCircular>
 
         <template v-else v-for="(tx, index) in txs">
-          <div class="pb-2 break-all" v-bind:key="tx.txid">
+          <div class="pb-2 break-all" :key="tx.txid">
             <div class="mb-2">
               <v-icon small class="mr-2">fas fa-money-bill</v-icon>
               <router-link

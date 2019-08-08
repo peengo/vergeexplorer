@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Heading v-bind:heading="headingAddress" />
+    <Heading :heading="headingAddress" />
 
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
@@ -72,7 +72,7 @@
         </v-flex>
       </v-layout>
 
-      <Heading v-bind:heading="headingTxs" />
+      <Heading :heading="headingTxs" />
 
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -86,7 +86,7 @@
       >
         <template v-slot:item="props">
           <v-flex xs12>
-            <div class="pb-2 break-all" v-bind:key="props.item.txid">
+            <div class="pb-2 break-all" :key="props.item.txid">
               <div class="info--text monospace">{{ props.item.txid }}</div>
               <div v-if="props.item.type ==='vin'" class="error--text">
                 <v-icon small left color="error">fas fa-minus-square</v-icon>
@@ -136,7 +136,7 @@
 
       <template v-else>
         <template v-for="tx in txs">
-          <div class="pb-2 break-all" v-bind:key="tx.txid">
+          <div class="pb-2 break-all" :key="tx.txid">
             <div class="info--text monospace">{{ tx.txid }}</div>
             <div v-if="tx.type ==='vin'" class="error--text">
               <v-icon small left color="error">fas fa-minus-square</v-icon>

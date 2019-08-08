@@ -12,13 +12,12 @@ const config = {
         toExpNeg: -10,
         precision: 30
     },
-    // latest n blocks & transactions on homepage
-    latest: 10,
     // limit for pagers, peers, richlist...
     limit: 50,
     limits: {
         richlist: 50,
-        address: 50
+        address: 50,
+        latest: 10 // latest n blocks & transactions on homepage
     }
 };
 

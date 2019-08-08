@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-layout align-center justify-center>
-      <h1>
-        <v-icon large left>fas fa-wallet</v-icon>Address
-      </h1>
-    </v-layout>
+    <Heading v-bind:heading="headingAddress" />
 
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
@@ -48,14 +44,14 @@
                     <v-card-text class="break-all text-xs-center">
                       <h3>{{ address.address }}</h3>
                     </v-card-text>
-                    <img :src="qrlink" alt="QR Code" class="ma-5" />
-                    <!-- <v-img
+                    <!-- <img :src="qrlink" alt="QR Code" class="ma-5" /> -->
+                    <v-img
                       alt="QR Code"
                       :src="qrlink"
                       max-height="256"
                       max-width="256"
                       class="ma-5"
-                    ></v-img>-->
+                    ></v-img>
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn flat @click="dialog = false">Close</v-btn>
@@ -76,11 +72,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout align-center justify-center>
-        <h1>
-          <v-icon large left>fas fa-money-check</v-icon>Transactions
-        </h1>
-      </v-layout>
+      <Heading v-bind:heading="headingTxs" />
 
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -184,6 +176,7 @@
 </template>
 
 <script>
+import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import { format } from "date-fns";
 import { getUSD } from "../mixins.js";
@@ -191,6 +184,7 @@ import { getUSD } from "../mixins.js";
 export default {
   mixins: [getUSD],
   components: {
+    Heading,
     ProgressCircular
   },
   data: () => ({
@@ -200,6 +194,14 @@ export default {
     //   { text: "Received", value: "received", sortable: false },
     //   { text: "Sent", value: "sent", sortable: false }
     // ],
+    headingAddress: {
+      title: "Address",
+      icon: "fas fa-address-card"
+    },
+    headingTxs: {
+      title: "Transactions",
+      icon: "fas fa-money-check"
+    },
     address: {},
     rowsPerPageItems: [25, 50, 100],
     pagination: {

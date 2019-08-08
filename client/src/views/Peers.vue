@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-layout align-center justify-center>
-      <h1>
-        <v-icon large left>fas fa-network-wired</v-icon>Peers
-      </h1>
-    </v-layout>
+    <Heading v-bind:heading="heading" />
 
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
@@ -20,7 +16,7 @@
         >
           <template v-slot:items="props">
             <td class="body-2 monospace">{{ props.item.addr | formatAddress }}</td>
-            <td class="body-2">{{ props.item.conntime | formatDate }}</td>
+            <td class="body-2">{{ props.item.conntime | formatTimeAgo }}</td>
             <td class="body-2">{{ props.item.version }}</td>
             <td class="body-2">{{ props.item.subver | formatSubver }}</td>
           </template>
@@ -50,7 +46,7 @@
                   <v-divider></v-divider>
                   <v-list-tile>
                     <v-list-tile-content>Connection Time</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{props.item.conntime | formatDate}}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{props.item.conntime | formatTimeAgo}}</v-list-tile-content>
                   </v-list-tile>
                   <v-list-tile>
                     <v-list-tile-content>Version</v-list-tile-content>
@@ -72,14 +68,19 @@
 </template>
 
 <script>
+import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
-import { distanceInWordsStrict } from "date-fns";
 
 export default {
   components: {
+    Heading,
     ProgressCircular
   },
   data: () => ({
+    heading: {
+      title: "Peers",
+      icon: "fas fa-network-wired"
+    },
     headers: [
       { text: "Address", value: "addr", sortable: false },
       { text: "Connection Time", value: "conntime", sortable: false },
@@ -113,11 +114,6 @@ export default {
   filters: {
     formatAddress(addr) {
       return addr.split(":")[0];
-    },
-    formatDate(conntime) {
-      return distanceInWordsStrict(Date.now(), new Date(conntime * 1000), {
-        addSuffix: true
-      });
     },
     formatSubver(subver) {
       return subver.replace(/[/]/g, "");

@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import Block from "./views/Block.vue";
+import Transaction from "./views/Transaction.vue";
 import Peers from "./views/Peers.vue";
 import Richlist from "./views/Richlist.vue";
 import Address from "./views/Address.vue";
@@ -16,6 +18,16 @@ export default new Router({
       path: "/",
       name: "home",
       component: Home
+    },
+    {
+      path: "/block/:hash",
+      name: "block",
+      component: Block
+    },
+    {
+      path: "/tx/:txid",
+      name: "tx",
+      component: Transaction
     },
     {
       path: "/richlist",

@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-layout align-center justify-center>
-      <h1>
-        <v-icon large left>fas fa-coins</v-icon>Richlist
-      </h1>
-    </v-layout>
+    <Heading v-bind:heading="heading" />
 
     <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
@@ -97,15 +93,21 @@
 </template>
 
 <script>
+import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import { getUSD } from "../mixins.js";
 
 export default {
   mixins: [getUSD],
   components: {
+    Heading,
     ProgressCircular
   },
   data: () => ({
+    heading: {
+      title: "Richlist",
+      icon: "fas fa-chart-pie"
+    },
     headers: [
       { text: "#", value: "index", sortable: false },
       { text: "Address", value: "address", sortable: false },

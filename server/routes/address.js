@@ -54,8 +54,6 @@ router.get('/txs/:address/:skip/:limit', async (ctx) => {
         skip = Number(skip);
         limit = Number(limit);
 
-        console.log(allowedLimit);
-
         limit = (limit >= 1 && limit <= allowedLimit) ? limit : allowedLimit;
 
         const aggrTotal = ios.aggregate([

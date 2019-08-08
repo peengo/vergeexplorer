@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { distanceInWordsStrict } from "date-fns";
 
 Vue.filter("formatAmount", value =>
   new Intl.NumberFormat("en-US", {
@@ -15,3 +16,9 @@ Vue.filter("formatUSD", usd => {
     }).format(usd)
   }
 });
+
+Vue.filter("formatTimeAgo", time =>
+  distanceInWordsStrict(Date.now(), new Date(time * 1000), {
+    addSuffix: true
+  })
+);

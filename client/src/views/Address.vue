@@ -179,10 +179,10 @@
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import { format } from "date-fns";
-import { getUSD } from "../mixins.js";
+import { getMarketData } from "../mixins.js";
 
 export default {
-  mixins: [getUSD],
+  mixins: [getMarketData],
   components: {
     Heading,
     ProgressCircular
@@ -215,7 +215,7 @@ export default {
     dialog: false,
     isLoading: true,
     areTxsLoading: false,
-    error: "",
+    error: "There was an error.",
     isError: false
   }),
   async created() {
@@ -223,8 +223,8 @@ export default {
       this.address = await this.getAddress(this.$route.params.address);
       this.qrlink = `https://chart.googleapis.com/chart?cht=qr&chl=${this.address.address}&chs=256x256&chld=L%7C0`;
 
-      const usd = await this.getUSD();
-      this.address.usd = (this.address.balance * usd).toFixed(2);
+      const marketData = await this.getMarketData();
+      this.address.usd = (this.address.balance * marketData.usd).toFixed(2);
 
       ({ txs: this.txs, total: this.total } = await this.getAddressTxs(
         this.$route.params.address,
@@ -236,6 +236,8 @@ export default {
     } catch (error) {
       if (error.response.status == 400 || error.response.status == 404) {
         this.error = error.response.data.error;
+        this.isError = true;
+      } else if (error.response.status == 500) {
         this.isError = true;
       } else {
         this.$router.push({ path: "/404" });

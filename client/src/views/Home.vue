@@ -1,101 +1,141 @@
 <template>
   <div>
-    <v-layout align-center justify-center class="mt-3 mb-5">
+    <v-layout align-center justify-center text-xs-center class="mt-3 mb-5">
       <h1>Verge (XVG) Cryptocurrency Blockchain Explorer</h1>
     </v-layout>
 
-    <v-layout row wrap>
-      <!-- <Heading :heading="headingBlocks" /> -->
+    <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
 
-      <v-flex xs12 md6>
-        <Heading :heading="headingBlocks" />
+    <template v-else>
+      <ProgressCircular v-if="isInfoAndMarketLoading"></ProgressCircular>
 
-        <v-flex xs12 class="text-xs-right">
-          <v-btn
-            flat
-            icon
-            color="success"
-            @click="reloadBlocks"
-            :class="{ 'fa-spin': isBlocksSpinnerLoading}"
-          >
-            <v-icon>fas fa-sync-alt</v-icon>
-          </v-btn>
+      <v-layout v-else row wrap text-xs-center break-all>
+        <v-flex xs12 sm2 md2 py-2>
+          <div>{{ info.blocks_rpc }}</div>
+          <div class="grey--text">Blocks</div>
+          <!-- <div class="d-block mt-4">{{ info.sync | formatPercent }} %</div>
+          <div class="grey--text">Synced</div>-->
         </v-flex>
+        <v-flex xs12 sm6 md3 py-2>
+          <div>{{ info.moneysupply | formatAmount }} XVG</div>
+          <div class="grey--text">Circulating Supply</div>
+        </v-flex>
+        <v-flex xs12 sm2 md2 py-2>
+          <div>{{ marketData.usd_market_cap | formatUSD }}</div>
+          <div class="grey--text">Market Cap</div>
+        </v-flex>
+        <v-flex xs12 sm4 md2 py-2>
+          <div>{{ marketData.usd_24h_vol | formatUSD }}</div>
+          <div class="grey--text">24h volume</div>
+        </v-flex>
+        <v-flex xs12 sm3 md3 py-2>
+          <span class="mr-2">${{ marketData.usd }}</span>
+          <span
+            v-if="marketData.usd_24h_change > 0"
+            class="success--text"
+          >{{ marketData.usd_24h_change.toFixed(2) }} %</span>
+          <span v-else class="error--text">{{ marketData.usd_24h_change.toFixed(2) }} %</span>
+          <div class="grey--text">Price</div>
+        </v-flex>
+        <v-flex xs12 sm3 md2 py-2>
+          <div>{{ info.sync | formatPercent }} %</div>
+          <div class="grey--text">Synced</div>
+        </v-flex>
+      </v-layout>
 
-        <ProgressCircular v-if="areBlocksLoading"></ProgressCircular>
+      <v-layout row wrap>
+        <v-flex xs12 md6>
+          <Heading :heading="headingBlocks" />
 
-        <template v-else v-for="(block, index) in blocks">
-          <div class="pb-2 break-all" :key="block.hash">
-            <div class="mb-2">
-              <v-icon small class="mr-2">fas fa-cube</v-icon>
-              {{ block.height }}
-            </div>
-            <router-link
-              class="success--text monospace"
-              :to="{ name: 'block', params: { hash: block.hash }}"
-            >{{ block.hash }}</router-link>
-            <div>{{ block.confirmations }} confirmations</div>
-            <!-- <div>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn
+              flat
+              icon
+              color="success"
+              @click="reloadBlocks"
+              :class="{ 'fa-spin': isBlocksSpinnerLoading}"
+            >
+              <v-icon>fas fa-sync-alt</v-icon>
+            </v-btn>
+          </v-flex>
+
+          <ProgressCircular v-if="areBlocksLoading"></ProgressCircular>
+
+          <template v-else v-for="(block, index) in blocks">
+            <div class="pb-2 break-all" :key="block.hash">
+              <div class="mb-2">
+                <v-icon small class="mr-2">fas fa-cube</v-icon>
+                {{ block.height }}
+              </div>
+              <router-link
+                class="success--text monospace"
+                :to="{ name: 'block', params: { hash: block.hash }}"
+              >{{ block.hash }}</router-link>
+              <div>{{ block.confirmations }} confirmations</div>
+              <!-- <div>
                 {{ block.tx.length }}
                 <template v-if="block.tx.length == 1">transaction</template>
                 <template v-else>transactions</template>
-            </div>-->
-            <div class="grey--text py-2">{{ block.time | formatTimeAgo }}</div>
-            <v-divider class="mx-2" v-if="index != blocks.length - 1"></v-divider>
-          </div>
-        </template>
-      </v-flex>
-
-      <v-flex xs12 md6>
-        <Heading :heading="headingTxs" />
-
-        <v-flex xs12 class="text-xs-right">
-          <v-btn
-            flat
-            icon
-            color="info"
-            @click="reloadTxs"
-            :class="{ 'fa-spin': isTxsSpinnerLoading}"
-          >
-            <v-icon>fas fa-sync-alt</v-icon>
-          </v-btn>
+              </div>-->
+              <div class="grey--text py-2">{{ block.time | formatTimeAgo }}</div>
+              <v-divider class="mx-2" v-if="index != blocks.length - 1"></v-divider>
+            </div>
+          </template>
         </v-flex>
 
-        <ProgressCircular v-if="areTxsLoading"></ProgressCircular>
+        <v-flex xs12 md6>
+          <Heading :heading="headingTxs" />
 
-        <template v-else v-for="(tx, index) in txs">
-          <div class="pb-2 break-all" :key="tx.txid">
-            <div class="mb-2">
-              <v-icon small class="mr-2">fas fa-money-bill</v-icon>
-              <router-link
-                class="info--text monospace"
-                :to="{ name: 'tx', params: { txid: tx.txid }}"
-              >{{ tx.txid }}</router-link>
+          <v-flex xs12 class="text-xs-right">
+            <v-btn
+              flat
+              icon
+              color="info"
+              @click="reloadTxs"
+              :class="{ 'fa-spin': isTxsSpinnerLoading}"
+            >
+              <v-icon>fas fa-sync-alt</v-icon>
+            </v-btn>
+          </v-flex>
+
+          <ProgressCircular v-if="areTxsLoading"></ProgressCircular>
+
+          <template v-else v-for="(tx, index) in txs">
+            <div class="pb-2 break-all" :key="tx.txid">
+              <div class="mb-2">
+                <v-icon small class="mr-2">fas fa-money-bill</v-icon>
+                <router-link
+                  class="info--text monospace"
+                  :to="{ name: 'tx', params: { txid: tx.txid }}"
+                >{{ tx.txid }}</router-link>
+              </div>
+              <div>
+                {{ tx.amountout | formatAmount }} XVG out
+                <v-icon small right>fas fa-long-arrow-alt-right</v-icon>
+              </div>
+              <!-- <div>{{ tx.confirmations}} confirmations</div> -->
+              <div>
+                {{ tx.vout.length}}
+                <template v-if="tx.vout.length == 1">recipient</template>
+                <template v-else>recipients</template>
+              </div>
+              <div class="grey--text py-2">{{ tx.time | formatTimeAgo }}</div>
+              <v-divider class="mx-2" v-if="index != txs.length - 1"></v-divider>
             </div>
-            <div>
-              {{ tx.amountout | formatAmount }} XVG out
-              <v-icon small right>fas fa-long-arrow-alt-right</v-icon>
-            </div>
-            <!-- <div>{{ tx.confirmations}} confirmations</div> -->
-            <div>
-              {{ tx.vout.length}}
-              <template v-if="tx.vout.length == 1">recipient</template>
-              <template v-else>recipients</template>
-            </div>
-            <div class="grey--text py-2">{{ tx.time | formatTimeAgo }}</div>
-            <v-divider class="mx-2" v-if="index != txs.length - 1"></v-divider>
-          </div>
-        </template>
-      </v-flex>
-    </v-layout>
+          </template>
+        </v-flex>
+      </v-layout>
+    </template>
   </div>
 </template>
 
 <script>
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
+import { getInfo, getMarketData } from "../mixins.js";
 
 export default {
+  mixins: [getInfo, getMarketData],
   components: {
     Heading,
     ProgressCircular
@@ -109,26 +149,42 @@ export default {
       title: "Transactions",
       icon: "fas fa-money-check"
     },
+    info: {},
+    marketData: {},
     blocks: [],
     txs: [],
+    isInfoAndMarketLoading: true,
     areBlocksLoading: true,
     isBlocksSpinnerLoading: false,
     areTxsLoading: true,
-    isTxsSpinnerLoading: false
+    isTxsSpinnerLoading: false,
+    error: "There was an error.",
+    isError: false
   }),
   async created() {
     try {
-      const [blocks, txs] = await Promise.all([
+      const [info, marketData, blocks, txs] = await Promise.all([
+        this.getInfo(),
+        this.getMarketData(),
         this.getBlocks(),
         this.getTxs()
       ]);
 
+      this.info = info;
+      this.info.sync = (this.info.blocks_db / this.info.blocks_rpc) * 100;
+
+      this.marketData = marketData;
+
+      this.isInfoAndMarketLoading = false;
+
       this.blocks = blocks;
+
       this.areBlocksLoading = false;
 
       this.txs = txs;
       this.areTxsLoading = false;
     } catch (error) {
+      this.isError = true;
       console.log(error);
     }
   },
@@ -158,6 +214,7 @@ export default {
 
         this.areBlocksLoading = false;
       } catch (error) {
+        this.isError = true;
         console.log(error);
       }
     },
@@ -172,7 +229,15 @@ export default {
 
         this.areTxsLoading = false;
       } catch (error) {
+        this.isError = true;
         console.log(error);
+      }
+    }
+  },
+  filters: {
+    formatPercent(percent) {
+      if (percent) {
+        return (Math.floor(percent * 100) / 100).toFixed(2);
       }
     }
   }

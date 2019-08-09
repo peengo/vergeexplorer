@@ -95,10 +95,10 @@
 <script>
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
-import { getUSD } from "../mixins.js";
+import { getMarketData, getInfo } from "../mixins.js";
 
 export default {
-  mixins: [getUSD],
+  mixins: [getMarketData, getInfo],
   components: {
     Heading,
     ProgressCircular
@@ -143,15 +143,12 @@ export default {
 
       this.isRichlistLoading = false;
 
-      const [moneysupply, usd] = await Promise.all([
-        this.getMoneySupply(),
-        this.getUSD()
-      ]);
+      const [info, marketData] = await Promise.all([this.getInfo(), this.getMarketData()]);
 
       this.richlist = this.richlist.map(item => ({
         ...item,
-        percentage: ((item.balance / moneysupply) * 100).toFixed(2),
-        usd: (item.balance * usd).toFixed(2)
+        percentage: ((item.balance / info.moneysupply) * 100).toFixed(2),
+        usd: (item.balance * marketData.usd).toFixed(2)
       }));
 
       this.isInfoLoading = false;
@@ -172,16 +169,6 @@ export default {
       } = await this.$http.get("/api/richlist");
 
       return richlist;
-    },
-
-    async getMoneySupply() {
-      const {
-        data: {
-          data: { moneysupply }
-        }
-      } = await this.$http.get("/api/info");
-
-      return moneysupply;
     }
   }
 };

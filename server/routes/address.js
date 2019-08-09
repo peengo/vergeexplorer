@@ -58,7 +58,7 @@ router.get('/txs/:address/:skip/:limit', async (ctx) => {
 
         const aggrTotal = ios.aggregate([
             { $match: { address } },
-            { $group: { _id: { txid: '$txid', time: '$time' }, values: { $push: { type: '$type', value: '$value' } } } }
+            { $group: { _id: { txid: '$txid' } } }
         ]).toArray();
 
         const aggrIOs = ios.aggregate([

@@ -23,7 +23,7 @@ describe('API Tests', () => {
                     expect(res).to.have.status(404);
                     expect(res).to.have.header('content-type', contentType);
                     expect(res).to.be.json;
-                    expect(res.body).to.have.property('status');
+                    expect(res.body).to.have.property('error').to.be.a('string');
                 } catch (error) {
                     throw error;
                 }
@@ -174,7 +174,7 @@ describe('API Tests', () => {
                         expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
-                        expect(res.body).to.have.property('message');
+                        expect(res.body).to.have.property('error').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }
@@ -196,10 +196,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/0', () => {
+            describe('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/0/50', () => {
                 it('should return block transactions with 0 offset', async () => {
                     try {
-                        const res = await app.get('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/0');
+                        const res = await app.get('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/0/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -213,10 +213,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/5', () => {
+            describe('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/5/50', () => {
                 it('should return block transactions with 5 offset', async () => {
                     try {
-                        const res = await app.get('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/5');
+                        const res = await app.get('/block/txs/00000000006abf677c1d43db43525127032a7128d945963119dc43e2bc063a7b/5/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -513,7 +513,7 @@ describe('API Tests', () => {
                         expect(res).to.have.status(400);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
-                        expect(res.body).to.have.property('message').to.be.a('string');
+                        expect(res.body).to.have.property('error').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }
@@ -599,7 +599,7 @@ describe('API Tests', () => {
                         expect(res).to.have.status(404);
                         expect(res).to.have.header('content-type', contentType);
                         expect(res).to.be.json;
-                        expect(res.body).to.have.property('message').to.be.a('string');
+                        expect(res.body).to.have.property('error').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }

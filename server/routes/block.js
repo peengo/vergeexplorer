@@ -36,12 +36,13 @@ router.get('/:hash', async (ctx) => {
     }
 });
 
-router.get('/txs/:hash/:offset', async (ctx) => {
+router.get('/txs/:hash/:skip/:limit', async (ctx) => {
     try {
-        const { blockchain, collections: { blocks, txs }, errors, config: { limit } } = ctx.locals;
+        const { blockchain, collections: { blocks, txs }, errors, config: { limits: { block: allowedLimit } } } = ctx.locals;
 
         const hash = ctx.params.hash;
-        let offset = ctx.params.offset;
+        let skip = ctx.params.skip;
+        let limit = ctx.params.limit;
 
         if (!blockchain.isHash(hash)) {
             ctx.status = 400;
@@ -49,13 +50,16 @@ router.get('/txs/:hash/:offset', async (ctx) => {
             return false;
         }
 
-        if (!blockchain.isInt(offset)) {
+        if (!blockchain.isInt(skip) && !blockchain.isInt(limit)) {
             ctx.status = 400;
             ctx.body = { error: errors.not_valid_int };
             return false;
         }
 
-        offset = Number(offset);
+        skip = Number(skip);
+        limit = Number(limit);
+
+        limit = (limit >= 1 && limit <= allowedLimit) ? limit : allowedLimit;
 
         const block = await blocks.findOne({ hash });
 
@@ -73,7 +77,7 @@ router.get('/txs/:hash/:offset', async (ctx) => {
                 .find({ txid: { $in: txids } })
                 .project({ _id: 0 })
                 .sort({ time: -1 })
-                .skip(offset)
+                .skip(skip)
                 .limit(limit)
                 .toArray()
         ]);

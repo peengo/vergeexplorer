@@ -73,11 +73,11 @@
                 :to="{ name: 'block', params: { hash: block.hash }}"
               >{{ block.hash }}</router-link>
               <div>{{ block.confirmations }} confirmations</div>
-              <!-- <div>
+              <div>
                 {{ block.tx.length }}
                 <template v-if="block.tx.length == 1">transaction</template>
                 <template v-else>transactions</template>
-              </div>-->
+              </div>
               <div class="grey--text py-2">{{ block.time | formatTimeAgo }}</div>
               <v-divider class="mx-2" v-if="index != blocks.length - 1"></v-divider>
             </div>
@@ -244,7 +244,7 @@ export default {
 
 <style scoped>
 .fast-spin {
-  -webkit-animation: fa-spin 0.250s 1 linear;
-  animation: fa-spin 0.250s 1 linear;
+  -webkit-animation: fa-spin 0.25s 1 linear;
+  animation: fa-spin 0.25s 1 linear;
 }
 </style>

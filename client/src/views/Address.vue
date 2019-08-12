@@ -137,16 +137,19 @@
       <template v-else>
         <template v-for="tx in txs">
           <div class="pb-2 break-all" :key="tx.txid">
-            <div class="info--text monospace">{{ tx.txid }}</div>
-            <div v-if="tx.type ==='vin'" class="error--text">
+            <router-link
+              class="monospace info--text"
+              :to="{ name: 'tx', params: { txid: tx.txid }}"
+            >{{ tx.txid }}</router-link>
+            <div v-if="tx.type ==='vin'" class="error--text monospace text-xs-right">
               <v-icon small left color="error">fas fa-minus-square</v-icon>
               {{ tx.value | formatAmount }} XVG
             </div>
-            <div v-else-if="tx.type ==='vout'" class="success--text">
+            <div v-else-if="tx.type ==='vout'" class="success--text monospace text-xs-right">
               <v-icon small left color="success">fas fa-plus-square</v-icon>
               {{ tx.value | formatAmount }} XVG
             </div>
-            <div v-else-if="tx.type ==='both'" class="info--text">
+            <div v-else-if="tx.type ==='both'" class="info--text monospace text-xs-right">
               <v-icon v-if="tx.value.charAt(0) === '-'" small left color="info">fas fa-minus-square</v-icon>
               <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
               {{ tx.value | removeMinus | formatAmount }} XVG

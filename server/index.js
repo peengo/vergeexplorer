@@ -47,8 +47,8 @@ Object.assign(app.context.locals, { config, errors, blockchain });
 
 function formatError(error) {
     return {
-        status: error.status,
-        message: error.message
+        // status: error.status,
+        error: error.message
     };
 }
 

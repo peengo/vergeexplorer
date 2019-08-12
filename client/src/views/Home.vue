@@ -53,7 +53,8 @@
               icon
               color="success"
               @click="reloadBlocks"
-              :class="{ 'fa-spin': isBlocksSpinnerLoading}"
+              :class="{ 'fast-spin': isBlocksSpinnerLoading}"
+              v-if="!areBlocksLoading"
             >
               <v-icon>fas fa-sync-alt</v-icon>
             </v-btn>
@@ -92,7 +93,8 @@
               icon
               color="info"
               @click="reloadTxs"
-              :class="{ 'fa-spin': isTxsSpinnerLoading}"
+              :class="{ 'fast-spin': isTxsSpinnerLoading}"
+              v-if="!areTxsLoading"
             >
               <v-icon>fas fa-sync-alt</v-icon>
             </v-btn>
@@ -205,10 +207,8 @@ export default {
     },
     async reloadBlocks() {
       try {
-        setTimeout(() => (this.isBlocksSpinnerLoading = false), 500);
-        this.isBlocksSpinnerLoading = true;
-
         this.areBlocksLoading = true;
+        this.isBlocksSpinnerLoading = true;
 
         this.blocks = await this.getBlocks();
 
@@ -220,10 +220,8 @@ export default {
     },
     async reloadTxs() {
       try {
-        setTimeout(() => (this.isTxsSpinnerLoading = false), 500);
-        this.isTxsSpinnerLoading = true;
-
         this.areTxsLoading = true;
+        this.isTxsSpinnerLoading = true;
 
         this.txs = await this.getTxs();
 
@@ -243,3 +241,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.fast-spin {
+  -webkit-animation: fa-spin 0.250s 1 linear;
+  animation: fa-spin 0.250s 1 linear;
+}
+</style>

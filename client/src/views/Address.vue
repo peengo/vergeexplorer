@@ -76,62 +76,6 @@
 
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
-      <!-- <v-data-iterator
-        :items="txs"
-        :rows-per-page-items="rowsPerPageItems"
-        :pagination.sync="pagination"
-        row
-        wrap
-        v-else
-      >
-        <template v-slot:item="props">
-          <v-flex xs12>
-            <div class="pb-2 break-all" :key="props.item.txid">
-              <div class="info--text monospace">{{ props.item.txid }}</div>
-              <div v-if="props.item.type ==='vin'" class="error--text">
-                <v-icon small left color="error">fas fa-minus-square</v-icon>
-                {{ props.item.value | formatAmount }} XVG
-              </div>
-              <div v-else-if="props.item.type ==='vout'" class="success--text">
-                <v-icon small left color="success">fas fa-plus-square</v-icon>
-                {{ props.item.value | formatAmount }} XVG
-              </div>
-              <div v-else-if="props.item.type ==='both'" class="info--text">
-                <v-icon
-                  v-if="props.item.value.charAt(0) === '-'"
-                  small
-                  left
-                  color="info"
-                >fas fa-minus-square</v-icon>
-                <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
-                {{ props.item.value | removeMinus | formatAmount }} XVG
-              </div>
-              <div class="grey--text py-2">{{ props.item.time | formatTime }}</div>
-              <v-divider></v-divider>
-            </div>
-          </v-flex>
-        </template>
-      </v-data-iterator>-->
-
-      <!-- <div v-else class="text-xs-center">
-        <v-layout justify-center>
-          <v-flex xs12>
-            <v-card>
-              <v-card-text>
-                <v-pagination
-                  v-model="page"
-                  prev-icon="fas fa-angle-left"
-                  next-icon="fas fa-angle-right"
-                  :length="Math.ceil(total/50)"
-                  total-visible="4"
-                  @input="input"
-                ></v-pagination>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </div>-->
-
       <ProgressCircular v-if="areTxsLoading"></ProgressCircular>
 
       <template v-else>
@@ -163,14 +107,7 @@
       <div v-if="!isLoading" class="text-xs-center">
         <v-layout justify-center>
           <v-flex xs12>
-            <v-pagination
-              v-model="page"
-              prev-icon="fas fa-angle-left"
-              next-icon="fas fa-angle-right"
-              :length="Math.ceil(total/50)"
-              total-visible="5"
-              @input="input"
-            ></v-pagination>
+            <Pagination :pagination="{page,total,limit}" @updatePage="updatePage($event)" />
           </v-flex>
         </v-layout>
       </div>
@@ -182,6 +119,7 @@
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
+import Pagination from "../components/Pagination.vue";
 
 import { format } from "date-fns";
 import { getMarketData } from "../mixins.js";
@@ -191,7 +129,8 @@ export default {
   components: {
     Heading,
     ProgressCircular,
-    Alert
+    Alert,
+    Pagination
   },
   data: () => ({
     // headers: [
@@ -209,10 +148,6 @@ export default {
       icon: "fas fa-money-check"
     },
     address: {},
-    rowsPerPageItems: [25, 50, 100],
-    pagination: {
-      rowsPerPage: 50
-    },
     txs: [],
     total: 0,
     page: 1,
@@ -260,7 +195,6 @@ export default {
 
       return addressData;
     },
-
     async getAddressTxs(address, skip, limit) {
       const {
         data: { data: txs, total }
@@ -268,14 +202,7 @@ export default {
 
       return { txs, total };
     },
-
-    // prevPage() {
-    //   console.log("prev");
-    // },
-    // nextPage() {
-    //   console.log("next");
-    // },
-    async input(page) {
+    async updatePage(page) {
       this.areTxsLoading = true;
 
       ({ txs: this.txs, total: this.total } = await this.getAddressTxs(

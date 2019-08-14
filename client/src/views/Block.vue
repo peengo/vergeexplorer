@@ -67,14 +67,7 @@
 
     <v-layout v-if="!isLoading" justify-center class="text-xs-center">
       <v-flex xs12>
-        <v-pagination
-          v-model="page"
-          prev-icon="fas fa-angle-left"
-          next-icon="fas fa-angle-right"
-          :length="Math.ceil(total/50)"
-          total-visible="5"
-          @input="input"
-        ></v-pagination>
+        <Pagination :pagination="{page,total,limit}" @updatePage="updatePage($event)" />
       </v-flex>
     </v-layout>
   </div>
@@ -84,12 +77,14 @@
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
+import Pagination from "../components/Pagination.vue";
 
 export default {
   components: {
     Heading,
     ProgressCircular,
-    Alert
+    Alert,
+    Pagination
   },
   data: () => ({
     headingBlock: {
@@ -150,7 +145,7 @@ export default {
 
       return { txs, total };
     },
-    async input(page) {
+    async updatePage(page) {
       this.areTxsLoading = true;
 
       ({ txs: this.txs, total: this.total } = await this.getBlockTxs(

@@ -26,14 +26,10 @@
 
             <v-layout justify-center class="text-xs-center">
               <v-flex xs12>
-                <v-pagination
-                  v-model="pageInputs"
-                  prev-icon="fas fa-angle-left"
-                  next-icon="fas fa-angle-right"
-                  :length="Math.ceil(totalInputs/50)"
-                  total-visible="5"
-                  @input="inputInputs"
-                ></v-pagination>
+                <Pagination
+                  :pagination="{page: pageInputs,total: totalInputs,limit}"
+                  @updatePage="updateInputsPage($event)"
+                />
               </v-flex>
             </v-layout>
           </template>
@@ -52,14 +48,10 @@
 
             <v-layout justify-center class="text-xs-center">
               <v-flex xs12>
-                <v-pagination
-                  v-model="pageRecipients"
-                  prev-icon="fas fa-angle-left"
-                  next-icon="fas fa-angle-right"
-                  :length="Math.ceil(totalRecipients/50)"
-                  total-visible="5"
-                  @input="inputRecipients"
-                ></v-pagination>
+                <Pagination
+                  :pagination="{page: pageRecipients,total: totalRecipients,limit}"
+                  @updatePage="updateRecipientsPage($event)"
+                />
               </v-flex>
             </v-layout>
           </template>
@@ -73,12 +65,14 @@
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
+import Pagination from "../components/Pagination.vue";
 
 export default {
   components: {
     Heading,
     ProgressCircular,
-    Alert
+    Alert,
+    Pagination
   },
   data: () => ({
     headingTx: {
@@ -163,7 +157,7 @@ export default {
 
       return { recipients, total };
     },
-    async inputInputs(page) {
+    async updateInputsPage(page) {
       this.areInputsLoading = true;
 
       ({ inputs: this.inputs, total: this.totalInputs } = await this.getInputs(
@@ -174,7 +168,7 @@ export default {
 
       this.areInputsLoading = false;
     },
-    async inputRecipients(page) {
+    async updateRecipientsPage(page) {
       this.areRecipientsLoading = true;
 
       ({

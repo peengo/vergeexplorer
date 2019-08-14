@@ -81,25 +81,43 @@
       <template v-else>
         <template v-for="tx in txs">
           <div class="pb-2 break-all" :key="tx.txid">
-            <router-link
-              class="monospace info--text"
-              :to="{ name: 'tx', params: { txid: tx.txid }}"
-            >{{ tx.txid }}</router-link>
-            <div v-if="tx.type ==='vin'" class="error--text monospace text-xs-right">
-              <v-icon small left color="error">fas fa-minus-square</v-icon>
-              {{ tx.value | formatAmount }} XVG
-            </div>
-            <div v-else-if="tx.type ==='vout'" class="success--text monospace text-xs-right">
-              <v-icon small left color="success">fas fa-plus-square</v-icon>
-              {{ tx.value | formatAmount }} XVG
-            </div>
-            <div v-else-if="tx.type ==='both'" class="info--text monospace text-xs-right">
-              <v-icon v-if="tx.value.charAt(0) === '-'" small left color="info">fas fa-minus-square</v-icon>
-              <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
-              {{ tx.value | removeMinus | formatAmount }} XVG
-            </div>
-            <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
-            <v-divider></v-divider>
+            <v-layout align-center justify-space-between row wrap>
+              <v-flex xs12 md8>
+                <router-link
+                  class="monospace info--text"
+                  :to="{ name: 'tx', params: { txid: tx.txid }}"
+                >{{ tx.txid }}</router-link>
+              </v-flex>
+
+              <v-flex xs12 md4>
+                <div v-if="tx.type ==='vin'" class="error--text text-xs-right">
+                  <v-icon small left color="error">fas fa-minus-square</v-icon>
+                  <span :inner-html.prop="tx.value | formatAmount | formatMuted"></span>
+                  <span class="white--text ml-1">XVG</span>
+                </div>
+                <div v-else-if="tx.type ==='vout'" class="success--text text-xs-right">
+                  <v-icon small left color="success">fas fa-plus-square</v-icon>
+                  <span :inner-html.prop="tx.value | formatAmount | formatMuted"></span>
+                  <span class="white--text ml-1">XVG</span>
+                </div>
+                <div v-else-if="tx.type ==='both'" class="info--text text-xs-right">
+                  <v-icon
+                    v-if="tx.value.charAt(0) === '-'"
+                    small
+                    left
+                    color="info"
+                  >fas fa-minus-square</v-icon>
+                  <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
+                  <span :inner-html.prop="tx.value | removeMinus | formatAmount | formatMuted"></span>
+                  <span class="white--text ml-1">XVG</span>
+                </div>
+              </v-flex>
+
+              <v-flex xs12 md12>
+                <div class="grey--text py-1">{{ tx.time | formatTime }}</div>
+                <v-divider class="mx-1"></v-divider>
+              </v-flex>
+            </v-layout>
           </div>
         </template>
       </template>
@@ -204,6 +222,8 @@ export default {
     },
     async updatePage(page) {
       this.areTxsLoading = true;
+
+      this.page = page;
 
       ({ txs: this.txs, total: this.total } = await this.getAddressTxs(
         this.$route.params.address,

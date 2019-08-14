@@ -160,6 +160,8 @@ export default {
     async updateInputsPage(page) {
       this.areInputsLoading = true;
 
+      this.pageInputs = page;
+
       ({ inputs: this.inputs, total: this.totalInputs } = await this.getInputs(
         this.$route.params.txid,
         page * this.limit - this.limit,
@@ -170,6 +172,8 @@ export default {
     },
     async updateRecipientsPage(page) {
       this.areRecipientsLoading = true;
+
+      this.pageRecipients = page;
 
       ({
         recipients: this.recipients,

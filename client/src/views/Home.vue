@@ -17,7 +17,7 @@
           <div class="grey--text">Synced</div>-->
         </v-flex>
         <v-flex xs12 sm6 md3 py-2>
-          <div>{{ info.moneysupply | formatAmount }} XVG</div>
+          <span :inner-html.prop="info.moneysupply | formatAmount | formatMuted"></span> XVG
           <div class="grey--text">Circulating Supply</div>
         </v-flex>
         <v-flex xs12 sm2 md2 py-2>
@@ -138,7 +138,7 @@
                 >{{ tx.txid }}</router-link>-->
               </div>
               <div>
-                {{ tx.amountout | formatAmount }} XVG out
+                <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG out
                 <v-icon small right>fas fa-long-arrow-alt-right</v-icon>
               </div>
               <!-- <div>{{ tx.confirmations}} confirmations</div> -->

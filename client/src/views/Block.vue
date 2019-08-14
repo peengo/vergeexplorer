@@ -44,7 +44,7 @@
             <template v-if="tx.vout.length == 1">recipient</template>
             <template v-else>recipients</template>
           </div>
-          <div class="monospace text-xs-right">{{ tx.amountout | formatAmount}} XVG</div>
+          <div class="text-xs-right"><span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG</div>
 
           <!-- <div v-if="tx.type ==='vin'" class="error--text">
               <v-icon small left color="error">fas fa-minus-square</v-icon>
@@ -147,6 +147,8 @@ export default {
     },
     async updatePage(page) {
       this.areTxsLoading = true;
+
+      this.page = page;
 
       ({ txs: this.txs, total: this.total } = await this.getBlockTxs(
         this.$route.params.hash,

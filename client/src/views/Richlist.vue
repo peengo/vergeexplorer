@@ -23,7 +23,10 @@
               >{{ props.item.address }}</router-link>
               <v-progress-circular class="ml-4" :value="props.item.percentage" width="10"></v-progress-circular>
             </td>
-            <td class="body-2 text-xs-right">{{ props.item.balance | formatAmount }}</td>
+            <td
+              class="body-2 text-xs-right"
+              :inner-html.prop="props.item.balance | formatAmount | formatMuted"
+            ></td>
             <td class="body-2 text-xs-right">
               <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
               {{ props.item.usd | formatUSD }}
@@ -61,9 +64,10 @@
                     <v-divider></v-divider>
                     <v-list-tile>
                       <v-list-tile-content>Balance</v-list-tile-content>
-                      <v-list-tile-content
-                        class="align-end"
-                      >{{ props.item.balance | formatAmount }} XVG</v-list-tile-content>
+                      <div class="align-end">
+                        <span :inner-html.prop="props.item.balance | formatAmount | formatMuted"></span>
+                        <span>XVG</span>
+                      </div>
                     </v-list-tile>
                     <v-list-tile>
                       <v-list-tile-content>Estimated Worth</v-list-tile-content>
@@ -146,7 +150,10 @@ export default {
 
       this.isRichlistLoading = false;
 
-      const [info, marketData] = await Promise.all([this.getInfo(), this.getMarketData()]);
+      const [info, marketData] = await Promise.all([
+        this.getInfo(),
+        this.getMarketData()
+      ]);
 
       this.richlist = this.richlist.map(item => ({
         ...item,

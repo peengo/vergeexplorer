@@ -40,13 +40,14 @@ router.get('/:txid', async (ctx) => {
 });
 
 // inputs an recipients
-router.get('/:string/:txid/:offset', async (ctx) => {
+router.get('/:string/:txid/:skip/:limit', async (ctx) => {
     try {
-        const { collections: { txs }, blockchain, errors, config: { limit } } = ctx.locals;
+        const { collections: { txs }, blockchain, errors, config: { limits: { block: allowedLimit } } } = ctx.locals;
 
         const string = ctx.params.string;
         const txid = ctx.params.txid;
-        let offset = ctx.params.offset;
+        let skip = ctx.params.skip;
+        let limit = ctx.params.limit;
 
         if (!blockchain.isHash(txid)) {
             ctx.status = 400;
@@ -54,13 +55,16 @@ router.get('/:string/:txid/:offset', async (ctx) => {
             return false;
         }
 
-        if (!blockchain.isInt(offset)) {
+        if (!blockchain.isInt(skip) && !blockchain.isInt(limit)) {
             ctx.status = 400;
             ctx.body = { error: errors.not_valid_int };
             return false;
         }
 
-        offset = Number(offset);
+        skip = Number(skip);
+        limit = Number(limit);
+
+        limit = (limit >= 1 && limit <= allowedLimit) ? limit : allowedLimit;
 
         const tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
@@ -79,7 +83,7 @@ router.get('/:string/:txid/:offset', async (ctx) => {
                 inputs = await blockchain.getInputs(tx, txs);
                 total = inputs.length;
 
-                inputs = inputs.slice(offset, offset + limit);
+                inputs = inputs.slice(skip, skip + limit);
 
                 ctx.body = { data: inputs, total };
                 break;
@@ -87,7 +91,7 @@ router.get('/:string/:txid/:offset', async (ctx) => {
                 recipients = blockchain.getRecipients(tx);
                 total = recipients.length;
 
-                recipients = recipients.slice(offset, offset + limit);
+                recipients = recipients.slice(skip, skip + limit);
 
                 ctx.body = { data: recipients, total };
                 break;

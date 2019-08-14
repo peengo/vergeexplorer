@@ -299,10 +299,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/0', () => {
+            describe('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/0/50', () => {
                 it('should return first 50 inputs', async () => {
                     try {
-                        const res = await app.get('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/0');
+                        const res = await app.get('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/0/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -319,10 +319,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/50', () => {
+            describe('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/50/50', () => {
                 it('should return the last 23 inputs', async () => {
                     try {
-                        const res = await app.get('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/50');
+                        const res = await app.get('/tx/inputs/24b6654cb4711fc4704dcc67175a9be9d0f740fb30c983a4266f981ff25225e3/50/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -339,10 +339,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/0', () => {
+            describe('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/0/50', () => {
                 it('should return first 50 recipients', async () => {
                     try {
-                        const res = await app.get('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/0');
+                        const res = await app.get('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/0/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);
@@ -359,10 +359,10 @@ describe('API Tests', () => {
                 });
             });
 
-            describe('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/300', () => {
+            describe('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/300/50', () => {
                 it('should return last 16 recipients', async () => {
                     try {
-                        const res = await app.get('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/300');
+                        const res = await app.get('/tx/recipients/4b1073b7f44d48d911b5fee478cd01225d8284a1ae036c2d43364b311309e41b/300/50');
 
                         expect(res).to.have.status(200);
                         expect(res).to.have.header('content-type', contentType);

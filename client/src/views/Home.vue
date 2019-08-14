@@ -4,7 +4,7 @@
       <h1>Verge (XVG) Cryptocurrency Blockchain Explorer</h1>
     </v-layout>
 
-    <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
+    <Alert v-if="isError" :error="error" />
 
     <template v-else>
       <ProgressCircular v-if="isInfoAndMarketLoading"></ProgressCircular>
@@ -68,10 +68,23 @@
                 <v-icon small class="mr-2">fas fa-cube</v-icon>
                 {{ block.height }}
               </div>
-              <router-link
+
+              <v-tooltip top open-delay="0" close-delay="0">
+                <template v-slot:activator="{ on }">
+                  <div v-on="on">
+                    <router-link
+                      class="success--text monospace"
+                      :to="{ name: 'block', params: { hash: block.hash }}"
+                    >{{ block.hash }}</router-link>
+                  </div>
+                </template>
+                <span>Block hash</span>
+              </v-tooltip>
+
+              <!-- <router-link
                 class="success--text monospace"
                 :to="{ name: 'block', params: { hash: block.hash }}"
-              >{{ block.hash }}</router-link>
+              >{{ block.hash }}</router-link>-->
               <div>{{ block.confirmations }} confirmations</div>
               <div>
                 {{ block.tx.length }}
@@ -106,10 +119,23 @@
             <div class="pb-2 break-all" :key="tx.txid">
               <div class="mb-2">
                 <v-icon small class="mr-2">fas fa-money-bill</v-icon>
-                <router-link
+
+                <v-tooltip top open-delay="0" close-delay="0">
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <router-link
+                        class="info--text monospace"
+                        :to="{ name: 'tx', params: { txid: tx.txid }}"
+                      >{{ tx.txid }}</router-link>
+                    </div>
+                  </template>
+                  <span>Transaction txid</span>
+                </v-tooltip>
+
+                <!-- <router-link
                   class="info--text monospace"
                   :to="{ name: 'tx', params: { txid: tx.txid }}"
-                >{{ tx.txid }}</router-link>
+                >{{ tx.txid }}</router-link>-->
               </div>
               <div>
                 {{ tx.amountout | formatAmount }} XVG out
@@ -134,13 +160,16 @@
 <script>
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
+import Alert from "../components/Alert.vue";
+
 import { getInfo, getMarketData } from "../mixins.js";
 
 export default {
   mixins: [getInfo, getMarketData],
   components: {
     Heading,
-    ProgressCircular
+    ProgressCircular,
+    Alert
   },
   data: () => ({
     headingBlocks: {

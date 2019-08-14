@@ -2,7 +2,7 @@
   <div>
     <Heading :heading="headingAddress" />
 
-    <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
+    <Alert v-if="isError" :error="error" />
 
     <template v-else>
       <ProgressCircular v-if="isLoading"></ProgressCircular>
@@ -181,6 +181,8 @@
 <script>
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
+import Alert from "../components/Alert.vue";
+
 import { format } from "date-fns";
 import { getMarketData } from "../mixins.js";
 
@@ -188,7 +190,8 @@ export default {
   mixins: [getMarketData],
   components: {
     Heading,
-    ProgressCircular
+    ProgressCircular,
+    Alert
   },
   data: () => ({
     // headers: [

@@ -15,9 +15,10 @@ const config = {
     // limit for pagers, peers, richlist...
     limit: 50,
     limits: {
-        richlist: 50, // richlist addresses
-        address: 50, // address tranasaction
-        block: 50, // block transactions
+        richlist: 50, // richlist limit
+        address: 50, // transactions page limit on address page
+        block: 50, // transactions page limit on block page
+        tx: 50, // inputs and recipients page limit on tx page
         latest: 10 // latest n blocks & transactions on homepage
     }
 };

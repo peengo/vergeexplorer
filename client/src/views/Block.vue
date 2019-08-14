@@ -2,11 +2,11 @@
   <div>
     <Heading :heading="headingBlock" />
 
-    <v-alert :value="true" color="error" v-if="isError">{{ error }}</v-alert>
+    <Alert v-if="isError" :error="error" />
 
     <template v-else>
       <ProgressCircular v-if="isLoading"></ProgressCircular>
-      <template v-for="(value, name) in block">
+      <template v-else v-for="(value, name) in block">
         <p v-if="name !=='tx'" :key="name">{{ name }}: {{ value }}</p>
       </template>
     </template>
@@ -20,10 +20,22 @@
     <template v-else>
       <template v-for="tx in txs">
         <div class="pb-2 break-all" :key="tx.txid">
-          <router-link
+          <v-tooltip top open-delay="0" close-delay="0">
+            <template v-slot:activator="{ on }">
+              <div v-on="on">
+                <router-link
+                  class="monospace info--text"
+                  :to="{ name: 'tx', params: { txid: tx.txid }}"
+                >{{ tx.txid }}</router-link>
+              </div>
+            </template>
+            <span>Transaction txid</span>
+          </v-tooltip>
+
+          <!-- <router-link
             class="monospace info--text"
             :to="{ name: 'tx', params: { txid: tx.txid }}"
-          >{{ tx.txid }}</router-link>
+          >{{ tx.txid }}</router-link>-->
           <div class="grey--text">
             <v-icon v-if="tx.vout.length == 1" small left color="grey">fas fa-user</v-icon>
             <v-icon v-else-if="tx.vout.length == 2" small left color="grey">fas fa-user-friends</v-icon>
@@ -53,31 +65,31 @@
       </template>
     </template>
 
-    <div v-if="!isLoading" class="text-xs-center">
-      <v-layout justify-center>
-        <v-flex xs12>
-          <v-pagination
-            v-model="page"
-            prev-icon="fas fa-angle-left"
-            next-icon="fas fa-angle-right"
-            :length="Math.ceil(total/50)"
-            total-visible="5"
-            @input="input"
-          ></v-pagination>
-        </v-flex>
-      </v-layout>
-    </div>
+    <v-layout v-if="!isLoading" justify-center class="text-xs-center">
+      <v-flex xs12>
+        <v-pagination
+          v-model="page"
+          prev-icon="fas fa-angle-left"
+          next-icon="fas fa-angle-right"
+          :length="Math.ceil(total/50)"
+          total-visible="5"
+          @input="input"
+        ></v-pagination>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
 <script>
 import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
+import Alert from "../components/Alert.vue";
 
 export default {
   components: {
     Heading,
-    ProgressCircular
+    ProgressCircular,
+    Alert
   },
   data: () => ({
     headingBlock: {
@@ -101,8 +113,6 @@ export default {
   async created() {
     try {
       this.block = await this.getBlock(this.$route.params.hash);
-
-      this.isLoading = false;
 
       ({ txs: this.txs, total: this.total } = await this.getBlockTxs(
         this.$route.params.hash,

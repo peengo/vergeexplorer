@@ -489,7 +489,7 @@ describe('API Tests', () => {
             describe('/search { "search": "1" }', () => {
                 it('should return the block with height 1 redirect data', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: '1' });
 
                         expect(res).to.have.status(200);
@@ -507,7 +507,7 @@ describe('API Tests', () => {
             describe('/search { "search": "50000000000" }', () => {
                 it('should return JSON integer out of range', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: '50000000000' });
 
                         expect(res).to.have.status(400);
@@ -523,7 +523,7 @@ describe('API Tests', () => {
             describe('/search { "search": "DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w" }', () => {
                 it('should return the address redirect data', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: 'DURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w' });
 
                         expect(res).to.have.status(200);
@@ -541,7 +541,7 @@ describe('API Tests', () => {
             describe('/search { "search": "AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w" }', () => {
                 it('should return the address not found', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: 'AURWKj2AB9pWvjyH8Jj5BAvEaDRZnTzJ1w' });
 
                         expect(res).to.have.status(404);
@@ -557,7 +557,7 @@ describe('API Tests', () => {
             describe('/search { "search": "000007342680f4a3d7a3d34a9214b5b71c6f1bec3d633d6d2b84d474a6be55fd" }', () => {
                 it('should return the block with height 1 redirect data', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: '000007342680f4a3d7a3d34a9214b5b71c6f1bec3d633d6d2b84d474a6be55fd' });
 
                         expect(res).to.have.status(200);
@@ -575,7 +575,7 @@ describe('API Tests', () => {
             describe('/search { "search": "5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef" }', () => {
                 it('should return the tx with redirect data', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: '5418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef' });
 
                         expect(res).to.have.status(200);
@@ -593,7 +593,7 @@ describe('API Tests', () => {
             describe('/search { "search": "9418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef" }', () => {
                 it('should return block / tx not found', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send({ search: '9418ac98015b3fd202253597bd3c5dd5733d851439f09b8913abe9216059a9ef' });
 
                         expect(res).to.have.status(404);
@@ -609,7 +609,7 @@ describe('API Tests', () => {
             describe('/search "s: s"', () => {
                 it('should return not a valid JSON error', async () => {
                     try {
-                        const res = await app.get('/search')
+                        const res = await app.post('/search')
                             .send('s: s');
 
                         expect(res).to.have.status(400);
@@ -625,7 +625,7 @@ describe('API Tests', () => {
             describe('/search', () => {
                 it('should return invalid search parameter', async () => {
                     try {
-                        const res = await app.get('/search');
+                        const res = await app.post('/search');
 
                         expect(res).to.have.status(400);
                         expect(res).to.have.header('content-type', contentType);

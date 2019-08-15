@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const router = new Router();
 
-router.get('/', async (ctx) => {
+router.post('/', async (ctx) => {
     try {
         const { rpc, blockchain, collections: { addresses, txs }, errors } = ctx.locals;
 
@@ -93,7 +93,7 @@ router.get('/', async (ctx) => {
                     ctx.throw(404, error.data.error.message);
                     break;
                 default:
-                    ctx.throw(error.status, error.data.error.message)
+                    ctx.throw(error.status, error.data.error.message);
                     break;
             }
             // ctx.throw(error.status, error.data.error.message);

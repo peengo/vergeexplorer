@@ -216,7 +216,6 @@ export default {
       this.areTxsLoading = false;
     } catch (error) {
       this.isError = true;
-      console.log(error);
     }
   },
   methods: {
@@ -244,7 +243,6 @@ export default {
         this.areBlocksLoading = false;
       } catch (error) {
         this.isError = true;
-        console.log(error);
       }
     },
     async reloadTxs() {
@@ -257,7 +255,6 @@ export default {
         this.areTxsLoading = false;
       } catch (error) {
         this.isError = true;
-        console.log(error);
       }
     }
   },

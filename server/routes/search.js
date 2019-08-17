@@ -26,7 +26,7 @@ router.post('/', async (ctx) => {
 
             if (blockError) throw hashError;
 
-            ctx.body = { data: { redirect: 'block', hash: block.hash } };
+            ctx.body = { data: { redirect: `/block/${block.hash}` } };
             return false;
             // } catch (error) {
             //     ctx.status = 404;
@@ -41,7 +41,7 @@ router.post('/', async (ctx) => {
             const address = await addresses.findOne({ address: search });
 
             if (address) {
-                ctx.body = { data: { redirect: 'address', address: address.address } };
+                ctx.body = { data: { redirect: `/address/${address.address}` } };
                 return false;
             } else {
                 ctx.status = 404;
@@ -54,7 +54,7 @@ router.post('/', async (ctx) => {
             const tx = await txs.findOne({ txid: search });
 
             if (tx) {
-                ctx.body = { data: { redirect: 'tx', txid: tx.txid } };
+                ctx.body = { data: { redirect: `/tx/${tx.txid}` } };
                 return false;
             }
 
@@ -64,7 +64,7 @@ router.post('/', async (ctx) => {
             if (error) throw error;
 
             if (block) {
-                ctx.body = { data: { redirect: 'block', hash: block.hash } };
+                ctx.body = { data: { redirect: `/block/${block.hash}` } };
                 return false;
             }
             // } catch (error) {

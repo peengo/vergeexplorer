@@ -122,7 +122,6 @@ export default {
 
       this.isLoading = false;
     } catch (error) {
-      console.log(error);
       if (error.response.status == 400 || error.response.status == 404) {
         this.error = error.response.data.error;
         this.isError = true;
@@ -185,6 +184,55 @@ export default {
       ));
 
       this.areRecipientsLoading = false;
+    }
+  },
+  async beforeRouteUpdate(to, from, next) {
+    try {
+      this.isLoading = true;
+
+      this.tx = await this.getTx(to.params.txid);
+
+      this.areInputsLoading = true;
+      this.areRecipientsLoading = true;
+
+      this.pageInputs = 1;
+      this.pageRecipients = 1;
+
+      const [inputsObj, recipientsObj] = await Promise.all([
+        this.getInputs(
+          to.params.txid,
+          this.pageInputs * this.limit - this.limit,
+          this.limit
+        ),
+        this.getRecipients(
+          to.params.txid,
+          this.pageRecipients * this.limit - this.limit,
+          this.limit
+        )
+      ]);
+
+      ({ inputs: this.inputs, total: this.totalInputs } = inputsObj);
+      ({
+        recipients: this.recipients,
+        total: this.totalRecipients
+      } = recipientsObj);
+
+      this.areInputsLoading = false;
+      this.areRecipientsLoading = false;
+      this.isLoading = false;
+    } catch (error) {
+      if (error.response.status == 400 || error.response.status == 404) {
+        this.error = error.response.data.error;
+        this.isError = true;
+      } else if (error.response.status == 500) {
+        this.isError = true;
+      } else {
+        this.$router.push({ path: "/404" });
+      }
+    } finally {
+      this.isLoading = false;
+
+      next();
     }
   }
 };

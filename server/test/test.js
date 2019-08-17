@@ -497,7 +497,6 @@ describe('API Tests', () => {
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data').to.be.an('object');
                         expect(res.body.data).to.have.property('redirect').to.be.a('string');
-                        expect(res.body.data).to.have.property('hash').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }
@@ -531,7 +530,6 @@ describe('API Tests', () => {
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data').to.be.an('object');
                         expect(res.body.data).to.have.property('redirect').to.be.a('string');
-                        expect(res.body.data).to.have.property('address').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }
@@ -565,7 +563,6 @@ describe('API Tests', () => {
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data').to.be.an('object');
                         expect(res.body.data).to.have.property('redirect').to.be.a('string');
-                        expect(res.body.data).to.have.property('hash').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }
@@ -583,7 +580,6 @@ describe('API Tests', () => {
                         expect(res).to.be.json;
                         expect(res.body).to.have.property('data').to.be.an('object');
                         expect(res.body.data).to.have.property('redirect').to.be.a('string');
-                        expect(res.body.data).to.have.property('txid').to.be.a('string');
                     } catch (error) {
                         throw error;
                     }

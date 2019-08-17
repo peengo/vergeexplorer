@@ -44,7 +44,9 @@
             <template v-if="tx.vout.length == 1">recipient</template>
             <template v-else>recipients</template>
           </div>
-          <div class="text-xs-right"><span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG</div>
+          <div class="text-xs-right">
+            <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG
+          </div>
 
           <!-- <div v-if="tx.type ==='vin'" class="error--text">
               <v-icon small left color="error">fas fa-minus-square</v-icon>
@@ -117,7 +119,6 @@ export default {
 
       this.isLoading = false;
     } catch (error) {
-      console.log(error);
       if (error.response.status == 400 || error.response.status == 404) {
         this.error = error.response.data.error;
         this.isError = true;
@@ -157,6 +158,38 @@ export default {
       ));
 
       this.areTxsLoading = false;
+    }
+  },
+  async beforeRouteUpdate(to, from, next) {
+    try {
+      this.isLoading = true;
+
+      this.block = await this.getBlock(to.params.hash);
+
+      this.areTxsLoading = true;
+      this.page = 1;
+
+      ({ txs: this.txs, total: this.total } = await this.getBlockTxs(
+        to.params.hash,
+        this.page * this.limit - this.limit,
+        this.limit
+      ));
+
+      this.areTxsLoading = false;
+      this.isLoading = false;
+    } catch (error) {
+      if (error.response.status == 400 || error.response.status == 404) {
+        this.error = error.response.data.error;
+        this.isError = true;
+      } else if (error.response.status == 500) {
+        this.isError = true;
+      } else {
+        this.$router.push({ path: "/404" });
+      }
+    } finally {
+      this.isLoading = false;
+
+      next();
     }
   }
 };

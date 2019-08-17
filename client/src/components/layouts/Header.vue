@@ -26,27 +26,6 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-
-    <v-container>
-      <v-layout row wrap>
-        <v-flex xs12 sm10 offset-sm1 md8 offset-md2 xl6 offset-xl3>
-          <v-form @submit.prevent="submitSearch">
-            <v-text-field
-              outline
-              autofocus
-              clearable
-              counter
-              solo
-              color="white"
-              append-icon="fas fa-search"
-              label="Search by address, transaction id (txid), block hash or block height"
-              v-model="search"
-              class="subheading"
-            ></v-text-field>
-          </v-form>
-        </v-flex>
-      </v-layout>
-    </v-container>
   </div>
 </template>
 
@@ -58,35 +37,7 @@ export default {
       { title: "Richlist", to: "/richlist", icon: "fas fa-chart-pie" },
       { title: "Peers", to: "/peers", icon: "fas fa-network-wired" }
     ],
-    publicPath: process.env.BASE_URL,
-    search: ""
-  }),
-  methods: {
-    async submitSearch() {
-      try {
-        const search = await this.postSearch();
-
-        console.log(search);
-      } catch (error) {
-        console.log(error.request);
-        console.log(error.response);
-      }
-    },
-    async postSearch() {
-      const {
-        data: { data: search }
-      } = await this.$http.post("/api/search", {
-        search: this.search
-      });
-
-      return search;
-    }
-  },
-  watch: {
-    search(val) {
-      // TODO
-      if (val) console.log(val.length);
-    }
-  }
+    publicPath: process.env.BASE_URL
+  })
 };
 </script>

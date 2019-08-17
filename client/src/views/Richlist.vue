@@ -165,7 +165,6 @@ export default {
       this.isPriceLoading = false;
     } catch (error) {
       this.isError = true;
-      console.log(error);
     } finally {
       this.isRichlistLoading = false;
       this.isInfoLoading = false;
@@ -183,6 +182,7 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 td {
   padding: 0 1em !important;

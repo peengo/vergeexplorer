@@ -7,6 +7,7 @@ const Router = require('koa-router');
 const cors = require('@koa/cors');
 const logger = require('koa-logger');
 const error = require('koa-json-error');
+const helmet = require('koa-helmet');
 const { promisify } = require('util');
 
 const config = require('./config');
@@ -56,6 +57,8 @@ app.use(cors());
 app.use(logger());
 app.use(bodyparser());
 app.use(error(formatError));
+app.use(helmet());
+app.use(helmet.hidePoweredBy({ setTo: 'API' }));
 
 router.use('/address', require('./routes/address').routes());
 router.use('/block', require('./routes/block').routes());

@@ -234,6 +234,42 @@ export default {
       this.areTxsLoading = false;
     }
   },
+  async beforeRouteUpdate(to, from, next) {
+    try {
+      this.isLoading = true;
+
+      this.address = await this.getAddress(to.params.address);
+      this.qrlink = `https://chart.googleapis.com/chart?cht=qr&chl=${this.address.address}&chs=256x256&chld=L%7C0`;
+
+      const marketData = await this.getMarketData();
+      this.address.usd = (this.address.balance * marketData.usd).toFixed(2);
+
+      this.areTxsLoading = true;
+      this.page = 1;
+
+      ({ txs: this.txs, total: this.total } = await this.getAddressTxs(
+        to.params.address,
+        this.page * this.limit - this.limit,
+        this.limit
+      ));
+
+      this.areTxsLoading = false;
+      this.isLoading = false;
+    } catch (error) {
+      if (error.response.status == 400 || error.response.status == 404) {
+        this.error = error.response.data.error;
+        this.isError = true;
+      } else if (error.response.status == 500) {
+        this.isError = true;
+      } else {
+        this.$router.push({ path: "/404" });
+      }
+    } finally {
+      this.isLoading = false;
+
+      next();
+    }
+  },
   filters: {
     formatTime(time) {
       return format(new Date(time * 1000), "D MMM YYYY - HH:mm A");

@@ -6,7 +6,28 @@
 
     <template v-else>
       <ProgressCircular v-if="isLoading"></ProgressCircular>
-      <template v-else v-for="(value, name) in block">
+
+      <template v-else>
+        <v-btn flat icon v-if="block.previousblockhash">
+          <router-link
+            :to="{ name: 'block', params: { hash: block.previousblockhash }}"
+            class="info--text"
+          >
+            <v-icon>fas fa-angle-left</v-icon>
+          </router-link>
+        </v-btn>
+
+        <v-btn flat icon v-if="block.nextblockhash">
+          <router-link
+            :to="{ name: 'block', params: { hash: block.nextblockhash }}"
+            class="info--text"
+          >
+            <v-icon>fas fa-angle-right</v-icon>
+          </router-link>
+        </v-btn>
+      </template>
+
+      <template v-for="(value, name) in block">
         <p v-if="name !=='tx'" :key="name">{{ name }}: {{ value }}</p>
       </template>
     </template>
@@ -129,6 +150,7 @@ export default {
       }
     } finally {
       this.isLoading = false;
+      this.areTxsLoading = false;
     }
   },
   methods: {
@@ -162,6 +184,9 @@ export default {
   },
   async beforeRouteUpdate(to, from, next) {
     try {
+      this.block = {};
+      this.txs = [];
+
       this.isLoading = true;
 
       this.block = await this.getBlock(to.params.hash);
@@ -188,6 +213,7 @@ export default {
       }
     } finally {
       this.isLoading = false;
+      this.areTxsLoading = false;
 
       next();
     }

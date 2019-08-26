@@ -3,7 +3,7 @@ const router = new Router();
 
 router.get('/:hash', async (ctx) => {
     try {
-        const { blockchain, rpc, errors } = ctx.locals;
+        const { blockchain, collections: { blocks }, rpc, errors } = ctx.locals;
 
         const hash = ctx.params.hash;
 
@@ -20,6 +20,10 @@ router.get('/:hash', async (ctx) => {
             ctx.body = { error: error.message };
             return false;
         }
+
+        const nextBlock = await blocks.findOne({ hash: block.nextblockhash });
+
+        if (nextBlock == null) delete block.nextblockhash;
 
         ctx.body = { data: block };
     } catch (error) {

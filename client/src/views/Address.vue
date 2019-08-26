@@ -40,18 +40,20 @@
 
                 <v-dialog v-model="dialog" max-width="400">
                   <v-card>
-                    <v-card-title class="headline">Address QR Code</v-card-title>
+                    <v-card-title class="headline justify-center info">Address QR Code</v-card-title>
                     <v-card-text class="break-all text-xs-center">
                       <h3>{{ address.address }}</h3>
                     </v-card-text>
-                    <!-- <img :src="qrlink" alt="QR Code" class="ma-5" /> -->
-                    <v-img
-                      alt="QR Code"
-                      :src="qrlink"
-                      max-height="256"
-                      max-width="256"
-                      class="ma-5"
-                    ></v-img>
+                    <v-card-title class="justify-center">
+                      <!-- <img :src="qrlink" alt="QR Code" class="ma-5" /> -->
+                      <v-img
+                        alt="QR Code"
+                        :src="qrlink"
+                        max-height="256"
+                        max-width="256"
+                        class="ma-5"
+                      ></v-img>
+                    </v-card-title>
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn flat @click="dialog = false">Close</v-btn>

@@ -1,19 +1,60 @@
 <template>
-  <v-footer height="auto">
-    <v-dialog v-model="dialog" max-width="768">
+  <v-footer height="auto" class="mt-5">
+    <v-dialog v-model="contactDialog" max-width="400">
       <v-card>
-        <v-card-title class="headline">Use Google's location service?</v-card-title>
-        <v-card-text>Let Google help apps determine location.</v-card-text>
+        <v-card-title class="headline justify-center info">Contact</v-card-title>
+        <v-card-text class="text-xs-center py-5">
+          <img :src="`${publicPath}contact.png`" alt="contact" />
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat="flat" @click="dialog = false">Close</v-btn>
+          <v-btn flat @click="contactDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="donationsDialog" max-width="768">
+      <v-card>
+        <v-card-title class="headline justify-center warning">Donations</v-card-title>
+        <v-card-text class="subheading">
+          This website was built from scratch. Source code is available on
+          <a
+            alt="GitHub"
+            href="http://github.com"
+          >GitHub</a>. Donations are not necesarry but are greatly appreciated. Donations keep this website online. All donations are non-refundable. To show the support you can also use the Binance exchange referral link below.
+        </v-card-text>
+        <v-card-text class="subheading text-xs-center">VERGE (XVG)</v-card-text>
+        <v-card-text class="text-xs-center monospace success">DEHYYiNA4fb7h59DGPyrDNNoRRF5ZtMmy9</v-card-text>
+        <v-card-title class="justify-center">
+          <v-img alt="QR Code" :src="qrlink" max-height="256" max-width="256" class="ma-5"></v-img>
+        </v-card-title>
+        <v-card-text class="text-xs-center">
+          <v-btn
+            small
+            color="warning"
+            dark
+            flat
+            href="https://www.binance.com/?ref=23129601"
+          >Buy/Sell @ Binance</v-btn>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="donationsDialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-layout justify-center row wrap>
-      <v-btn v-for="(item, i) in items" :key="i" flat round @click.stop="dialog = true">
+      <!-- <v-btn v-for="(item, i) in items" :key="i" flat round @click.stop="item.dialog = true">
         <v-icon left small>{{ item.icon}}</v-icon>
         {{ item.title }}
+      </v-btn>-->
+
+      <v-btn flat round @click.stop="contactDialog = true">
+        <v-icon left small>fas fa-home</v-icon>Contact Us
+      </v-btn>
+      <v-btn flat round @click.stop="donationsDialog = true">
+        <v-icon left small>fas fa-hand-holding-usd</v-icon>Donations
       </v-btn>
       <v-btn href="https://github.com/" flat round>
         <v-icon left>fab fa-github</v-icon>GitHub
@@ -30,10 +71,17 @@
 export default {
   data: () => ({
     items: [
-      { title: "Contact Us", icon: "fas fa-home" },
-      { title: "Donations", icon: "fas fa-hand-holding-usd" }
+      { title: "Contact Us", icon: "fas fa-home", dialog: false },
+      {
+        title: "Donations",
+        icon: "fas fa-hand-holding-usd",
+        dialog: false
+      }
     ],
-    dialog: false
+    publicPath: process.env.BASE_URL,
+    contactDialog: false,
+    donationsDialog: false,
+    qrlink: `https://chart.googleapis.com/chart?cht=qr&chl=DEHYYiNA4fb7h59DGPyrDNNoRRF5ZtMmy9&chs=256x256&chld=L%7C0`
   })
 };
 </script>

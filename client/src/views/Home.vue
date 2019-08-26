@@ -1,8 +1,10 @@
 <template>
   <div>
-    <v-layout align-center justify-center text-xs-center class="mt-3 mb-5">
+    <v-layout align-center justify-center text-xs-center>
       <h1>Verge (XVG) Cryptocurrency Blockchain Explorer</h1>
     </v-layout>
+
+    <v-divider class="my-3 mx-2"></v-divider>
 
     <Alert v-if="isError" :error="error" />
 
@@ -16,18 +18,27 @@
           <!-- <div class="d-block mt-4">{{ info.sync | formatPercent }} %</div>
           <div class="grey--text">Synced</div>-->
         </v-flex>
+
+        <v-flex xs12 sm3 md2 py-2>
+          <div>{{ info.sync | formatPercent }} %</div>
+          <div class="grey--text">Synced</div>
+        </v-flex>
+
         <v-flex xs12 sm6 md3 py-2>
           <span :inner-html.prop="info.moneysupply | formatAmount | formatMuted"></span> XVG
           <div class="grey--text">Circulating Supply</div>
         </v-flex>
+
         <v-flex xs12 sm2 md2 py-2>
           <div>{{ marketData.usd_market_cap | formatUSD }}</div>
           <div class="grey--text">Market Cap</div>
         </v-flex>
+
         <v-flex xs12 sm4 md2 py-2>
           <div>{{ marketData.usd_24h_vol | formatUSD }}</div>
           <div class="grey--text">24h volume</div>
         </v-flex>
+
         <v-flex xs12 sm3 md3 py-2>
           <span class="mr-2">${{ marketData.usd }}</span>
           <span
@@ -37,11 +48,9 @@
           <span v-else class="error--text">{{ marketData.usd_24h_change.toFixed(2) }} %</span>
           <div class="grey--text">Price</div>
         </v-flex>
-        <v-flex xs12 sm3 md2 py-2>
-          <div>{{ info.sync | formatPercent }} %</div>
-          <div class="grey--text">Synced</div>
-        </v-flex>
       </v-layout>
+
+      <v-divider class="my-3 mx-2"></v-divider>
 
       <v-layout row wrap>
         <v-flex xs12 md6>
@@ -118,7 +127,7 @@
           <template v-else v-for="(tx, index) in txs">
             <div class="pb-2 break-all" :key="tx.txid">
               <div class="mb-2">
-                <v-icon small class="mr-2">fas fa-money-bill</v-icon>
+                <v-icon small class="mr-2">fas fa-money-check</v-icon>
 
                 <v-tooltip top open-delay="0" close-delay="0">
                   <template v-slot:activator="{ on }">

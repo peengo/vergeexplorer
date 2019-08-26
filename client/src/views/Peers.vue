@@ -8,7 +8,7 @@
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
       <template v-else>
-        <v-data-table
+        <!-- <v-data-table
           :headers="headers"
           :items="peers"
           hide-actions
@@ -20,10 +20,10 @@
             <td class="body-2">{{ props.item.version }}</td>
             <td class="body-2">{{ props.item.subver | formatSubver }}</td>
           </template>
-        </v-data-table>
+        </v-data-table>-->
 
         <!-- <v-container fluid grid-list-md hidden-sm-and-up> -->
-        <v-data-iterator
+        <!-- <v-data-iterator
           :items="peers"
           fluid
           grid-list-md
@@ -34,7 +34,7 @@
           content-tag="v-layout"
         >
           <template v-slot:item="props">
-            <v-flex xs12 class="pa-1">
+            <v-flex xs12 class="py-1">
               <v-card>
                 <v-list>
                   <v-list-tile>
@@ -60,8 +60,34 @@
               </v-card>
             </v-flex>
           </template>
-        </v-data-iterator>
+        </v-data-iterator>-->
         <!-- </v-container> -->
+
+        <v-flex xs12 md8 offset-md2 v-for="(peer, index) in peers" :key="index" class="py-1">
+          <v-card>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-content class="body-1 grey--text monospace">Address</v-list-tile-content>
+                <v-list-tile-content
+                  class="align-end monospace accent--text"
+                >{{ peer.addr | formatAddress }}</v-list-tile-content>
+              </v-list-tile>
+              <v-divider class="mx-2"></v-divider>
+              <v-list-tile>
+                <v-list-tile-content class="body-1 grey--text">Connection Time</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ peer.conntime | formatTimeAgo}}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="body-1 grey--text">Version</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ peer.version}}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="body-1 grey--text">Subversion</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ peer.subver | formatSubver}}</v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-card>
+        </v-flex>
       </template>
     </template>
   </div>

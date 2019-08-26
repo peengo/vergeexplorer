@@ -8,28 +8,34 @@
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
       <template v-else>
-        <v-btn flat icon v-if="block.previousblockhash">
-          <router-link
+        <v-layout justify-space-between row>
+          <v-btn
+            v-if="block.previousblockhash"
+            fab
+            icon
             :to="{ name: 'block', params: { hash: block.previousblockhash }}"
             class="info--text"
           >
             <v-icon>fas fa-angle-left</v-icon>
-          </router-link>
-        </v-btn>
+          </v-btn>
 
-        <v-btn flat icon v-if="block.nextblockhash">
-          <router-link
+          <v-btn
+            v-if="block.nextblockhash"
+            fab
+            icon
             :to="{ name: 'block', params: { hash: block.nextblockhash }}"
             class="info--text"
           >
             <v-icon>fas fa-angle-right</v-icon>
-          </router-link>
-        </v-btn>
+          </v-btn>
+        </v-layout>
       </template>
 
-      <template v-for="(value, name) in block">
-        <p v-if="name !=='tx'" :key="name">{{ name }}: {{ value }}</p>
-      </template>
+      <v-flex xs12 class="break-all">
+        <template v-for="(value, name) in block">
+          <p v-if="name !=='tx'" :key="name">{{ name }}: {{ value }}</p>
+        </template>
+      </v-flex>
     </template>
 
     <Heading :heading="headingTxs" />

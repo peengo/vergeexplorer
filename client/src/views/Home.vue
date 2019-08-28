@@ -13,34 +13,37 @@
 
       <v-layout v-else row wrap text-xs-center break-all>
         <v-flex xs12 sm2 md2 py-2>
-          <div>{{ info.blocks_rpc }}</div>
+          <div class="primary--text">{{ info.blocks_rpc }}</div>
           <div class="grey--text">Blocks</div>
           <!-- <div class="d-block mt-4">{{ info.sync | formatPercent }} %</div>
           <div class="grey--text">Synced</div>-->
         </v-flex>
 
         <v-flex xs12 sm3 md2 py-2>
-          <div>{{ info.sync | formatPercent }} %</div>
+          <div class="primary--text">{{ info.sync | formatPercent }} %</div>
           <div class="grey--text">Synced</div>
         </v-flex>
 
         <v-flex xs12 sm6 md3 py-2>
-          <span :inner-html.prop="info.moneysupply | formatAmount | formatMuted"></span> XVG
+          <span
+            class="accent--text"
+            :inner-html.prop="info.moneysupply | formatAmount | formatMuted"
+          ></span> XVG
           <div class="grey--text">Circulating Supply</div>
         </v-flex>
 
         <v-flex xs12 sm2 md2 py-2>
-          <div>{{ marketData.usd_market_cap | formatUSD }}</div>
+          <div class="warning--text">{{ marketData.usd_market_cap | formatUSD }}</div>
           <div class="grey--text">Market Cap</div>
         </v-flex>
 
         <v-flex xs12 sm4 md2 py-2>
-          <div>{{ marketData.usd_24h_vol | formatUSD }}</div>
+          <div class="warning--text">{{ marketData.usd_24h_vol | formatUSD }}</div>
           <div class="grey--text">24h volume</div>
         </v-flex>
 
         <v-flex xs12 sm3 md3 py-2>
-          <span class="mr-2">${{ marketData.usd }}</span>
+          <span class="mr-2 warning--text">${{ marketData.usd }}</span>
           <span
             v-if="marketData.usd_24h_change > 0"
             class="success--text"
@@ -60,7 +63,7 @@
             <v-btn
               flat
               icon
-              color="success"
+              color="primary"
               @click="reloadBlocks"
               :class="{ 'fast-spin': isBlocksSpinnerLoading}"
               v-if="!areBlocksLoading"
@@ -82,7 +85,7 @@
                 <template v-slot:activator="{ on }">
                   <div v-on="on">
                     <router-link
-                      class="success--text monospace"
+                      class="primary--text monospace"
                       :to="{ name: 'block', params: { hash: block.hash }}"
                     >{{ block.hash }}</router-link>
                   </div>
@@ -113,7 +116,7 @@
             <v-btn
               flat
               icon
-              color="info"
+              color="accent"
               @click="reloadTxs"
               :class="{ 'fast-spin': isTxsSpinnerLoading}"
               v-if="!areTxsLoading"
@@ -133,7 +136,7 @@
                   <template v-slot:activator="{ on }">
                     <div v-on="on">
                       <router-link
-                        class="info--text monospace"
+                        class="accent--text monospace"
                         :to="{ name: 'tx', params: { txid: tx.txid }}"
                       >{{ tx.txid }}</router-link>
                     </div>
@@ -146,17 +149,17 @@
                   :to="{ name: 'tx', params: { txid: tx.txid }}"
                 >{{ tx.txid }}</router-link>-->
               </div>
-              <div>
+              <div class="text-xs-right">
                 <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG out
                 <v-icon small right>fas fa-long-arrow-alt-right</v-icon>
               </div>
               <!-- <div>{{ tx.confirmations}} confirmations</div> -->
-              <div>
+              <div class="text-xs-right">
                 {{ tx.vout.length}}
                 <template v-if="tx.vout.length == 1">recipient</template>
                 <template v-else>recipients</template>
               </div>
-              <div class="grey--text py-2">{{ tx.time | formatTimeAgo }}</div>
+              <div class="grey--text py-2 text-xs-right">{{ tx.time | formatTimeAgo }}</div>
               <v-divider class="mx-2" v-if="index != txs.length - 1"></v-divider>
             </div>
           </template>

@@ -8,7 +8,7 @@
       </v-toolbar-title>
       <v-toolbar-items class="hidden-xs-only">
         <v-btn flat v-for="(item, i) in items" :key="i" :to="item.to">
-          <v-icon left>{{ item.icon }}</v-icon>
+          <v-icon left color="primary">{{ item.icon }}</v-icon>
           {{item.title}}
         </v-btn>
       </v-toolbar-items>
@@ -20,7 +20,7 @@
         </template>
         <v-list>
           <v-list-tile v-for="(item, i) in items" :key="i" :to="item.to">
-            <v-icon left>{{ item.icon }}</v-icon>
+            <v-icon left color="primary">{{ item.icon }}</v-icon>
             {{ item.title }}
           </v-list-tile>
         </v-list>

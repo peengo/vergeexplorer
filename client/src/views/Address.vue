@@ -11,20 +11,24 @@
         <v-flex d-flex xs12 md6>
           <v-card>
             <v-card-title>
-              <div class="break-all monospace font-weight-bold">{{ address.address }}</div>
+              <div class="break-all monospace primary--text">{{ address.address }}</div>
             </v-card-title>
             <v-list>
               <v-list-tile>
-                <v-list-tile-content>Balance</v-list-tile-content>
+                <v-list-tile-content class="accent--text">Balance</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ address.balance | formatAmount }} XVG</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Received</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ address.received | formatAmount }} XVG</v-list-tile-content>
+                <v-list-tile-content class="accent--text">Received</v-list-tile-content>
+                <v-list-tile-content
+                  class="align-end success--text"
+                >{{ address.received | formatAmount }} XVG</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Sent</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ address.sent | formatAmount }} XVG</v-list-tile-content>
+                <v-list-tile-content class="accent--text">Sent</v-list-tile-content>
+                <v-list-tile-content
+                  class="align-end error--text"
+                >{{ address.sent | formatAmount }} XVG</v-list-tile-content>
               </v-list-tile>
             </v-list>
           </v-card>
@@ -33,14 +37,14 @@
         <v-flex d-flex xs12 md6>
           <v-card>
             <v-list>
-              <v-card-title>
-                <v-btn @click.stop="dialog = true">
+              <v-card-title class="justify-center">
+                <v-btn color="secondary" @click.stop="dialog = true">
                   <v-icon small left>fas fa-qrcode</v-icon>QR Code
                 </v-btn>
 
                 <v-dialog v-model="dialog" max-width="400">
                   <v-card>
-                    <v-card-title class="headline justify-center info">Address QR Code</v-card-title>
+                    <v-card-title class="headline justify-center primary">Address QR Code</v-card-title>
                     <v-card-text class="break-all text-xs-center">
                       <h3>{{ address.address }}</h3>
                     </v-card-text>
@@ -62,11 +66,11 @@
                 </v-dialog>
               </v-card-title>
               <v-list-tile>
-                <v-list-tile-content>Estimated Worth</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ address.usd | formatUSD }}</v-list-tile-content>
+                <v-list-tile-content class="accent--text">Estimated Worth</v-list-tile-content>
+                <v-list-tile-content class="align-end warning--text">{{ address.usd | formatUSD }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content>Transactions</v-list-tile-content>
+                <v-list-tile-content class="accent--text">Transactions</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ total }}</v-list-tile-content>
               </v-list-tile>
             </v-list>
@@ -74,7 +78,7 @@
         </v-flex>
       </v-layout>
 
-      <Heading :heading="headingTxs" />
+      <Heading :heading="headingTxs" class="mt-5 mb-3" />
 
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -86,7 +90,7 @@
             <v-layout align-center justify-space-between row wrap>
               <v-flex xs12 md8>
                 <router-link
-                  class="monospace info--text"
+                  class="monospace primary--text"
                   :to="{ name: 'tx', params: { txid: tx.txid }}"
                 >{{ tx.txid }}</router-link>
               </v-flex>
@@ -102,14 +106,14 @@
                   <span :inner-html.prop="tx.value | formatAmount | formatMuted"></span>
                   <span class="white--text ml-1">XVG</span>
                 </div>
-                <div v-else-if="tx.type ==='both'" class="info--text text-xs-right">
+                <div v-else-if="tx.type ==='both'" class="primary--text text-xs-right">
                   <v-icon
                     v-if="tx.value.charAt(0) === '-'"
                     small
                     left
-                    color="info"
+                    color="primary"
                   >fas fa-minus-square</v-icon>
-                  <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
+                  <v-icon v-else small left color="primary">fas fa-plus-square</v-icon>
                   <span :inner-html.prop="tx.value | removeMinus | formatAmount | formatMuted"></span>
                   <span class="white--text ml-1">XVG</span>
                 </div>

@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center justify-center>
+  <v-layout align-center justify-center my-3>
     <h2>
       <v-icon left>{{ heading.icon }}</v-icon>
       {{ heading.title}}

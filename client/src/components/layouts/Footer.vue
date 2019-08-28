@@ -59,7 +59,7 @@
       <v-btn href="https://github.com/" flat round>
         <v-icon left>fab fa-github</v-icon>GitHub
       </v-btn>
-      <v-flex py-3 text-xs-center xs12>
+      <v-flex py-3 text-xs-center xs12 class="accent--text">
         VergeExplorer
         <v-icon small>fa fa-copyright</v-icon>&nbsp;2019
       </v-flex>

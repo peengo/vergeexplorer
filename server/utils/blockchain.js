@@ -136,7 +136,7 @@ const blockchain = {
             const balance = dBalance.toString();
 
             if (dBalance.isNegative()) {
-                console.log('calculateInsertBalances negative balance');
+                console.log('calculateInsertBalances negative balance', address);
                 console.log('received:', dReceived.toString());
                 console.log('sent:', dSent.toString());
                 console.log('balance:', balance);
@@ -179,6 +179,7 @@ const blockchain = {
             const balance = dBalance.toString();
 
             if (dSent.isNegative() || dReceived.isNegative() || dBalance.isNegative()) {
+                console.log('calculateUpdateBalances negative balance', item.address);
                 console.log('sent:', sent);
                 console.log('received:', received);
                 console.log('balance:', balance);
@@ -221,6 +222,7 @@ const blockchain = {
             const balance = dBalance.toString();
 
             if (dSent.isNegative() || dReceived.isNegative() || dBalance.isNegative()) {
+                console.log('calculateUpdateInvalidBalances negative balance', item.address);
                 console.log('sent:', sent);
                 console.log('received:', received);
                 console.log('balance:', balance);

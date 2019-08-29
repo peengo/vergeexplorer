@@ -80,7 +80,7 @@
                   <v-list-tile>
                     <v-list-tile-content class="grey--text subheading">Balance</v-list-tile-content>
                     <div class="align-end subheading">
-                      <span :inner-html.prop="props.item.balance | formatAmount | formatMuted"></span>&nbsp;XVG
+                      <span></span>{{ props.item.balance | formatAmount }} XVG
                     </div>
                   </v-list-tile>
                   <v-list-tile>

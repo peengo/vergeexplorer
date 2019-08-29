@@ -56,7 +56,7 @@
       <v-divider class="my-3 mx-2"></v-divider>
 
       <v-layout row wrap>
-        <v-flex xs12 md6>
+        <v-flex xs12 md6 pr-2>
           <Heading :heading="headingBlocks" />
 
           <v-flex xs12 class="text-xs-right">
@@ -109,7 +109,7 @@
           </template>
         </v-flex>
 
-        <v-flex xs12 md6>
+        <v-flex xs12 md6 pr-2>
           <Heading :heading="headingTxs" />
 
           <v-flex xs12 class="text-xs-right">

@@ -3,13 +3,11 @@
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm1 md8 offset-md2 xl6 offset-xl3>
         <v-form @submit.prevent="submitSearch">
-          <v-text-field
-            outline
+          <v-text-field  
             autofocus
             clearable
             counter
             solo
-            color="white"
             append-icon="fas fa-search"
             label="Search by address, txid (transaction id), block hash or block height"
             v-model="search"

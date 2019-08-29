@@ -12,7 +12,7 @@
           :headers="headers"
           :items="peers"
           hide-actions
-          class="elevation-1 hidden-xs-only"
+          class="elevation-3 hidden-xs-only"
         >
           <template v-slot:items="props">
             <td class="body-2 monospace">{{ props.item.addr | formatAddress }}</td>

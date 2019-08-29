@@ -1,3 +1,5 @@
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+
 // This is an optional file but needed when serving Vue
 // behind a proxy, we need to disable host checks.
 module.exports = {
@@ -19,5 +21,10 @@ module.exports = {
       aggregateTimeout: 300,
       poll: true
     }
+  },
+  configureWebpack: {
+    plugins: [
+      new VuetifyLoaderPlugin()
+    ]
   }
 };

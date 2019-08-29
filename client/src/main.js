@@ -2,8 +2,13 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 
-import Vuetify from "vuetify";
-import "vuetify/dist/vuetify.min.css"; // Ensure you are using css-loader
+// import Vuetify from "vuetify";
+// import "vuetify/dist/vuetify.min.css"; // Ensure you are using css-loader
+
+import Vuetify from 'vuetify/lib';
+import 'vuetify/src/stylus/app.styl';
+
+import { VLayout } from 'vuetify/lib';
 
 import "./filters";
 
@@ -12,6 +17,7 @@ import axios from "axios";
 Vue.prototype.$http = axios;
 
 Vue.use(Vuetify, {
+  components: { VLayout },
   iconfont: 'fa',
   theme: {
     primary: {

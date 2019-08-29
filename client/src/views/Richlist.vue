@@ -13,7 +13,7 @@
           :items="richlist"
           :pagination.sync="pagination"
           hide-actions
-          class="elevation-1 hidden-sm-and-down"
+          class="elevation-3 hidden-sm-and-down"
         >
           <template v-slot:items="props">
             <td class="body-2">#{{ props.index + 1 }}</td>
@@ -80,7 +80,8 @@
                   <v-list-tile>
                     <v-list-tile-content class="grey--text subheading">Balance</v-list-tile-content>
                     <div class="align-end subheading">
-                      <span></span>{{ props.item.balance | formatAmount }} XVG
+                      <span></span>
+                      {{ props.item.balance | formatAmount }} XVG
                     </div>
                   </v-list-tile>
                   <v-list-tile>
@@ -197,9 +198,17 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 td {
   padding: 0 1em !important;
   height: 3em !important;
+}
+
+tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.30) !important;
 }
 </style>

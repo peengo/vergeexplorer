@@ -151,7 +151,7 @@
               </div>
               <div class="text-xs-right">
                 <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG out
-                <v-icon small right>fas fa-long-arrow-alt-right</v-icon>
+                <v-icon small class="ml-1" >fas fa-long-arrow-alt-right</v-icon>
               </div>
               <!-- <div>{{ tx.confirmations}} confirmations</div> -->
               <div class="text-xs-right">

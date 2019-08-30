@@ -85,7 +85,7 @@
       <ProgressCircular v-if="areTxsLoading"></ProgressCircular>
 
       <template v-else>
-        <template v-for="tx in txs">
+        <template v-for="(tx, index) in txs">
           <div class="pb-2 break-all" :key="tx.txid">
             <v-layout align-center justify-space-between row wrap>
               <v-flex xs12 md8>
@@ -121,7 +121,8 @@
 
               <v-flex xs12 md12>
                 <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
-                <v-divider class="mx-1"></v-divider>
+                <v-divider class="mx-1" v-if="index != txs.length - 1"></v-divider>
+                <!-- <v-divider class="mx-1"></v-divider> -->
               </v-flex>
             </v-layout>
           </div>

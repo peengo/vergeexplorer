@@ -7,8 +7,60 @@
     <template v-else>
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
-      <template v-else v-for="(value, name) in tx">
-        <p v-if="name !=='vin' && name !=='vout'" :key="name">{{ name }}: {{ value }}</p>
+      <template v-else>
+        <v-layout row wrap>
+          <v-flex d-flex xs12 md10 offset-md1>
+            <v-card>
+              <v-card-title>
+                <div class="subheading mr-5 accent--text">
+                  <v-icon small left>fas fa-hashtag</v-icon>Transaction ID (txid)
+                </div>
+                <div class="break-all monospace accent--text">{{ tx.txid }}</div>
+              </v-card-title>
+              <v-list>
+                <v-list-tile>
+                  <v-list-tile-content class="accent--text">
+                    <div>
+                      <v-icon small left>fas fa-check</v-icon>Confirmations
+                    </div>
+                  </v-list-tile-content>
+                  <v-list-tile-content
+                    class="align-end"
+                    :class="{ 'success--text': tx.confirmations >= confirmationSuccess}"
+                  >
+                    <div>
+                      <v-icon
+                        v-if="tx.confirmations >= confirmationSuccess"
+                        small
+                        left
+                        color="success"
+                      >fas fa-check-double</v-icon>
+                      {{ tx.confirmations }}
+                    </div>
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile>
+                  <v-list-tile-content class="accent--text">
+                    <div>
+                      <v-icon small left>far fa-clock</v-icon>Time
+                    </div>
+                  </v-list-tile-content>
+                  <v-list-tile-content class="align-end grey--text">{{ tx.time | formatTime }}</v-list-tile-content>
+                </v-list-tile>
+                <v-card-title>
+                  <div class="subheading mr-5 accent--text">
+                    <v-icon small left>fas fa-cube</v-icon>Block Hash
+                  </div>
+                  <div class="break-all monospace primary--text">
+                    <router-link
+                      :to="{ name: 'block', params: { hash: tx.blockhash }}"
+                    >{{ tx.txid }}</router-link>
+                  </div>
+                </v-card-title>
+              </v-list>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </template>
 
       <v-layout row wrap>
@@ -20,11 +72,34 @@
           <ProgressCircular v-if="areInputsLoading"></ProgressCircular>
 
           <template v-else>
-            <template v-for="(value, name) in inputs">
-              <p :key="name">{{ name }}: {{ value }}</p>
+            <template v-for="(input, index) in inputs">
+              <div class="break-all" :key="input.address">
+                <v-layout align-center justify-space-between row wrap pa-2>
+                  <template v-if="input.coinbase">
+                    <v-flex xs12 class="monospace">
+                      <v-icon small left color="warning">fas fa-coins</v-icon>
+                      <span class="accent--text">Newly Generated Coins</span>
+                      <span class="warning--text ml-2">[coinbase]</span>
+                    </v-flex>
+                  </template>
+                  <template v-else>
+                    <v-flex xs12 sm7>
+                      <router-link
+                        class="monospace error--text"
+                        :to="{ name: 'address', params: { address: input.address }}"
+                      >{{ input.address }}</router-link>
+                    </v-flex>
+                    <v-flex xs12 sm5 class="text-xs-right pa-1">
+                      <span :inner-html.prop="input.value | formatAmount | formatMuted"></span>
+                      <span class="white--text ml-1">XVG</span>
+                    </v-flex>
+                    <v-divider class="ma-1" v-if="index != inputs.length - 1"></v-divider>
+                  </template>
+                </v-layout>
+              </div>
             </template>
 
-            <v-layout justify-center class="text-xs-center">
+            <v-layout justify-center class="text-xs-center mt-3">
               <v-flex xs12>
                 <Pagination
                   :pagination="{page: pageInputs,total: totalInputs,limit}"
@@ -42,11 +117,25 @@
 
           <ProgressCircular v-if="areRecipientsLoading"></ProgressCircular>
           <template v-else>
-            <template v-for="(value, name) in recipients">
-              <p :key="name">{{ name }}: {{ value }}</p>
+            <template v-for="(recipient, index) in recipients">
+              <div class="break-all" :key="recipient.address">
+                <v-layout align-center justify-space-between row wrap pa-2>
+                  <v-flex xs12 sm7>
+                    <router-link
+                      class="monospace success--text"
+                      :to="{ name: 'address', params: { address: recipient.address }}"
+                    >{{ recipient.address }}</router-link>
+                  </v-flex>
+                  <v-flex xs12 sm5 class="text-xs-right pa-1">
+                    <span :inner-html.prop="recipient.value | formatAmount | formatMuted"></span>
+                    <span class="white--text ml-1">XVG</span>
+                  </v-flex>
+                  <v-divider class="ma-1" v-if="index != recipients.length - 1"></v-divider>
+                </v-layout>
+              </div>
             </template>
 
-            <v-layout justify-center class="text-xs-center">
+            <v-layout justify-center class="text-xs-center mt-3">
               <v-flex xs12>
                 <Pagination
                   :pagination="{page: pageRecipients,total: totalRecipients,limit}"
@@ -81,11 +170,13 @@ export default {
     },
     headingInputs: {
       title: "Inputs",
-      icon: "fas fa-sign-in-alt"
+      icon: "fas fa-sign-in-alt",
+      append: ""
     },
     headingRecipients: {
       title: "Recipients",
-      icon: "fas fa-sign-out-alt"
+      icon: "fas fa-sign-out-alt",
+      append: ""
     },
     tx: {},
     inputs: [],
@@ -98,6 +189,7 @@ export default {
     isLoading: true,
     areInputsLoading: false,
     areRecipientsLoading: false,
+    confirmationSuccess: 20,
     error: "There was an error.",
     isError: false
   }),
@@ -119,6 +211,9 @@ export default {
         recipients: this.recipients,
         total: this.totalRecipients
       } = recipientsObj);
+
+      this.headingInputs.append = `(${this.totalInputs})`;
+      this.headingRecipients.append = `(${this.totalRecipients})`;
 
       this.isLoading = false;
     } catch (error) {
@@ -216,6 +311,9 @@ export default {
         recipients: this.recipients,
         total: this.totalRecipients
       } = recipientsObj);
+
+      this.headingInputs.append = `(${this.totalInputs})`;
+      this.headingRecipients.append = `(${this.totalRecipients})`;
 
       this.areInputsLoading = false;
       this.areRecipientsLoading = false;

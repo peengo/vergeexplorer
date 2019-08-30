@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-layout align-center justify-center text-xs-center>
+    <v-layout align-center justify-center text-xs-center mb-5 mt-3>
       <h1>Verge (XVG) Cryptocurrency Blockchain Explorer</h1>
     </v-layout>
 
@@ -53,7 +53,7 @@
         </v-flex>
       </v-layout>
 
-      <v-divider class="my-3 mx-2"></v-divider>
+      <v-divider class="mt-3 mb-5 mx-2"></v-divider>
 
       <v-layout row wrap>
         <v-flex xs12 md6 pr-2>

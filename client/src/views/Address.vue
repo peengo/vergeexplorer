@@ -120,7 +120,7 @@
               </v-flex>
 
               <v-flex xs12 md12>
-                <div class="grey--text py-1">{{ tx.time | formatTime }}</div>
+                <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
                 <v-divider class="mx-1"></v-divider>
               </v-flex>
             </v-layout>
@@ -145,7 +145,6 @@ import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 
-import { format } from "date-fns";
 import { getMarketData } from "../mixins.js";
 
 export default {
@@ -277,9 +276,6 @@ export default {
     }
   },
   filters: {
-    formatTime(time) {
-      return format(new Date(time * 1000), "D MMM YYYY - HH:mm A");
-    },
     removeMinus(str) {
       return str.charAt(0) === "-" ? str.slice(1) : str;
     }

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <Heading :heading="headingBlock" />
-
     <Alert v-if="isError" :error="error" />
 
     <template v-else>
@@ -14,31 +12,116 @@
             fab
             icon
             :to="{ name: 'block', params: { hash: block.previousblockhash }}"
-            class="info--text"
+            class="primary--text"
           >
             <v-icon>fas fa-angle-left</v-icon>
           </v-btn>
+
+          <Heading :heading="headingBlock" />
 
           <v-btn
             v-if="block.nextblockhash"
             fab
             icon
             :to="{ name: 'block', params: { hash: block.nextblockhash }}"
-            class="info--text"
+            class="primary--text"
           >
             <v-icon>fas fa-angle-right</v-icon>
           </v-btn>
         </v-layout>
       </template>
 
-      <v-flex xs12 class="break-all">
+      <v-layout row wrap>
+        <v-flex d-flex xs12 md6>
+          <v-card>
+            <v-card-title>
+              <div class="subheading mr-5 accent--text">
+                <v-icon small left>fas fa-hashtag</v-icon>Hash
+              </div>
+              <div class="break-all monospace primary--text">{{ block.hash }}</div>
+            </v-card-title>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">
+                  <div>
+                    <v-icon small left>fas fa-level-up-alt</v-icon>Height
+                  </div>
+                </v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.height }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">
+                  <div>
+                    <v-icon small left>fas fa-check</v-icon>Confirmations
+                  </div>
+                </v-list-tile-content>
+                <v-list-tile-content
+                  class="align-end"
+                  :class="{ 'success--text': block.confirmations >= confirmationSuccess}"
+                >
+                  <div>
+                    <v-icon
+                      v-if="block.confirmations >= confirmationSuccess"
+                      small
+                      left
+                      color="success"
+                    >fas fa-check-double</v-icon>
+                    {{ block.confirmations }}
+                  </div>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">
+                  <div>
+                    <v-icon small left>far fa-clock</v-icon>Time
+                  </div>
+                </v-list-tile-content>
+                <v-list-tile-content class="align-end grey--text">{{ block.time | formatTime }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">Nonce</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.nonce }}</v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-card>
+        </v-flex>
+
+        <v-flex d-flex xs12 md6>
+          <v-card>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">Bits</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.bits }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">Difficulty</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.difficulty }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">Version</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.version }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content class="accent--text">Size</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.size | toKilobyte }}</v-list-tile-content>
+              </v-list-tile>
+              <v-card-title>
+                <div class="subheading mr-5 accent--text">Merkle Root</div>
+                <div class="break-all monospace grey--text">{{ block.merkleroot }}</div>
+              </v-card-title>
+            </v-list>
+          </v-card>
+        </v-flex>
+      </v-layout>
+
+      <!-- <v-flex xs12 class="break-all">
         <template v-for="(value, name) in block">
           <p v-if="name !=='tx'" :key="name">{{ name }}: {{ value }}</p>
         </template>
-      </v-flex>
+      </v-flex>-->
     </template>
 
-    <Heading :heading="headingTxs" />
+    <Heading :heading="headingTxs" class="mt-5 mb-3" />
 
     <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -47,33 +130,41 @@
     <template v-else>
       <template v-for="tx in txs">
         <div class="pb-2 break-all" :key="tx.txid">
-          <v-tooltip top open-delay="0" close-delay="0">
-            <template v-slot:activator="{ on }">
-              <div v-on="on">
-                <router-link
-                  class="monospace info--text"
-                  :to="{ name: 'tx', params: { txid: tx.txid }}"
-                >{{ tx.txid }}</router-link>
-              </div>
-            </template>
-            <span>Transaction txid</span>
-          </v-tooltip>
-
           <!-- <router-link
             class="monospace info--text"
             :to="{ name: 'tx', params: { txid: tx.txid }}"
           >{{ tx.txid }}</router-link>-->
-          <div class="grey--text">
-            <v-icon v-if="tx.vout.length == 1" small left color="grey">fas fa-user</v-icon>
-            <v-icon v-else-if="tx.vout.length == 2" small left color="grey">fas fa-user-friends</v-icon>
-            <v-icon v-else small left color="grey">fas fa-users</v-icon>
-            {{ tx.vout.length }}
-            <template v-if="tx.vout.length == 1">recipient</template>
-            <template v-else>recipients</template>
-          </div>
-          <div class="text-xs-right">
-            <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG
-          </div>
+
+          <v-layout align-center justify-space-between row wrap>
+            <v-flex xs12 md8>
+              <v-tooltip top open-delay="0" close-delay="0">
+                <template v-slot:activator="{ on }">
+                  <div v-on="on">
+                    <router-link
+                      class="monospace accent--text"
+                      :to="{ name: 'tx', params: { txid: tx.txid }}"
+                    >{{ tx.txid }}</router-link>
+                  </div>
+                </template>
+                <span>Transaction txid</span>
+              </v-tooltip>
+            </v-flex>
+            <v-flex xs12 md4>
+              <div class="text-xs-right">
+                <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG
+              </div>
+            </v-flex>
+            <v-flex xs12 md12>
+              <div class="grey--text py-1">
+                <v-icon v-if="tx.vout.length == 1" small left color="grey">fas fa-user</v-icon>
+                <v-icon v-else-if="tx.vout.length == 2" small left color="grey">fas fa-user-friends</v-icon>
+                <v-icon v-else small left color="grey">fas fa-users</v-icon>
+                {{ tx.vout.length }}
+                <template v-if="tx.vout.length == 1">recipient</template>
+                <template v-else>recipients</template>
+              </div>
+            </v-flex>
+          </v-layout>
 
           <!-- <div v-if="tx.type ==='vin'" class="error--text">
               <v-icon small left color="error">fas fa-minus-square</v-icon>
@@ -89,7 +180,7 @@
               {{ tx.value | removeMinus | formatAmount }} XVG
           </div>-->
           <!-- <div class="grey--text py-2">{{ tx.time | formatTime }}</div> -->
-          <v-divider></v-divider>
+          <v-divider class="ma-1"></v-divider>
         </div>
       </template>
     </template>
@@ -122,7 +213,8 @@ export default {
     },
     headingTxs: {
       title: "Transactions",
-      icon: "fas fa-money-check"
+      icon: "fas fa-money-check",
+      append: ""
     },
     block: {},
     txs: [],
@@ -131,6 +223,7 @@ export default {
     limit: 50,
     isLoading: true,
     areTxsLoading: false,
+    confirmationSuccess: 20,
     error: "There was an error.",
     isError: false
   }),
@@ -143,6 +236,8 @@ export default {
         this.txs.length,
         this.limit
       ));
+
+      this.headingTxs.append = `(${this.txs.length})`;
 
       this.isLoading = false;
     } catch (error) {
@@ -206,6 +301,8 @@ export default {
         this.limit
       ));
 
+      this.headingTxs.append = `(${this.txs.length})`;
+
       this.areTxsLoading = false;
       this.isLoading = false;
     } catch (error) {
@@ -222,6 +319,11 @@ export default {
       this.areTxsLoading = false;
 
       next();
+    }
+  },
+  filters: {
+    toKilobyte(size) {
+      return `${(size / 1024).toFixed(2)} kB`;
     }
   }
 };

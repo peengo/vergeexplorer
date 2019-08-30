@@ -57,7 +57,7 @@ describe('API Tests', () => {
                     expect(res).to.have.header('content-type', contentType);
                     expect(res).to.be.json;
                     expect(res.body).to.have.property('data');
-                    expect(res.body.data).to.be.an('array').to.have.lengthOf.above(1);
+                    expect(res.body.data).to.be.an('array').to.have.lengthOf.above(0);
                     expect(res.body.data[0]).to.have.property('addr').to.be.a('string');
                     expect(res.body.data[0]).to.have.property('conntime').to.be.a('number');
                     expect(res.body.data[0]).to.have.property('version').to.be.a('number');

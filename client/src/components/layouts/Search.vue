@@ -3,7 +3,8 @@
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm1 md8 offset-md2 xl6 offset-xl3>
         <v-form @submit.prevent="submitSearch">
-          <v-text-field  
+          <v-text-field
+            ref="search"
             autofocus
             clearable
             counter
@@ -42,6 +43,7 @@ export default {
             }
 
             this.search = "";
+            this.$refs.search.blur();
           } else {
             this.searchError =
               "Warning! You have entered 51 characters which is usually associated with the length of a Private Key. It is important that these are kept private! For security purposes your search parameter was not sent to the server.";

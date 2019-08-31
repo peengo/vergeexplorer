@@ -59,37 +59,58 @@
                 </v-list-tile>
                 <v-divider></v-divider>
                 <v-list dense>
-                  <v-list-tile>
-                    <v-list-tile-sub-title class="text-xs-center">
-                      <v-tooltip top open-delay="0" close-delay="0">
-                        <template v-slot:activator="{ on }">
-                          <div v-on="on">
-                            <v-icon small class="mr-2">fas fa-address-card</v-icon>
-                            <router-link
-                              :to="{ name: 'address', params: { address: props.item.address }}"
-                              class="monospace break-all"
-                            >{{ props.item.address }}</router-link>
-                          </div>
-                        </template>
-                        <span>Address</span>
-                      </v-tooltip>
-                    </v-list-tile-sub-title>
-                  </v-list-tile>
+                  <v-card-title>
+                    <v-tooltip top open-delay="0" close-delay="0">
+                      <template v-slot:activator="{ on }">
+                        <div v-on="on">
+                          <router-link
+                            :to="{ name: 'address', params: { address: props.item.address }}"
+                            class="monospace break-all"
+                          >{{ props.item.address }}</router-link>
+                        </div>
+                      </template>
+                      <span>Address</span>
+                    </v-tooltip>
+                  </v-card-title>
+
                   <v-divider></v-divider>
-                  <v-list-tile>
+
+                  <v-card-title class="py-2">
+                      <v-flex xs12 sm2 class="text-xs-left">
+                        <div class="subheading grey--text">Balance</div>
+                      </v-flex>
+                      <v-flex xs12 sm10 class="text-xs-right">
+                        <div
+                          class="subheading break-all"
+                        >{{ props.item.balance | formatAmount }} {{ $CURRENCY }}</div>
+                      </v-flex>
+                  </v-card-title>
+                  <!-- <v-list-tile>
                     <v-list-tile-content class="grey--text subheading">Balance</v-list-tile-content>
-                    <div class="align-end subheading">
-                      <span></span>
-                      {{ props.item.balance | formatAmount }} {{ $CURRENCY }}
-                    </div>
-                  </v-list-tile>
-                  <v-list-tile>
+                    <v-list-tile-content
+                      class="subheading break-all"
+                    >{{ props.item.balance | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
+                  </v-list-tile>-->
+
+                  <v-card-title class="py-2">
+                    <v-flex xs12 sm4 class="text-xs-left">
+                      <div class="subheading mr-5 grey--text">Estimated Worth</div>
+                    </v-flex>
+                    <v-flex xs12 sm8 class="text-xs-right">
+                      <div class="subheading break-all warning--text">
+                        <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
+                        {{ props.item.usd | formatUSD }}
+                      </div>
+                    </v-flex>
+                  </v-card-title>
+
+                  <!-- <v-list-tile>
                     <v-list-tile-content class="grey--text subheading">Estimated Worth</v-list-tile-content>
                     <v-list-tile-content class="align-end warning--text subheading">
                       <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
                       {{ props.item.usd | formatUSD }}
                     </v-list-tile-content>
-                  </v-list-tile>
+                  </v-list-tile>-->
                 </v-list>
               </v-card>
             </v-flex>

@@ -11,9 +11,49 @@
         <v-flex d-flex xs12 md6>
           <v-card>
             <v-card-title>
-              <div class="break-all monospace primary--text">{{ address.address }}</div>
+              <v-flex xs12 class="text-xs-center">
+                <div class="break-all monospace primary--text">
+                  <v-icon small left>fas fa-user</v-icon>
+                  {{ address.address }}
+                </div>
+              </v-flex>
             </v-card-title>
-            <v-list>
+            <v-divider></v-divider>
+
+            <v-card-title class="py-2">
+              <v-flex xs12 sm4 class="text-xs-left">
+                <div class="subheading mr-5 accent--text">Balance</div>
+              </v-flex>
+              <v-flex xs12 sm8 class="text-xs-right">
+                <div
+                  class="subheading break-all"
+                >{{ address.balance | formatAmount }} {{ $CURRENCY }}</div>
+              </v-flex>
+            </v-card-title>
+
+            <v-card-title class="py-2">
+              <v-flex xs12 sm4 class="text-xs-left">
+                <div class="subheading mr-5 accent--text">Received</div>
+              </v-flex>
+              <v-flex xs12 sm8 class="text-xs-right">
+                <div
+                  class="subheading success--text break-all"
+                >{{ address.received | formatAmount }} {{ $CURRENCY }}</div>
+              </v-flex>
+            </v-card-title>
+
+            <v-card-title class="py-2">
+              <v-flex xs12 sm4 class="text-xs-left">
+                <div class="subheading mr-5 accent--text">Sent</div>
+              </v-flex>
+              <v-flex xs12 sm8 class="text-xs-right">
+                <div
+                  class="subheading error--text break-all"
+                >{{ address.sent | formatAmount }} {{ $CURRENCY }}</div>
+              </v-flex>
+            </v-card-title>
+
+            <!-- <v-list>
               <v-list-tile>
                 <v-list-tile-content class="accent--text">Balance</v-list-tile-content>
                 <v-list-tile-content
@@ -32,7 +72,7 @@
                   class="align-end error--text"
                 >{{ address.sent | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
               </v-list-tile>
-            </v-list>
+            </v-list>-->
           </v-card>
         </v-flex>
 
@@ -66,14 +106,24 @@
                   </v-card>
                 </v-dialog>
               </v-card-title>
-              <v-list-tile>
+
+              <v-card-title class="py-2">
+                <v-flex xs12 sm4 class="text-xs-left">
+                  <div class="subheading mr-5 accent--text">Estimated Worth</div>
+                </v-flex>
+                <v-flex xs12 sm8 class="text-xs-right">
+                  <div class="subheading warning--text break-all">{{ address.usd | formatUSD }}</div>
+                </v-flex>
+              </v-card-title>
+
+              <!-- <v-list-tile>
                 <v-list-tile-content class="accent--text">Estimated Worth</v-list-tile-content>
                 <v-list-tile-content class="align-end warning--text">{{ address.usd | formatUSD }}</v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
+              </v-list-tile>-->
+              <!-- <v-list-tile>
                 <v-list-tile-content class="accent--text">Transactions</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ total }}</v-list-tile-content>
-              </v-list-tile>
+              </v-list-tile> -->
             </v-list>
           </v-card>
         </v-flex>
@@ -163,7 +213,8 @@ export default {
     },
     headingTxs: {
       title: "Transactions",
-      icon: "fas fa-money-check"
+      icon: "fas fa-money-check",
+      append: ""
     },
     address: {},
     txs: [],
@@ -190,6 +241,8 @@ export default {
         this.txs.length,
         this.limit
       ));
+
+      this.headingTxs.append = `(${this.total})`;
 
       this.isLoading = false;
     } catch (error) {
@@ -252,6 +305,8 @@ export default {
         this.page * this.limit - this.limit,
         this.limit
       ));
+
+      this.headingTxs.append = `(${this.total})`;
 
       this.areTxsLoading = false;
       this.isLoading = false;

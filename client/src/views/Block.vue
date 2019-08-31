@@ -94,10 +94,6 @@
                 <v-list-tile-content class="align-end">{{ block.bits }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-content class="accent--text">Difficulty</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ block.difficulty }}</v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
                 <v-list-tile-content class="accent--text">Version</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.version }}</v-list-tile-content>
               </v-list-tile>
@@ -105,6 +101,10 @@
                 <v-list-tile-content class="accent--text">Size</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.size | toKilobyte }}</v-list-tile-content>
               </v-list-tile>
+              <v-card-title>
+                <div class="subheading mr-5 accent--text">Difficulty</div>
+                <div class="break-all">{{ block.difficulty }}</div>
+              </v-card-title>
               <v-card-title>
                 <div class="subheading mr-5 accent--text">Merkle Root</div>
                 <div class="break-all monospace grey--text">{{ block.merkleroot }}</div>

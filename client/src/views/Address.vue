@@ -129,7 +129,7 @@
         </template>
       </template>
 
-      <div v-if="!isLoading" class="text-xs-center">
+      <div v-if="!isLoading && (total > limit)" class="text-xs-center">
         <v-layout justify-center>
           <v-flex xs12>
             <Pagination :pagination="{page,total,limit}" @updatePage="updatePage($event)" />

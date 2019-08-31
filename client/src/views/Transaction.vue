@@ -99,7 +99,7 @@
               </div>
             </template>
 
-            <v-layout justify-center class="text-xs-center mt-3">
+            <v-layout v-if="totalInputs > limit" justify-center class="text-xs-center mt-3">
               <v-flex xs12>
                 <Pagination
                   :pagination="{page: pageInputs,total: totalInputs,limit}"
@@ -135,7 +135,7 @@
               </div>
             </template>
 
-            <v-layout justify-center class="text-xs-center mt-3">
+            <v-layout v-if="totalRecipients > limit" justify-center class="text-xs-center mt-3">
               <v-flex xs12>
                 <Pagination
                   :pagination="{page: pageRecipients,total: totalRecipients,limit}"

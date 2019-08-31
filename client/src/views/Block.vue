@@ -185,7 +185,7 @@
       </template>
     </template>
 
-    <v-layout v-if="!isLoading" justify-center class="text-xs-center">
+    <v-layout v-if="!isLoading && (total > limit)" justify-center class="text-xs-center">
       <v-flex xs12>
         <Pagination :pagination="{page,total,limit}" @updatePage="updatePage($event)" />
       </v-flex>

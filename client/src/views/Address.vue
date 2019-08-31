@@ -16,19 +16,21 @@
             <v-list>
               <v-list-tile>
                 <v-list-tile-content class="accent--text">Balance</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ address.balance | formatAmount }} XVG</v-list-tile-content>
+                <v-list-tile-content
+                  class="align-end"
+                >{{ address.balance | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="accent--text">Received</v-list-tile-content>
                 <v-list-tile-content
                   class="align-end success--text"
-                >{{ address.received | formatAmount }} XVG</v-list-tile-content>
+                >{{ address.received | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="accent--text">Sent</v-list-tile-content>
                 <v-list-tile-content
                   class="align-end error--text"
-                >{{ address.sent | formatAmount }} XVG</v-list-tile-content>
+                >{{ address.sent | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
               </v-list-tile>
             </v-list>
           </v-card>
@@ -49,7 +51,6 @@
                       <h3>{{ address.address }}</h3>
                     </v-card-text>
                     <v-card-title class="justify-center">
-                      <!-- <img :src="qrlink" alt="QR Code" class="ma-5" /> -->
                       <v-img
                         alt="QR Code"
                         :src="qrlink"
@@ -99,12 +100,12 @@
                 <div v-if="tx.type ==='vin'" class="error--text text-xs-right">
                   <v-icon small left color="error">fas fa-minus-square</v-icon>
                   <span :inner-html.prop="tx.value | formatAmount | formatMuted"></span>
-                  <span class="white--text ml-1">XVG</span>
+                  <span class="white--text ml-1">{{ $CURRENCY }}</span>
                 </div>
                 <div v-else-if="tx.type ==='vout'" class="success--text text-xs-right">
                   <v-icon small left color="success">fas fa-plus-square</v-icon>
                   <span :inner-html.prop="tx.value | formatAmount | formatMuted"></span>
-                  <span class="white--text ml-1">XVG</span>
+                  <span class="white--text ml-1">{{ $CURRENCY }}</span>
                 </div>
                 <div v-else-if="tx.type ==='both'" class="primary--text text-xs-right">
                   <v-icon
@@ -115,14 +116,13 @@
                   >fas fa-minus-square</v-icon>
                   <v-icon v-else small left color="primary">fas fa-plus-square</v-icon>
                   <span :inner-html.prop="tx.value | removeMinus | formatAmount | formatMuted"></span>
-                  <span class="white--text ml-1">XVG</span>
+                  <span class="white--text ml-1">{{ $CURRENCY }}</span>
                 </div>
               </v-flex>
 
               <v-flex xs12 md12>
                 <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
                 <v-divider class="mx-1" v-if="index != txs.length - 1"></v-divider>
-                <!-- <v-divider class="mx-1"></v-divider> -->
               </v-flex>
             </v-layout>
           </div>
@@ -157,12 +157,6 @@ export default {
     Pagination
   },
   data: () => ({
-    // headers: [
-    //   { text: "Address", value: "address", sortable: false },
-    //   { text: "Balance", value: "balance", sortable: false },
-    //   { text: "Received", value: "received", sortable: false },
-    //   { text: "Sent", value: "sent", sortable: false }
-    // ],
     headingAddress: {
       title: "Address",
       icon: "fas fa-address-card"

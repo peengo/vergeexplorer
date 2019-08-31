@@ -23,7 +23,7 @@
             href="http://github.com"
           >GitHub</a>. Donations are not necesarry but are greatly appreciated. Donations keep this website online. All donations are non-refundable. To show the support you can also use the Binance exchange referral link below.
         </v-card-text>
-        <v-card-text class="subheading text-xs-center">VERGE (XVG)</v-card-text>
+        <v-card-text class="subheading text-xs-center">VERGE ({{ $CURRENCY }})</v-card-text>
         <v-card-text class="text-xs-center monospace success">DEHYYiNA4fb7h59DGPyrDNNoRRF5ZtMmy9</v-card-text>
         <v-card-title class="justify-center">
           <v-img alt="QR Code" :src="qrlink" max-height="256" max-width="256" class="ma-5"></v-img>
@@ -45,11 +45,6 @@
     </v-dialog>
 
     <v-layout justify-center row wrap>
-      <!-- <v-btn v-for="(item, i) in items" :key="i" flat round @click.stop="item.dialog = true">
-        <v-icon left small>{{ item.icon}}</v-icon>
-        {{ item.title }}
-      </v-btn>-->
-
       <v-btn flat round @click.stop="contactDialog = true">
         <v-icon left small>fas fa-home</v-icon>Contact Us
       </v-btn>
@@ -70,14 +65,6 @@
 <script>
 export default {
   data: () => ({
-    items: [
-      { title: "Contact Us", icon: "fas fa-home", dialog: false },
-      {
-        title: "Donations",
-        icon: "fas fa-hand-holding-usd",
-        dialog: false
-      }
-    ],
     publicPath: process.env.BASE_URL,
     contactDialog: false,
     donationsDialog: false,

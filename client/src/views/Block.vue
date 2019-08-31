@@ -113,12 +113,6 @@
           </v-card>
         </v-flex>
       </v-layout>
-
-      <!-- <v-flex xs12 class="break-all">
-        <template v-for="(value, name) in block">
-          <p v-if="name !=='tx'" :key="name">{{ name }}: {{ value }}</p>
-        </template>
-      </v-flex>-->
     </template>
 
     <Heading :heading="headingTxs" class="mt-5 mb-3" />
@@ -130,11 +124,6 @@
     <template v-else>
       <template v-for="tx in txs">
         <div class="pb-2 break-all" :key="tx.txid">
-          <!-- <router-link
-            class="monospace info--text"
-            :to="{ name: 'tx', params: { txid: tx.txid }}"
-          >{{ tx.txid }}</router-link>-->
-
           <v-layout align-center justify-space-between row wrap>
             <v-flex xs12 md8>
               <v-tooltip top open-delay="0" close-delay="0">
@@ -151,7 +140,8 @@
             </v-flex>
             <v-flex xs12 md4>
               <div class="text-xs-right">
-                <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span> XVG
+                <span :inner-html.prop="tx.amountout | formatAmount | formatMuted"></span>
+                {{ $CURRENCY }}
               </div>
             </v-flex>
             <v-flex xs12 md12>
@@ -165,21 +155,6 @@
               </div>
             </v-flex>
           </v-layout>
-
-          <!-- <div v-if="tx.type ==='vin'" class="error--text">
-              <v-icon small left color="error">fas fa-minus-square</v-icon>
-              {{ tx.value | formatAmount }} XVG
-            </div>
-            <div v-else-if="tx.type ==='vout'" class="success--text">
-              <v-icon small left color="success">fas fa-plus-square</v-icon>
-              {{ tx.value | formatAmount }} XVG
-            </div>
-            <div v-else-if="tx.type ==='both'" class="info--text">
-              <v-icon v-if="tx.value.charAt(0) === '-'" small left color="info">fas fa-minus-square</v-icon>
-              <v-icon v-else small left color="info">fas fa-plus-square</v-icon>
-              {{ tx.value | removeMinus | formatAmount }} XVG
-          </div>-->
-          <!-- <div class="grey--text py-2">{{ tx.time | formatTime }}</div> -->
           <v-divider class="ma-1"></v-divider>
         </div>
       </template>

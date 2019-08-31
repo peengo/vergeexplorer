@@ -91,7 +91,7 @@
                     </v-flex>
                     <v-flex xs12 sm5 class="text-xs-right pa-1">
                       <span :inner-html.prop="input.value | formatAmount | formatMuted"></span>
-                      <span class="white--text ml-1">XVG</span>
+                      <span class="white--text ml-1">{{ $CURRENCY }}</span>
                     </v-flex>
                     <v-divider class="ma-1" v-if="index != inputs.length - 1"></v-divider>
                   </template>
@@ -128,7 +128,7 @@
                   </v-flex>
                   <v-flex xs12 sm5 class="text-xs-right pa-1">
                     <span :inner-html.prop="recipient.value | formatAmount | formatMuted"></span>
-                    <span class="white--text ml-1">XVG</span>
+                    <span class="white--text ml-1">{{ $CURRENCY }}</span>
                   </v-flex>
                   <v-divider class="ma-1" v-if="index != recipients.length - 1"></v-divider>
                 </v-layout>

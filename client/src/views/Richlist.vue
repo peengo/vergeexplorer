@@ -38,7 +38,6 @@
           </template>
         </v-data-table>
 
-        <!-- <v-container fluid grid-list-md hidden-md-and-up> -->
         <v-data-iterator
           :items="richlist"
           hide-actions
@@ -81,7 +80,7 @@
                     <v-list-tile-content class="grey--text subheading">Balance</v-list-tile-content>
                     <div class="align-end subheading">
                       <span></span>
-                      {{ props.item.balance | formatAmount }} XVG
+                      {{ props.item.balance | formatAmount }} {{ $CURRENCY }}
                     </div>
                   </v-list-tile>
                   <v-list-tile>
@@ -91,21 +90,11 @@
                       {{ props.item.usd | formatUSD }}
                     </v-list-tile-content>
                   </v-list-tile>
-                  <!-- <v-list-tile>
-                      <v-list-tile-content>
-                        <v-progress-circular :value="props.item.percentage" width="10"></v-progress-circular>
-                      </v-list-tile-content>
-                      <v-list-tile-content class="align-end">
-                        <v-progress-circular dark indeterminate v-if="isInfoLoading"></v-progress-circular>
-                        {{ props.item.percentage }} %
-                      </v-list-tile-content>
-                  </v-list-tile>-->
                 </v-list>
               </v-card>
             </v-flex>
           </template>
         </v-data-iterator>
-        <!-- </v-container> -->
       </template>
     </template>
   </div>
@@ -134,7 +123,7 @@ export default {
       { text: "#", value: "index", sortable: false },
       { text: "Address", value: "address", sortable: false },
       {
-        text: "Balance (XVG)",
+        text: "Balance",
         value: "balance",
         sortable: false,
         align: "right"
@@ -145,7 +134,7 @@ export default {
         sortable: false,
         align: "right"
       },
-      { text: "%", value: "percentage", sortable: false, align: "center" }
+      { text: "%", value: "percentage", sortable: false, align: "right" }
     ],
     pagination: {
       sortBy: "balance",
@@ -161,6 +150,9 @@ export default {
   }),
   async created() {
     try {
+      const balanceHeader = this.headers.find(item => item.value === "balance");
+      balanceHeader.text += ` (${this.$CURRENCY})`;
+
       this.richlist = await this.getRichlist();
 
       this.isRichlistLoading = false;
@@ -205,10 +197,10 @@ td {
 }
 
 tbody tr:nth-of-type(even) {
-  background-color: rgba(0, 0, 0, 0.10) !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.30) !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
 }
 </style>

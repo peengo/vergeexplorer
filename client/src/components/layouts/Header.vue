@@ -1,11 +1,14 @@
 <template>
   <div>
     <v-toolbar fixed app>
-      <v-toolbar-title to="/" class="mr-3">
-        <v-avatar tile size="34" class="mr-2">
-          <img :src="`${publicPath}logo.png`" alt="logo" />
-        </v-avatar>VergeExplorer
-      </v-toolbar-title>
+      <router-link :to="{ name: 'home'}">
+        <v-toolbar-title class="mr-3 white--text">
+          <v-avatar tile size="34" class="mr-2">
+            <img :src="`${publicPath}logo.png`" alt="logo" />
+          </v-avatar>VergeExplorer
+        </v-toolbar-title>
+      </router-link>
+
       <v-toolbar-items class="hidden-xs-only">
         <v-btn flat v-for="(item, i) in items" :key="i" :to="item.to">
           <v-icon left color="primary">{{ item.icon }}</v-icon>

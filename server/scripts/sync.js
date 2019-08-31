@@ -106,6 +106,8 @@ console.log(`Time: ${new Date().toJSON()}`);
                             session.endSession();
 
                             // throw error;
+                            console.error(error);
+                            console.log(`height: ${height} hash: ${hash}`);
                             process.exit();
                         }
                         console.log(`height: ${height} hash: ${hash}`);

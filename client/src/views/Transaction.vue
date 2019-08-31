@@ -54,7 +54,7 @@
                   <div class="break-all monospace primary--text">
                     <router-link
                       :to="{ name: 'block', params: { hash: tx.blockhash }}"
-                    >{{ tx.txid }}</router-link>
+                    >{{ tx.blockhash }}</router-link>
                   </div>
                 </v-card-title>
               </v-list>

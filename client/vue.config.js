@@ -1,11 +1,11 @@
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
-let apiURL = '/';
+let devURL = '/';
 
-if (process.env.VUE_APP_API_URL) {
-  apiURL = process.env.VUE_APP_API_URL;
+if (process.env.VUE_APP_API_DEV_URL) {
+  devURL = process.env.VUE_APP_API_DEV_URL;
 } else {
-  console.log('VUE_APP_API_URL is missing in .env.development.local');
+  console.log('VUE_APP_API_DEV_URL is missing.');
 }
 
 // This is an optional file but needed when serving Vue
@@ -17,7 +17,7 @@ module.exports = {
     port: 8080,
     proxy: {
       '^/api': {
-        target: apiURL,
+        target: devURL,
         ws: true,
         changeOrigin: true,
         pathRewrite: {

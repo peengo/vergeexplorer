@@ -27,6 +27,7 @@
             class="accent--text"
             :inner-html.prop="info.moneysupply | formatAmount | formatMuted"
           ></span>
+          &nbsp;
           {{ $CURRENCY }}
           <div class="grey--text">Circulating Supply</div>
         </v-flex>

@@ -43,7 +43,7 @@ export default {
             }
 
             this.search = "";
-            this.$refs.search.blur();
+            this.blurSearch();
           } else {
             this.searchError =
               "Warning! You have entered 51 characters which is usually associated with the length of a Private Key. It is important that these are kept private! For security purposes your search parameter was not sent to the server.";
@@ -64,6 +64,9 @@ export default {
       });
 
       return search;
+    },
+    blurSearch() {
+      this.$refs.search.blur();
     }
   },
   watch: {

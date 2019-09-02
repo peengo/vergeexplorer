@@ -215,6 +215,8 @@ export default {
       this.headingTxs.append = `(${this.txs.length})`;
 
       this.isLoading = false;
+
+      this.scrollTop();
     } catch (error) {
       if (error.response.status == 400 || error.response.status == 404) {
         this.error = error.response.data.error;
@@ -256,6 +258,10 @@ export default {
       ));
 
       this.areTxsLoading = false;
+    },
+    scrollTop() {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     }
   },
   async beforeRouteUpdate(to, from, next) {

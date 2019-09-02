@@ -108,7 +108,7 @@ console.log(`Time: ${new Date().toJSON()}`);
                             // throw error;
                             console.error(error);
                             console.log(`height: ${height} hash: ${hash}`);
-                            process.exit();
+                            // process.exit();
                         }
                         console.log(`height: ${height} hash: ${hash}`);
                     }

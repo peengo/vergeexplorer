@@ -76,22 +76,15 @@
                   <v-divider></v-divider>
 
                   <v-card-title class="py-2">
-                      <v-flex xs12 sm2 class="text-xs-left">
-                        <div class="subheading grey--text">Balance</div>
-                      </v-flex>
-                      <v-flex xs12 sm10 class="text-xs-right">
-                        <div
-                          class="subheading break-all"
-                        >{{ props.item.balance | formatAmount }} {{ $CURRENCY }}</div>
-                      </v-flex>
+                    <v-flex xs12 sm2 class="text-xs-left">
+                      <div class="subheading grey--text">Balance</div>
+                    </v-flex>
+                    <v-flex xs12 sm10 class="text-xs-right">
+                      <div
+                        class="subheading break-all"
+                      >{{ props.item.balance | formatAmount }} {{ $CURRENCY }}</div>
+                    </v-flex>
                   </v-card-title>
-                  <!-- <v-list-tile>
-                    <v-list-tile-content class="grey--text subheading">Balance</v-list-tile-content>
-                    <v-list-tile-content
-                      class="subheading break-all"
-                    >{{ props.item.balance | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
-                  </v-list-tile>-->
-
                   <v-card-title class="py-2">
                     <v-flex xs12 sm4 class="text-xs-left">
                       <div class="subheading mr-5 grey--text">Estimated Worth</div>
@@ -103,14 +96,6 @@
                       </div>
                     </v-flex>
                   </v-card-title>
-
-                  <!-- <v-list-tile>
-                    <v-list-tile-content class="grey--text subheading">Estimated Worth</v-list-tile-content>
-                    <v-list-tile-content class="align-end warning--text subheading">
-                      <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
-                      {{ props.item.usd | formatUSD }}
-                    </v-list-tile-content>
-                  </v-list-tile>-->
                 </v-list>
               </v-card>
             </v-flex>

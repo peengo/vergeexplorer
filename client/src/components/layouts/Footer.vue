@@ -24,7 +24,9 @@
           >GitHub</a>. Donations are not necesarry but are greatly appreciated. Donations keep this website online. All donations are non-refundable. To show the support you can also use the Binance exchange referral link below.
         </v-card-text>
         <v-card-text class="subheading text-xs-center">VERGE ({{ $CURRENCY }})</v-card-text>
-        <v-card-text class="text-xs-center monospace success break-all">DEHYYiNA4fb7h59DGPyrDNNoRRF5ZtMmy9</v-card-text>
+        <v-card-text
+          class="text-xs-center monospace success break-all"
+        >DEHYYiNA4fb7h59DGPyrDNNoRRF5ZtMmy9</v-card-text>
         <v-card-title class="justify-center">
           <v-img alt="QR Code" :src="qrlink" max-height="256" max-width="256" class="ma-5"></v-img>
         </v-card-title>

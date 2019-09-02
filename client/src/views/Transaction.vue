@@ -65,7 +65,7 @@
 
       <v-layout row wrap>
         <v-flex xs12 md6>
-          <heading :heading="headingInputs" />
+          <heading :heading="headingInputs" class="mt-5"/>
 
           <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -74,7 +74,7 @@
           <template v-else>
             <template v-for="(input, index) in inputs">
               <div class="break-all" :key="input.address">
-                <v-layout align-center justify-space-between row wrap pa-2>
+                <v-layout align-center justify-space-between row wrap px-2>
                   <template v-if="input.coinbase">
                     <v-flex xs12 class="monospace">
                       <v-icon small left color="warning">fas fa-coins</v-icon>
@@ -111,7 +111,7 @@
         </v-flex>
 
         <v-flex xs12 md6>
-          <heading :heading="headingRecipients" />
+          <heading :heading="headingRecipients" class="mt-5" />
 
           <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -119,7 +119,7 @@
           <template v-else>
             <template v-for="(recipient, index) in recipients">
               <div class="break-all" :key="recipient.address">
-                <v-layout align-center justify-space-between row wrap pa-2>
+                <v-layout align-center justify-space-between row wrap px-2>
                   <v-flex xs12 sm7>
                     <router-link
                       class="monospace success--text"

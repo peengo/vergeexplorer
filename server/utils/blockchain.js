@@ -183,7 +183,7 @@ const blockchain = {
                 console.log('sent:', sent);
                 console.log('received:', received);
                 console.log('balance:', balance);
-                process.exit();
+                // process.exit();
             }
 
             return {

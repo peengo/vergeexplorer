@@ -52,27 +52,6 @@
                 >{{ address.sent | formatAmount }} {{ $CURRENCY }}</div>
               </v-flex>
             </v-card-title>
-
-            <!-- <v-list>
-              <v-list-tile>
-                <v-list-tile-content class="accent--text">Balance</v-list-tile-content>
-                <v-list-tile-content
-                  class="align-end"
-                >{{ address.balance | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content class="accent--text">Received</v-list-tile-content>
-                <v-list-tile-content
-                  class="align-end success--text"
-                >{{ address.received | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content class="accent--text">Sent</v-list-tile-content>
-                <v-list-tile-content
-                  class="align-end error--text"
-                >{{ address.sent | formatAmount }} {{ $CURRENCY }}</v-list-tile-content>
-              </v-list-tile>
-            </v-list>-->
           </v-card>
         </v-flex>
 
@@ -115,15 +94,6 @@
                   <div class="subheading warning--text break-all">{{ address.usd | formatUSD }}</div>
                 </v-flex>
               </v-card-title>
-
-              <!-- <v-list-tile>
-                <v-list-tile-content class="accent--text">Estimated Worth</v-list-tile-content>
-                <v-list-tile-content class="align-end warning--text">{{ address.usd | formatUSD }}</v-list-tile-content>
-              </v-list-tile>-->
-              <!-- <v-list-tile>
-                <v-list-tile-content class="accent--text">Transactions</v-list-tile-content>
-                <v-list-tile-content class="align-end">{{ total }}</v-list-tile-content>
-              </v-list-tile> -->
             </v-list>
           </v-card>
         </v-flex>

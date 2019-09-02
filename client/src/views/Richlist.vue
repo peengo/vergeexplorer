@@ -76,25 +76,22 @@
                   <v-divider></v-divider>
 
                   <v-card-title class="py-2">
-                    <v-flex xs12 sm2 class="text-xs-left">
+                    <v-layout justify-space-between row wrap>
                       <div class="subheading grey--text">Balance</div>
-                    </v-flex>
-                    <v-flex xs12 sm10 class="text-xs-right">
                       <div
-                        class="subheading break-all"
+                        class="subheading break-all pl-3"
                       >{{ props.item.balance | formatAmount }} {{ $CURRENCY }}</div>
-                    </v-flex>
+                    </v-layout>
                   </v-card-title>
+
                   <v-card-title class="py-2">
-                    <v-flex xs12 sm4 class="text-xs-left">
+                    <v-layout justify-space-between row wrap>
                       <div class="subheading mr-5 grey--text">Estimated Worth</div>
-                    </v-flex>
-                    <v-flex xs12 sm8 class="text-xs-right">
-                      <div class="subheading break-all warning--text">
+                      <div class="subheading break-all warning--text pl-3">
                         <v-progress-circular dark indeterminate v-if="isPriceLoading"></v-progress-circular>
                         {{ props.item.usd | formatUSD }}
                       </div>
-                    </v-flex>
+                    </v-layout>
                   </v-card-title>
                 </v-list>
               </v-card>

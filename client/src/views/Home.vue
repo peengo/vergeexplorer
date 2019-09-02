@@ -67,6 +67,7 @@
               @click="reloadBlocks"
               :class="{ 'fast-spin': isBlocksSpinnerLoading}"
               v-if="!areBlocksLoading"
+              aria-label="Reload Block"
             >
               <v-icon>fas fa-sync-alt</v-icon>
             </v-btn>
@@ -116,6 +117,7 @@
               @click="reloadTxs"
               :class="{ 'fast-spin': isTxsSpinnerLoading}"
               v-if="!areTxsLoading"
+              aria-label="Reload Transactions"
             >
               <v-icon>fas fa-sync-alt</v-icon>
             </v-btn>

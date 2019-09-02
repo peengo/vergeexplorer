@@ -13,6 +13,7 @@
             icon
             :to="{ name: 'block', params: { hash: block.previousblockhash }}"
             class="primary--text"
+            aria-label="Previous Block"
           >
             <v-icon>fas fa-angle-left</v-icon>
           </v-btn>
@@ -25,6 +26,7 @@
             icon
             :to="{ name: 'block', params: { hash: block.nextblockhash }}"
             class="primary--text"
+            aria-label="Next Block"
           >
             <v-icon>fas fa-angle-right</v-icon>
           </v-btn>
@@ -174,7 +176,10 @@ import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 
+import { scrollTop } from "../mixins.js";
+
 export default {
+  mixins: [scrollTop],
   components: {
     Heading,
     ProgressCircular,
@@ -258,10 +263,6 @@ export default {
       ));
 
       this.areTxsLoading = false;
-    },
-    scrollTop() {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     }
   },
   async beforeRouteUpdate(to, from, next) {

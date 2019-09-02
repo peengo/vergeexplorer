@@ -65,7 +65,7 @@
 
       <v-layout row wrap>
         <v-flex xs12 md6>
-          <heading :heading="headingInputs" class="mt-5"/>
+          <heading :heading="headingInputs" class="mt-5" />
 
           <ProgressCircular v-if="isLoading"></ProgressCircular>
 
@@ -156,7 +156,10 @@ import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 
+import { scrollTop } from "../mixins.js";
+
 export default {
+  mixins: [scrollTop],
   components: {
     Heading,
     ProgressCircular,
@@ -216,6 +219,8 @@ export default {
       this.headingRecipients.append = `(${this.totalRecipients})`;
 
       this.isLoading = false;
+
+      this.scrollTop();
     } catch (error) {
       if (error.response.status == 400 || error.response.status == 404) {
         this.error = error.response.data.error;

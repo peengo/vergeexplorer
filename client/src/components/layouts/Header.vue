@@ -3,9 +3,8 @@
     <v-toolbar fixed app>
       <router-link :to="{ name: 'home'}">
         <v-toolbar-title class="mr-3 white--text">
-          <v-avatar tile size="34" class="mr-2">
-            <img :src="`${publicPath}logo.png`" alt="logo" />
-          </v-avatar>VergeExplorer
+          <img style="vertical-align:middle" :src="`${publicPath}logo.png`" alt="logo" class="mr-2" />
+          <span class="text-truncate">VergeExplorer</span>
         </v-toolbar-title>
       </router-link>
 

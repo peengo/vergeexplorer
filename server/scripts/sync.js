@@ -46,7 +46,19 @@ console.log(`Time: ${new Date().toJSON()}`);
                 if (dbBlockCount > blockScanOffset) {
                     const blockScanStart = dbBlockCount - blockScanOffset;
 
-                    for (let scanHeight = dbBlockCount - 1; scanHeight > blockScanStart; scanHeight--) {
+                    let blockScanHeights = [];
+
+                    for (let scanHeight = blockScanStart; scanHeight < dbBlockCount; scanHeight++) {
+                        blockScanHeights.push(scanHeight);
+                    }
+
+                    const randomBoolean = Math.random() >= 0.5;
+
+                    if (randomBoolean) {
+                        blockScanHeights.reverse();
+                    }
+
+                    for (let scanHeight of blockScanHeights) {
                         const { result: rpcBlockHash, error: blockHashError } = await rpc.getBlockHash([scanHeight]);
 
                         if (blockHashError) throw blockHashError;

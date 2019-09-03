@@ -47,6 +47,7 @@
     </v-dialog>
 
     <v-layout justify-center row wrap>
+      <v-btn href="https://vergecurrency.com/" flat round><v-icon left>fas fa-globe</v-icon>Official VERGE Website</v-btn>
       <v-btn flat round @click.stop="contactDialog = true">
         <v-icon left small>fas fa-home</v-icon>Contact Us
       </v-btn>

@@ -8,7 +8,7 @@
       <ProgressCircular v-if="isLoading"></ProgressCircular>
 
       <template v-else>
-        <v-flex xs12 md8 offset-md2 v-for="(peer, index) in peers" :key="index" class="py-1">
+        <v-flex xs12 sm8 offset-sm2 md6 offset-md3 v-for="(peer, index) in peers" :key="index" class="py-1">
           <v-card>
             <v-list>
               <v-list-tile>

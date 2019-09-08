@@ -208,6 +208,8 @@ export default {
 
       this.info = info;
       this.info.sync = (this.info.blocks_db / this.info.blocks_rpc) * 100;
+      
+      if (this.info.sync > 100) this.info.sync = 100;
 
       this.marketData = marketData;
 

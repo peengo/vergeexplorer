@@ -63,11 +63,19 @@ console.log(`Time: ${new Date().toJSON()}`);
 
                         if (blockHashError) throw blockHashError;
 
-                        const { hash: dbBlockHash } = await blocks.findOne({ height: scanHeight });
+                        let dbBlock = await blocks.findOne({ height: scanHeight });
 
-                        if (rpcBlockHash !== dbBlockHash) {
-                            console.log(`Invalid block found at height ${scanHeight}`);
-                            console.log(`Blockchain: ${rpcBlockHash} | DB: ${dbBlockHash}`);
+                        let dbBlockHash = null;
+
+                        if (dbBlock != null) dbBlockHash = dbBlock.hash;
+
+                        if (dbBlock == null) {
+                            console.log(`Block missing at heigth ${scanHeight}`);
+
+                            const { result: rpcBlockHash, error: blockHashError } = await rpc.getBlockHash([scanHeight]);
+
+                            if (blockHashError) throw blockHashError;
+
                             const { result: rpcBlock, error: blockError } = await rpc.getBlock([rpcBlockHash, 1]);
 
                             if (blockError) throw blockError;
@@ -76,9 +84,47 @@ console.log(`Time: ${new Date().toJSON()}`);
 
                             session.startTransaction();
                             try {
+                                console.log(`Adding Block: ${rpcBlock.hash}`);
+                                await addBlock(rpcBlock, { blocks, txs, ios, addresses, session, rpc });
+
+                                await session.commitTransaction();
+                                session.endSession();
+                            } catch (error) {
+                                await session.abortTransaction();
+                                session.endSession();
+
+                                throw error;
+                            }
+                        } else if (rpcBlockHash !== dbBlockHash) {
+                            console.log(`Invalid block found at height ${scanHeight}`);
+                            console.log(`Blockchain: ${rpcBlockHash} | DB: ${dbBlockHash}`);
+
+                            // process.exit();
+
+                            const { result: rpcBlock, error: blockError } = await rpc.getBlock([rpcBlockHash, 1]);
+
+                            if (blockError) throw blockError;
+
+                            let session = client.startSession();
+
+                            session.startTransaction();
+                            try {
                                 console.log(`Removing Block: ${dbBlockHash}`);
                                 await removeBlock(dbBlockHash, { blocks, txs, ios, addresses, session });
 
+                                await session.commitTransaction();
+                                session.endSession();
+                            } catch (error) {
+                                await session.abortTransaction();
+                                session.endSession();
+
+                                throw error;
+                            }
+
+                            session = client.startSession();
+
+                            session.startTransaction();
+                            try {
                                 console.log(`Adding Block: ${rpcBlock.hash}`);
                                 await addBlock(rpcBlock, { blocks, txs, ios, addresses, session, rpc });
 
@@ -117,9 +163,9 @@ console.log(`Time: ${new Date().toJSON()}`);
                             await session.abortTransaction();
                             session.endSession();
 
-                            // throw error;
-                            console.error(error);
-                            console.log(`height: ${height} hash: ${hash}`);
+                            throw error;
+                            // console.error(error);
+                            // console.log(`height: ${height} hash: ${hash}`);
                             // process.exit();
                         }
                         console.log(`height: ${height} hash: ${hash}`);
@@ -140,47 +186,52 @@ console.log(`Time: ${new Date().toJSON()}`);
 
 async function addBlock(block, { blocks, txs, ios, addresses, session, rpc }) {
     const txids = block.tx;
-    let transactions = [];
 
-    transactions = await Promise.all(txids.map(txid => rpc.getRawTransaction([txid, 1])));
-    transactions = transactions.map(tx => tx.result);
+    if (block.height == 0) {
+        await blocks.insertOne(block, { session });
+    } else {
+        let transactions = [];
 
-    await blocks.insertOne(block, { session });
+        transactions = await Promise.all(txids.map(txid => rpc.getRawTransaction([txid, 1])));
+        transactions = transactions.map(tx => tx.result);
 
-    if (transactions.length > 0)
-        await txs.insertMany(transactions, { session });
+        await blocks.insertOne(block, { session });
 
-    let blockIOOffsets = [];
+        if (transactions.length > 0)
+            await txs.insertMany(transactions, { session });
 
-    for (const tx of transactions) {
-        const { addressTxInserts, txIOOffsets } = await blockchain.getIOInsertsAndOffsets(tx, txs, transactions, blockIOOffsets);
+        let blockIOOffsets = [];
 
-        blockIOOffsets = blockchain.sumAddressOffsets(txIOOffsets, blockIOOffsets);
+        for (const tx of transactions) {
+            const { addressTxInserts, txIOOffsets } = await blockchain.getIOInsertsAndOffsets(tx, txs, transactions, blockIOOffsets);
 
-        if (addressTxInserts.length > 0)
-            await ios.insertMany(addressTxInserts, { session });
-    }
+            blockIOOffsets = blockchain.sumAddressOffsets(txIOOffsets, blockIOOffsets);
 
-    const addressList = blockIOOffsets.map(offset => offset.address);
-    let addressUpdatesDb = await addresses.find({ address: { $in: addressList } }).toArray();
-
-    addressUpdatesDb.sort((a, b) => a.address.localeCompare(b.address));
-
-    let addressUpdates = blockIOOffsets.filter(o => addressUpdatesDb.find(o2 => o.address === o2.address)).sort((a, b) => a.address.localeCompare(b.address));
-    let addressInserts = blockIOOffsets.filter(o => !addressUpdatesDb.find(o2 => o.address === o2.address));
-
-    if (addressUpdatesDb.length > 0) {
-        addressUpdatesDb = blockchain.calculateUpdateBalances(addressUpdatesDb, addressUpdates);
-
-        for (const addressUpdate of addressUpdatesDb) {
-            await addresses.findOneAndReplace({ address: addressUpdate.address }, addressUpdate, { session });
+            if (addressTxInserts.length > 0)
+                await ios.insertMany(addressTxInserts, { session });
         }
-    }
 
-    if (addressInserts.length > 0) {
-        addressInserts = blockchain.calculateInsertBalances(addressInserts);
+        const addressList = blockIOOffsets.map(offset => offset.address);
+        let addressUpdatesDb = await addresses.find({ address: { $in: addressList } }).toArray();
 
-        await addresses.insertMany(addressInserts, { session });
+        addressUpdatesDb.sort((a, b) => a.address.localeCompare(b.address));
+
+        let addressUpdates = blockIOOffsets.filter(o => addressUpdatesDb.find(o2 => o.address === o2.address)).sort((a, b) => a.address.localeCompare(b.address));
+        let addressInserts = blockIOOffsets.filter(o => !addressUpdatesDb.find(o2 => o.address === o2.address));
+
+        if (addressUpdatesDb.length > 0) {
+            addressUpdatesDb = blockchain.calculateUpdateBalances(addressUpdatesDb, addressUpdates);
+
+            for (const addressUpdate of addressUpdatesDb) {
+                await addresses.findOneAndReplace({ address: addressUpdate.address }, addressUpdate, { session });
+            }
+        }
+
+        if (addressInserts.length > 0) {
+            addressInserts = blockchain.calculateInsertBalances(addressInserts);
+
+            await addresses.insertMany(addressInserts, { session });
+        }
     }
 }
 

@@ -153,6 +153,10 @@ const blockchain = {
     },
 
     calculateUpdateBalances(addressUpdatesDb, addressUpdates) {
+        // console.log('### VALID ###');
+        // console.log('addressUpdatesDb:\n', addressUpdatesDb);
+        // console.log('addressUpdates:\n', addressUpdates);
+
         return addressUpdatesDb.map((item, index) => {
             if (addressUpdatesDb.length != addressUpdates.length) {
                 console.log('calculateUpdateBalances lengths do not match');
@@ -183,7 +187,12 @@ const blockchain = {
                 console.log('sent:', sent);
                 console.log('received:', received);
                 console.log('balance:', balance);
-                // process.exit();
+                process.exit();
+            }
+
+            if (!(dReceived.minus(dSent).equals(dBalance.toString()))) {
+                console.log('calculateUpdateBalances wrong caluclation');
+                process.exit();
             }
 
             return {
@@ -196,6 +205,10 @@ const blockchain = {
     },
 
     calculateUpdateInvalidBalances(addressUpdatesDb, addressUpdates) {
+        // console.log('### INVALID ###');
+        // console.log('addressUpdatesDb:\n', addressUpdatesDb);
+        // console.log('addressUpdates:\n', addressUpdates);
+
         return addressUpdatesDb.map((item, index) => {
             if (addressUpdatesDb.length != addressUpdates.length) {
                 console.log('calculateUpdateInvalidBalances lengths do not match');
@@ -218,6 +231,7 @@ const blockchain = {
             const received = dReceived.toString();
 
             const dItemBalance = Decimal(item.balance);
+
             const dBalance = dItemBalance.minus(dUpdatesReceived).plus(dUpdatesSent);
             const balance = dBalance.toString();
 
@@ -226,8 +240,28 @@ const blockchain = {
                 console.log('sent:', sent);
                 console.log('received:', received);
                 console.log('balance:', balance);
+
                 process.exit();
             }
+
+            if (!(dReceived.minus(dSent).equals(dBalance.toString()))) {
+                console.log('calculateUpdateInvalidBalances wrong caluclation');
+                process.exit();
+            }
+
+            // if (item.address === 'D9rucWWXrNjcDx6kxK9Ww4141yhVLJ9LLg') {
+            //     console.log('###################################################');
+            //     console.log(item.address);
+            //     console.log('sent:', sent);
+            //     console.log('received:', received);
+            //     console.log('balance:', balance);
+
+            //     console.log('ITEM:', item);
+            //     console.log('\n', dItemBalance.toString(), ' - ', dUpdatesReceived.toString(), ' + ', dUpdatesSent.toString());
+            //     console.log('###################################################');
+
+            //     process.exit();
+            // }
 
             return {
                 address: item.address,
@@ -329,6 +363,23 @@ const blockchain = {
 
         return { type, value };
     }
+    /*,
+
+    getRemoveAndAddBlockDiffAddressUpdates(removeBlockAddressUpdates, addBlockAddressUpdates) {
+        for (const removeBlockAddressUpdate of removeBlockAddressUpdates) {
+            let io = addBlockAddressUpdates.find(item => item.address === removeBlockAddressUpdate.address);
+
+            if (io === undefined) {
+                addBlockAddressUpdates.push(removeBlockAddressUpdate);
+            } else {
+                io.received = Decimal(io.received).minus(removeBlockAddressUpdate.received).toString();
+                io.sent = Decimal(io.sent).minus(removeBlockAddressUpdate.sent).toString();
+            }
+        }
+
+        return addBlockAddressUpdates;
+    }
+    */
 };
 
 module.exports = blockchain;

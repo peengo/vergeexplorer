@@ -199,21 +199,16 @@ export default {
   }),
   async created() {
     try {
-      const [info, marketData, blocks, txs] = await Promise.all([
+      const [info, blocks, txs] = await Promise.all([
         this.getInfo(),
-        this.getMarketData(),
         this.getBlocks(),
         this.getTxs()
       ]);
 
       this.info = info;
       this.info.sync = (this.info.blocks_db / this.info.blocks_rpc) * 100;
-      
+
       if (this.info.sync > 100) this.info.sync = 100;
-
-      this.marketData = marketData;
-
-      this.isInfoAndMarketLoading = false;
 
       this.blocks = blocks;
 
@@ -221,6 +216,9 @@ export default {
 
       this.txs = txs;
       this.areTxsLoading = false;
+
+      this.marketData = await this.getMarketData();
+      this.isInfoAndMarketLoading = false;
     } catch (error) {
       this.isError = true;
     }

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import VueAnalytics from 'vue-analytics'
 
 import Vuetify from 'vuetify/lib';
 import 'vuetify/src/stylus/app.styl';
@@ -32,6 +33,11 @@ Vue.use(Vuetify, {
     }
   }
 });
+
+Vue.use(VueAnalytics, {
+  id: 'UA-131786424-1',
+  router
+})
 
 Vue.config.productionTip = false;
 

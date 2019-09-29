@@ -20,7 +20,7 @@
           This website was built from scratch. Source code is available on
           <a
             alt="GitHub"
-            href="http://github.com"
+            href="https://github.com/peengo/vergeexplorer"
           >GitHub</a>. Donations are not necesarry but are greatly appreciated. Donations keep this website online. All donations are non-refundable. To show the support you can also use the Binance exchange referral link below.
         </v-card-text>
         <v-card-text class="subheading text-xs-center">VERGE ({{ $CURRENCY }})</v-card-text>
@@ -54,7 +54,7 @@
       <v-btn flat round @click.stop="donationsDialog = true">
         <v-icon left small>fas fa-hand-holding-usd</v-icon>Donations
       </v-btn>
-      <v-btn href="https://github.com/" flat round>
+      <v-btn href="https://github.com/peengo/vergeexplorer" flat round>
         <v-icon left>fab fa-github</v-icon>GitHub
       </v-btn>
       <v-flex py-3 text-xs-center xs12 class="accent--text">

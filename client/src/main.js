@@ -13,7 +13,7 @@ import "./filters";
 import axios from "axios";
 
 Vue.prototype.$http = axios;
-Vue.prototype.$CURRENCY = process.env.VUE_APP_CURRENCY;
+Vue.prototype.$CURRENCY = 'XVG';
 
 Vue.use(Vuetify, {
   components: { VLayout },

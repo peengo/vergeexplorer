@@ -34,7 +34,6 @@ router.get('/:hash', async (ctx) => {
                 ctx.throw(error.status, error.data.error.message);
             }
         } else {
-            // console.error(error.status);
             ctx.throw(500);
         }
     }

@@ -99,8 +99,6 @@ console.log(`Time: ${new Date().toJSON()}`);
                             console.log(`Invalid block found at height ${scanHeight}`);
                             console.log(`Blockchain: ${rpcBlockHash} | DB: ${dbBlockHash}`);
 
-                            // process.exit();
-
                             const { result: rpcBlock, error: blockError } = await rpc.getBlock([rpcBlockHash, 1]);
 
                             if (blockError) throw blockError;

@@ -8,6 +8,10 @@
       <ProgressCircular v-if="isRichlistLoading"></ProgressCircular>
 
       <template v-else>
+        <v-layout align-center justify-center>
+          <p>Wealth distribution of the richest addresses in the blockchain by balance</p>
+        </v-layout>
+
         <v-data-table
           :headers="headers"
           :items="richlist"

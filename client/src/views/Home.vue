@@ -139,7 +139,7 @@
                       >{{ tx.txid }}</router-link>
                     </div>
                   </template>
-                  <span>Transaction txid</span>
+                  <span>Transaction Id (txid)</span>
                 </v-tooltip>
               </div>
               <div class="text-xs-right">

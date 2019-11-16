@@ -110,12 +110,18 @@
           <div class="pb-2 break-all" :key="tx.txid">
             <v-layout align-center justify-space-between row wrap>
               <v-flex xs12 md8>
-                <router-link
-                  class="monospace primary--text"
-                  :to="{ name: 'tx', params: { txid: tx.txid }}"
-                >{{ tx.txid }}</router-link>
+                <v-tooltip top open-delay="0" close-delay="0">
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <router-link
+                        class="monospace primary--text"
+                        :to="{ name: 'tx', params: { txid: tx.txid }}"
+                      >{{ tx.txid }}</router-link>
+                    </div>
+                  </template>
+                  <span>Transaction Id (txid)</span>
+                </v-tooltip>
               </v-flex>
-
               <v-flex xs12 md4>
                 <div v-if="tx.type ==='vin'" class="error--text text-xs-right">
                   <v-icon small left color="error">fas fa-minus-square</v-icon>

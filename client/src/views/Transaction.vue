@@ -84,10 +84,17 @@
                   </template>
                   <template v-else>
                     <v-flex xs12 sm7>
-                      <router-link
-                        class="monospace error--text"
-                        :to="{ name: 'address', params: { address: input.address }}"
-                      >{{ input.address }}</router-link>
+                      <v-tooltip top open-delay="0" close-delay="0">
+                        <template v-slot:activator="{ on }">
+                          <div v-on="on">
+                            <router-link
+                              class="monospace error--text"
+                              :to="{ name: 'address', params: { address: input.address }}"
+                            >{{ input.address }}</router-link>
+                          </div>
+                        </template>
+                        <span>Address</span>
+                      </v-tooltip>
                     </v-flex>
                     <v-flex xs12 sm5 class="text-xs-right pa-1">
                       <span :inner-html.prop="input.value | formatAmount | formatMuted"></span>
@@ -121,10 +128,17 @@
               <div class="break-all" :key="recipient.address">
                 <v-layout align-center justify-space-between row wrap px-2>
                   <v-flex xs12 sm7>
-                    <router-link
-                      class="monospace success--text"
-                      :to="{ name: 'address', params: { address: recipient.address }}"
-                    >{{ recipient.address }}</router-link>
+                    <v-tooltip top open-delay="0" close-delay="0">
+                      <template v-slot:activator="{ on }">
+                        <div v-on="on">
+                          <router-link
+                            class="monospace success--text"
+                            :to="{ name: 'address', params: { address: recipient.address }}"
+                          >{{ recipient.address }}</router-link>
+                        </div>
+                      </template>
+                      <span>Address</span>
+                    </v-tooltip>
                   </v-flex>
                   <v-flex xs12 sm5 class="text-xs-right pa-1">
                     <span :inner-html.prop="recipient.value | formatAmount | formatMuted"></span>

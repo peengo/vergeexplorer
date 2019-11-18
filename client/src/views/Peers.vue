@@ -27,7 +27,7 @@
               <v-list-tile>
                 <v-list-tile-content class="body-1 grey--text monospace">Address</v-list-tile-content>
                 <v-list-tile-content
-                  class="align-end monospace accent--text"
+                  class="body-2 align-end monospace accent--text"
                 >{{ peer.addr | formatAddress }}</v-list-tile-content>
               </v-list-tile>
               <v-divider class="mx-2"></v-divider>

@@ -13,24 +13,38 @@ router.get('/:txid', async (ctx) => {
             return false;
         }
 
-        const tx = await txs
+        let tx = await txs
             .findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            ctx.status = 404;
-            ctx.body = { error: errors.tx_not_found };
-            return false;
+            const { result: mempool, error: mempoolError } = await rpc.getRawMempool();
+
+            if (mempoolError) throw mempoolError;
+
+            if (mempool.includes(txid)) {
+                const { result: mempoolTx, error: txError } = await rpc.getRawTransaction([txid, 1]);
+
+                if (txError) throw txError;
+
+                tx = mempoolTx;
+            } else {
+                ctx.status = 404;
+                ctx.body = { error: errors.tx_not_found };
+                return false;
+            }
         }
 
-        const { result: blockRpc, error } = await rpc.getBlock([tx.blockhash]);
+        if (tx.blockhash) {
+            const { result: blockRpc, error } = await rpc.getBlock([tx.blockhash]);
 
-        if (error) {
-            ctx.status = 400;
-            ctx.body = { error: error.message };
-            return false;
+            if (error) {
+                ctx.status = 400;
+                ctx.body = { error: error.message };
+                return false;
+            }
+
+            tx.confirmations = blockRpc.confirmations;
         }
-
-        tx.confirmations = blockRpc.confirmations;
 
         ctx.body = { data: tx };
     } catch (error) {
@@ -42,7 +56,7 @@ router.get('/:txid', async (ctx) => {
 // inputs an recipients
 router.get('/:string/:txid/:skip/:limit', async (ctx) => {
     try {
-        const { collections: { txs }, blockchain, errors, config: { limits: { block: allowedLimit } } } = ctx.locals;
+        const { collections: { txs }, blockchain, rpc, errors, config: { limits: { block: allowedLimit } } } = ctx.locals;
 
         const string = ctx.params.string;
         const txid = ctx.params.txid;
@@ -66,12 +80,24 @@ router.get('/:string/:txid/:skip/:limit', async (ctx) => {
 
         limit = (limit >= 1 && limit <= allowedLimit) ? limit : allowedLimit;
 
-        const tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
+        let tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
         if (!tx) {
-            ctx.status = 404;
-            ctx.body = { error: errors.tx_not_found };
-            return false;
+            const { result: mempool, error: mempoolError } = await rpc.getRawMempool();
+
+            if (mempoolError) throw mempoolError;
+
+            if (mempool.includes(txid)) {
+                const { result: mempoolTx, error: txError } = await rpc.getRawTransaction([txid, 1]);
+
+                if (txError) throw txError;
+
+                tx = mempoolTx;
+            } else {
+                ctx.status = 404;
+                ctx.body = { error: errors.tx_not_found };
+                return false;
+            }
         }
 
         let total;

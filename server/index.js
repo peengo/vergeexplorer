@@ -68,6 +68,7 @@ router.use('/peers', require('./routes/peers').routes());
 router.use('/richlist', require('./routes/richlist').routes());
 router.use('/search', require('./routes/search').routes());
 router.use('/tx', require('./routes/tx').routes());
+router.use('/pending', require('./routes/pending').routes());
 
 app.use(router.routes());
 app.use(router.allowedMethods());

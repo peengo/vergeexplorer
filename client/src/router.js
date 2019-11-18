@@ -6,6 +6,7 @@ import Transaction from "./views/Transaction.vue";
 import Peers from "./views/Peers.vue";
 import Richlist from "./views/Richlist.vue";
 import Address from "./views/Address.vue";
+import Pending from "./views/Pending.vue";
 import NotFound from "./views/NotFound.vue";
 
 Vue.use(Router);
@@ -43,6 +44,11 @@ export default new Router({
       path: "/address/:address",
       name: "address",
       component: Address
+    },
+    {
+      path: "/pending",
+      name: "pending",
+      component: Pending
     },
     {
       path: "*",

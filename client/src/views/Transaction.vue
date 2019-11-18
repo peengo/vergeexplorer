@@ -18,7 +18,7 @@
                 <div class="break-all monospace accent--text">{{ tx.txid }}</div>
               </v-card-title>
               <v-list>
-                <v-list-tile>
+                <v-list-tile v-if="tx.confirmations">
                   <v-list-tile-content class="accent--text">
                     <div>
                       <v-icon small left>fas fa-check</v-icon>Confirmations
@@ -39,6 +39,14 @@
                     </div>
                   </v-list-tile-content>
                 </v-list-tile>
+                <v-list-tile v-else>
+                  <v-list-tile-content class="grey--text">
+                    <div>
+                      <v-icon small left class="grey--text">far fa-hourglass</v-icon>Pending Transaction (still in
+                      <router-link :to="{ name: 'pending'}">mempool</router-link>)
+                    </div>
+                  </v-list-tile-content>
+                </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-content class="accent--text">
                     <div>
@@ -47,7 +55,7 @@
                   </v-list-tile-content>
                   <v-list-tile-content class="align-end grey--text">{{ tx.time | formatTime }}</v-list-tile-content>
                 </v-list-tile>
-                <v-card-title>
+                <v-card-title v-if="tx.blockhash">
                   <div class="subheading mr-5 accent--text">
                     <v-icon small left>fas fa-cube</v-icon>Block Hash
                   </div>

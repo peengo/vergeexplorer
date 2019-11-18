@@ -59,6 +59,18 @@ describe('API Tests', () => {
             });
         });
 
+        describe('/pending', () => {
+            it('should return pending txs', async () => {
+                const res = await app.get('/pending');
+
+                expect(res).to.have.status(200);
+                expect(res).to.have.header('content-type', contentType);
+                expect(res).to.be.json;
+                expect(res.body).to.have.property('data');
+                expect(res.body.data).to.be.an('array');
+            });
+        });
+
         describe('/richlist', () => {
             it('should return a richlist', async () => {
                 const res = await app.get('/richlist');

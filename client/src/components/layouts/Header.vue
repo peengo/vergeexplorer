@@ -35,9 +35,10 @@
 export default {
   data: () => ({
     items: [
-      { title: "Home", to: "/", icon: "fas fa-cubes" },
-      { title: "Richlist", to: "/richlist", icon: "fas fa-chart-pie" },
-      { title: "Peers", to: "/peers", icon: "fas fa-network-wired" }
+      { title: "Home", to: { name: "home" }, icon: "fas fa-cubes" },
+      { title: "Richlist", to: { name: "richlist" }, icon: "fas fa-chart-pie" },
+      { title: "Peers", to: { name: "peers" }, icon: "fas fa-network-wired" },
+      { title: "Pending", to: { name: "pending" }, icon: "far fa-hourglass" }
     ],
     publicPath: process.env.BASE_URL
   })

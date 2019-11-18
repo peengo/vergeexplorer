@@ -94,9 +94,6 @@ export default {
   filters: {
     formatAddress(addr) {
       return addr.split(":")[0];
-    },
-    formatSubver(subver) {
-      return subver.replace(/[/]/g, "");
     }
   }
 };

@@ -47,3 +47,7 @@ Vue.filter("formatTimeAgo", time =>
 Vue.filter("formatTime", time =>
   format(new Date(time * 1000), "D MMM YYYY - hh:mm A")
 );
+
+Vue.filter("formatSubver", subver =>
+  subver.replace(/[/]/g, "")
+);

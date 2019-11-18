@@ -37,8 +37,9 @@ describe('API Tests', () => {
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('blocks_db').to.be.a('number');
                 expect(res.body.data).to.have.property('blocks_rpc').to.be.a('number');
+                expect(res.body.data).to.have.property('transactions').to.be.a('number');
                 expect(res.body.data).to.have.property('moneysupply').to.be.a('number');
-
+                expect(res.body.data).to.have.property('subversion').to.be.a('string');
             });
         });
 

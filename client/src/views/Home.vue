@@ -51,6 +51,11 @@
           <span v-else class="error--text">{{ marketData.usd_24h_change.toFixed(2) }} %</span>
           <div class="grey--text">Price</div>
         </v-flex>
+
+        <v-flex xs12 sm2 md2 py-2>
+          <div class="primary--text">{{ info.subversion | formatSubver }}</div>
+          <div class="grey--text">Version</div>
+        </v-flex>
       </v-layout>
 
       <v-divider class="mt-3 mb-5 mx-2"></v-divider>

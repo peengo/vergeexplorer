@@ -3,14 +3,21 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
     try {
-        const { collections: { blocks }, getTxOutSetInfo } = ctx.locals;
-        const blocks_db = await blocks.estimatedDocumentCount();
+        const { collections: { blocks }, getTxOutSetInfo, rpc } = ctx.locals;
+
+        const [ blocks_db, {result: networkInfo, error: networkInfoError }] = await Promise.all([
+            blocks.estimatedDocumentCount(),
+            rpc.getNetworkInfo()
+        ]);
+
+        if (networkInfoError) throw networkInfoError;
 
         const info = {
             blocks_db,
             blocks_rpc: getTxOutSetInfo.height,
             transactions: getTxOutSetInfo.transactions,
-            moneysupply: getTxOutSetInfo.total_amount
+            moneysupply: getTxOutSetInfo.total_amount,
+            subversion: networkInfo.subversion
         };
 
         ctx.body = { data: info };

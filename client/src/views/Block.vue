@@ -72,14 +72,16 @@
                   </div>
                 </v-list-tile-content>
               </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content class="accent--text">
-                  <div>
-                    <v-icon small left>far fa-clock</v-icon>Time
-                  </div>
-                </v-list-tile-content>
-                <v-list-tile-content class="align-end grey--text">{{ block.time | formatTime }}</v-list-tile-content>
-              </v-list-tile>
+              <v-card-title>
+                <div class="subheading mr-5 accent--text">
+                  <v-icon small left>far fa-clock</v-icon>Time |
+                  <span class="caption">Epoch</span>
+                </div>
+                <div class="break-all grey--text">
+                  {{ block.time | formatTime }} |
+                  <span class="caption">{{ block.time }}</span>
+                </div>
+              </v-card-title>
               <v-list-tile>
                 <v-list-tile-content class="accent--text">Nonce</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.nonce }}</v-list-tile-content>

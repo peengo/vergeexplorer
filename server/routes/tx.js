@@ -82,6 +82,8 @@ router.get('/:string/:txid/:skip/:limit', async (ctx) => {
 
         let tx = await txs.findOne({ txid }, { projection: { _id: 0 } });
 
+        let mempoolTxs = [];
+
         if (!tx) {
             const { result: mempool, error: mempoolError } = await rpc.getRawMempool();
 
@@ -89,6 +91,9 @@ router.get('/:string/:txid/:skip/:limit', async (ctx) => {
 
             if (mempool.includes(txid)) {
                 const { result: mempoolTx, error: txError } = await rpc.getRawTransaction([txid, 1]);
+
+                mempoolTxs = await Promise.all(mempool.map(txid => rpc.getRawTransaction([txid, 1])));
+                mempoolTxs = mempoolTxs.map(tx => tx.result);
 
                 if (txError) throw txError;
 
@@ -106,7 +111,7 @@ router.get('/:string/:txid/:skip/:limit', async (ctx) => {
 
         switch (string) {
             case 'inputs':
-                inputs = await blockchain.getInputs(tx, txs);
+                inputs = await blockchain.getInputs(tx, txs, mempoolTxs);
                 total = inputs.length;
 
                 inputs = inputs.slice(skip, skip + limit);

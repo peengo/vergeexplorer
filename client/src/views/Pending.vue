@@ -9,26 +9,29 @@
 
       <template v-else>
         <v-layout align-center justify-center>
-          <p>Pending transactions which are still waiting to be confirmed</p>
+          <p>Pending transactions which are still waiting to be confirmed (in mempool)</p>
         </v-layout>
 
         <v-layout row wrap>
-          <v-flex d-flex xs12 md10 offset-md1>
+          <v-flex d-flex xs12 md8 offset-md2>
             <v-card class="break-all">
-              <v-card-title v-for="txid in txids" :key="txid" class="justify-center">
-                <v-tooltip top open-delay="0" close-delay="0">
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon small class="mr-2">fas fa-money-check</v-icon>
-                      <router-link
-                        class="monospace primary--text"
-                        :to="{ name: 'tx', params: { txid }}"
-                      >{{ txid }}</router-link>
-                    </div>
-                  </template>
-                  <span>Transaction Id (txid)</span>
-                </v-tooltip>
-              </v-card-title>
+              <template v-for="(txid, index) in txids">
+                <v-card-title class="justify-center" :key="txid">
+                  <v-tooltip top open-delay="0" close-delay="0">
+                    <template v-slot:activator="{ on }">
+                      <div v-on="on">
+                        <v-icon small class="mr-2">fas fa-money-check</v-icon>
+                        <router-link
+                          class="monospace primary--text"
+                          :to="{ name: 'tx', params: { txid }}"
+                        >{{ txid }}</router-link>
+                      </div>
+                    </template>
+                    <span>Transaction Id (txid)</span>
+                  </v-tooltip>
+                </v-card-title>
+                <v-divider v-if="index != txids.length - 1" :key="txid"></v-divider>
+              </template>
             </v-card>
           </v-flex>
         </v-layout>

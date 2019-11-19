@@ -147,7 +147,8 @@
               </v-flex>
 
               <v-flex xs12 md12>
-                <div class="grey--text py-2">{{ tx.time | formatTime }}</div>
+                <div class="grey--text py-2">{{ tx.time | formatTime }} | 
+                  <span class="caption">{{ tx.time }}</span></div>
                 <v-divider class="mx-1" v-if="index != txs.length - 1"></v-divider>
               </v-flex>
             </v-layout>

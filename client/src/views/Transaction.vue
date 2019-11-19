@@ -47,14 +47,16 @@
                     </div>
                   </v-list-tile-content>
                 </v-list-tile>
-                <v-list-tile>
-                  <v-list-tile-content class="accent--text">
-                    <div>
-                      <v-icon small left>far fa-clock</v-icon>Time
-                    </div>
-                  </v-list-tile-content>
-                  <v-list-tile-content class="align-end grey--text">{{ tx.time | formatTime }}</v-list-tile-content>
-                </v-list-tile>
+                <v-card-title>
+                  <div class="subheading mr-5 accent--text">
+                    <v-icon small left>far fa-clock</v-icon>Time |
+                    <span class="caption">Epoch</span>
+                  </div>
+                  <div class="break-all grey--text">
+                    {{ tx.time | formatTime }} |
+                    <span class="caption">{{ tx.time }}</span>
+                  </div>
+                </v-card-title>
                 <v-card-title v-if="tx.blockhash">
                   <div class="subheading mr-5 accent--text">
                     <v-icon small left>fas fa-cube</v-icon>Block Hash

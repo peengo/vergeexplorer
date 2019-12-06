@@ -17,7 +17,7 @@
                 </div>
                 <div class="break-all monospace accent--text">{{ tx.txid }}</div>
               </v-card-title>
-              <v-list>
+              <v-list class="pb-0">
                 <v-list-tile v-if="tx.confirmations">
                   <v-list-tile-content class="accent--text">
                     <div>
@@ -67,6 +67,36 @@
                     >{{ tx.blockhash }}</router-link>
                   </div>
                 </v-card-title>
+                <v-expansion-panel class="elevation-0" focusable v-model="isHexPanelOpen">
+                  <v-expansion-panel-content>
+                    <template v-slot:header>
+                      <div class="subheading accent--text">
+                        <v-icon small left>fas fa-file-invoice</v-icon>Hex
+                      </div>
+                    </template>
+                    <v-card>
+                      <div class="break-all monospace grey--text pa-3">{{ tx.hex }}</div>
+                    </v-card>
+                    <v-btn flat small block @click="isHexPanelOpen = !isHexPanelOpen">
+                      <v-icon>fas fa-chevron-up</v-icon>
+                    </v-btn>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel class="elevation-0" focusable v-model="isJSONPanelOpen">
+                  <v-expansion-panel-content>
+                    <template v-slot:header>
+                      <div class="subheading">
+                        <v-icon small left>fas fa-file-alt</v-icon>JSON
+                      </div>
+                    </template>
+                    <v-card>
+                      <code class="break-all pa-3" :inner-html.prop="tx | JSONtoHTML"></code>
+                    </v-card>
+                    <v-btn flat small block @click="isJSONPanelOpen = !isJSONPanelOpen">
+                      <v-icon>fas fa-chevron-up</v-icon>
+                    </v-btn>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
               </v-list>
             </v-card>
           </v-flex>
@@ -215,7 +245,9 @@ export default {
     areRecipientsLoading: false,
     confirmationSuccess: 20,
     error: "There was an error.",
-    isError: false
+    isError: false,
+    isHexPanelOpen: false,
+    isJSONPanelOpen: false
   }),
   async created() {
     try {
@@ -359,3 +391,19 @@ export default {
   }
 };
 </script>
+
+<style>
+code {
+  background-color: #252525 !important;
+  color: #fff !important;
+}
+.json-key {
+  color: #647886;
+}
+.json-value {
+  color: #dcf0fd;
+}
+.json-string {
+  color: #37bde2;
+}
+</style>

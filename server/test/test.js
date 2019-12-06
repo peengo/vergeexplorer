@@ -121,18 +121,6 @@ describe('API Tests', () => {
             });
         });
 
-        describe('/latest/1', () => {
-            it('should return invalid parameter', async () => {
-                const res = await app.get('/latest/1');
-
-                expect(res).to.have.status(400);
-                expect(res).to.have.header('content-type', contentType);
-                expect(res).to.be.json;
-                expect(res.body).to.have.property('error');
-            });
-        });
-
-
         describe('BLOCK', () => {
             describe('/block/00000fc63692467faeb20cdb3b53200dc601d75bdfa1001463304cc790d77278', () => {
                 it('should return genesis block', async () => {

@@ -116,6 +116,27 @@
             </v-list>
           </v-card>
         </v-flex>
+        <v-flex d-flex xs12>
+          <v-card>
+            <v-card-text>
+              <v-expansion-panel class="elevation-0" focusable v-model="isJSONpanelOpen">
+                <v-expansion-panel-content>
+                  <template v-slot:header>
+                    <div class="subheading">
+                      <v-icon small left>fas fa-file-alt</v-icon>JSON
+                    </div>
+                  </template>
+                  <v-card>
+                    <code class="break-all pa-3" :inner-html.prop="block | JSONtoHTML"></code>
+                  </v-card>
+                  <v-btn flat small block @click="isJSONpanelOpen = !isJSONpanelOpen">
+                    <v-icon>fas fa-chevron-up</v-icon>
+                  </v-btn>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-card-text>
+          </v-card>
+        </v-flex>
       </v-layout>
     </template>
 
@@ -204,7 +225,8 @@ export default {
     areTxsLoading: false,
     confirmationSuccess: 20,
     error: "There was an error.",
-    isError: false
+    isError: false,
+    isJSONpanelOpen: false
   }),
   async created() {
     try {

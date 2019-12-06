@@ -53,7 +53,7 @@ router.get('/:txid', async (ctx) => {
     }
 });
 
-// inputs an recipients
+// inputs and recipients
 router.get('/:string/:txid/:skip/:limit', async (ctx) => {
     try {
         const { collections: { txs }, blockchain, rpc, errors, config: { limits: { block: allowedLimit } } } = ctx.locals;

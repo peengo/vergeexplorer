@@ -8,6 +8,9 @@ import 'vuetify/src/stylus/app.styl';
 
 import { VLayout } from 'vuetify/lib';
 
+import VueClipboard from 'vue-clipboard2';
+Vue.use(VueClipboard);
+
 import "./filters";
 
 import axios from "axios";

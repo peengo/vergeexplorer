@@ -127,6 +127,9 @@
                     </div>
                   </template>
                   <v-card>
+                    <div align="right">
+                      <CopyToClipboard :json="block" />
+                    </div>
                     <code class="break-all pa-3" :inner-html.prop="block | JSONtoHTML"></code>
                   </v-card>
                   <v-btn flat small block @click="isJSONpanelOpen = !isJSONpanelOpen">
@@ -198,13 +201,15 @@ import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
+import CopyToClipboard from "../components/CopyToClipboard.vue";
 
 export default {
   components: {
     Heading,
     ProgressCircular,
     Alert,
-    Pagination
+    Pagination,
+    CopyToClipboard
   },
   data: () => ({
     headingBlock: {

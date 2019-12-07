@@ -75,7 +75,7 @@
                       </div>
                     </template>
                     <v-card>
-                      <div class="break-all monospace grey--text pa-3">{{ tx.hex }}</div>
+                      <div class="break-all monospace grey--text pa-3 caption">{{ tx.hex }}</div>
                     </v-card>
                     <v-btn flat small block @click="isHexPanelOpen = !isHexPanelOpen">
                       <v-icon>fas fa-chevron-up</v-icon>
@@ -90,6 +90,9 @@
                       </div>
                     </template>
                     <v-card>
+                      <div align="right">
+                        <CopyToClipboard :json="tx" />
+                      </div>
                       <code class="break-all pa-3" :inner-html.prop="tx | JSONtoHTML"></code>
                     </v-card>
                     <v-btn flat small block @click="isJSONPanelOpen = !isJSONPanelOpen">
@@ -209,13 +212,15 @@ import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
+import CopyToClipboard from "../components/CopyToClipboard.vue";
 
 export default {
   components: {
     Heading,
     ProgressCircular,
     Alert,
-    Pagination
+    Pagination,
+    CopyToClipboard
   },
   data: () => ({
     headingTx: {

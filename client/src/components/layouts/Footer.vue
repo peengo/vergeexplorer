@@ -36,7 +36,7 @@
             color="warning"
             dark
             flat
-            href="https://www.binance.com/?ref=23129601"
+            href="https://www.binance.com/en/register?ref=23129601"
           >Buy/Sell @ Binance</v-btn>
         </v-card-text>
         <v-card-actions>

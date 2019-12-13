@@ -14,23 +14,23 @@
 
         <v-flex
           xs12
-          sm8
-          offset-sm2
-          md6
-          offset-md3
+          sm10
+          offset-sm1
+          md8
+          offset-md2
           v-for="(peer, index) in peers"
           :key="index"
           class="py-1"
         >
           <v-card>
+            <v-card-title>
+              <div class="subheading mr-5 grey--text">
+                <v-icon small left>fas fa-server</v-icon>Address
+              </div>
+              <div class="break-all monospace accent--text">{{ peer.addr | formatAddress }}</div>
+            </v-card-title>
+            <v-divider></v-divider>
             <v-list>
-              <v-list-tile>
-                <v-list-tile-content class="body-1 grey--text monospace">Address</v-list-tile-content>
-                <v-list-tile-content
-                  class="body-2 align-end monospace accent--text"
-                >{{ peer.addr | formatAddress }}</v-list-tile-content>
-              </v-list-tile>
-              <v-divider class="mx-2"></v-divider>
               <v-list-tile>
                 <v-list-tile-content class="body-1 grey--text">Connection Time</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ peer.conntime | formatTimeAgo}}</v-list-tile-content>
@@ -74,7 +74,9 @@ export default {
   }),
   async created() {
     try {
-      this.peers = await this.getPeers();
+      const peers = await this.getPeers();
+      this.peers = peers.sort((a, b) => a - b);
+
       this.isLoading = false;
     } catch (error) {
       this.isError = true;

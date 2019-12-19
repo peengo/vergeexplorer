@@ -13,7 +13,7 @@
 
       <v-layout v-else row wrap text-xs-center break-all>
         <v-flex xs12 sm2 md2 py-2>
-          <div class="primary--text">{{ info.blocks_rpc }}</div>
+          <div class="primary--text">{{ info.blocks_rpc | formatNumberUS }}</div>
           <div class="grey--text">Blocks</div>
         </v-flex>
 
@@ -33,6 +33,16 @@
         </v-flex>
 
         <v-flex xs12 sm2 md2 py-2>
+          <div class="primary--text">{{ info.transactions | formatNumberUS }}</div>
+          <div class="grey--text">Transactions</div>
+        </v-flex>
+
+        <v-flex xs12 sm2 md2 py-2>
+          <div class="primary--text">{{ info.subversion | formatSubver }}</div>
+          <div class="grey--text">Version</div>
+        </v-flex>
+
+        <v-flex xs12 sm2 md2 py-2>
           <div class="warning--text">{{ marketData.usd_market_cap | formatUSD }}</div>
           <div class="grey--text">Market Cap</div>
         </v-flex>
@@ -47,14 +57,9 @@
           <span
             v-if="marketData.usd_24h_change > 0"
             class="success--text"
-          >{{ marketData.usd_24h_change.toFixed(2) }} %</span>
-          <span v-else class="error--text">{{ marketData.usd_24h_change.toFixed(2) }} %</span>
+          >+{{ marketData.usd_24h_change.toFixed(2) }} %</span>
+          <span v-else class="error--text">-{{ marketData.usd_24h_change.toFixed(2) }} %</span>
           <div class="grey--text">Price</div>
-        </v-flex>
-
-        <v-flex xs12 sm2 md2 py-2>
-          <div class="primary--text">{{ info.subversion | formatSubver }}</div>
-          <div class="grey--text">Version</div>
         </v-flex>
       </v-layout>
 

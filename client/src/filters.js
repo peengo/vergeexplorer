@@ -38,6 +38,10 @@ Vue.filter("formatUSD", usd => {
   }
 });
 
+Vue.filter("formatNumberUS", number => {
+  if (number) return new Intl.NumberFormat("en-US").format(number);
+});
+
 Vue.filter("formatTimeAgo", time =>
   distanceInWordsStrict(Date.now(), new Date(time * 1000), {
     addSuffix: true

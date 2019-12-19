@@ -17,6 +17,11 @@
           <div class="grey--text">Blocks</div>
         </v-flex>
 
+        <v-flex xs12 sm2 md2 py-2>
+          <div class="primary--text">{{ info.transactions | formatNumberUS }}</div>
+          <div class="grey--text">Transactions</div>
+        </v-flex>
+
         <v-flex xs12 sm3 md2 py-2>
           <div class="primary--text">{{ info.sync | formatPercent }} %</div>
           <div class="grey--text">Synced</div>
@@ -24,17 +29,12 @@
 
         <v-flex xs12 sm6 md3 py-2>
           <span
-            class="accent--text"
+            class="primary--text"
             :inner-html.prop="info.moneysupply | formatAmount | formatMuted"
           ></span>
           &nbsp;
           {{ $CURRENCY }}
           <div class="grey--text">Circulating Supply</div>
-        </v-flex>
-
-        <v-flex xs12 sm2 md2 py-2>
-          <div class="primary--text">{{ info.transactions | formatNumberUS }}</div>
-          <div class="grey--text">Transactions</div>
         </v-flex>
 
         <v-flex xs12 sm2 md2 py-2>

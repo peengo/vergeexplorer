@@ -3,11 +3,12 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
     try {
-        const { collections: { blocks }, getTxOutSetInfo, rpc } = ctx.locals;
+        const { collections: { blocks, txs }, getTxOutSetInfo, rpc } = ctx.locals;
 
-        const [ blocks_db, {result: networkInfo, error: networkInfoError }] = await Promise.all([
+        const [blocks_db, { result: networkInfo, error: networkInfoError }, txs_db] = await Promise.all([
             blocks.estimatedDocumentCount(),
-            rpc.getNetworkInfo()
+            rpc.getNetworkInfo(),
+            txs.estimatedDocumentCount()
         ]);
 
         if (networkInfoError) throw networkInfoError;
@@ -15,7 +16,7 @@ router.get('/', async (ctx) => {
         const info = {
             blocks_db,
             blocks_rpc: getTxOutSetInfo.height,
-            transactions: getTxOutSetInfo.transactions,
+            transactions: txs_db,
             moneysupply: getTxOutSetInfo.total_amount,
             subversion: networkInfo.subversion
         };

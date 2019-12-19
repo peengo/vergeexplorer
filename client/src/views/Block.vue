@@ -236,14 +236,13 @@ export default {
   async created() {
     try {
       this.block = await this.getBlock(this.$route.params.hash);
+      this.headingTxs.append = `(${this.block.tx.length})`;
 
       ({ txs: this.txs, total: this.total } = await this.getBlockTxs(
         this.$route.params.hash,
         this.txs.length,
         this.limit
       ));
-
-      this.headingTxs.append = `(${this.txs.length})`;
 
       this.isLoading = false;
     } catch (error) {
@@ -297,6 +296,7 @@ export default {
       this.isLoading = true;
 
       this.block = await this.getBlock(to.params.hash);
+      this.headingTxs.append = `(${this.block.tx.length})`;
 
       this.areTxsLoading = true;
       this.page = 1;
@@ -306,8 +306,6 @@ export default {
         this.page * this.limit - this.limit,
         this.limit
       ));
-
-      this.headingTxs.append = `(${this.txs.length})`;
 
       this.areTxsLoading = false;
       this.isLoading = false;

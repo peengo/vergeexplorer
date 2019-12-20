@@ -58,7 +58,7 @@
             v-if="marketData.usd_24h_change > 0"
             class="success--text"
           >+{{ marketData.usd_24h_change.toFixed(2) }} %</span>
-          <span v-else class="error--text">-{{ marketData.usd_24h_change.toFixed(2) }} %</span>
+          <span v-else class="error--text">{{ marketData.usd_24h_change.toFixed(2) }} %</span>
           <div class="grey--text">Price</div>
         </v-flex>
       </v-layout>

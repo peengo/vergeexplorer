@@ -67,7 +67,7 @@
                     >{{ tx.blockhash }}</router-link>
                   </div>
                 </v-card-title>
-                <v-expansion-panel class="elevation-0" focusable v-model="isHexPanelOpen">
+                <v-expansion-panel class="elevation-0" focusable expand v-model="panels">
                   <v-expansion-panel-content>
                     <template v-slot:header>
                       <div class="subheading accent--text">
@@ -77,12 +77,10 @@
                     <v-card>
                       <div class="break-all monospace grey--text pa-3 caption">{{ tx.hex }}</div>
                     </v-card>
-                    <v-btn flat small block @click="isHexPanelOpen = !isHexPanelOpen">
+                    <v-btn flat small block @click="panels = []">
                       <v-icon>fas fa-chevron-up</v-icon>
                     </v-btn>
                   </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel class="elevation-0" focusable v-model="isJSONPanelOpen">
                   <v-expansion-panel-content>
                     <template v-slot:header>
                       <div class="subheading">
@@ -95,7 +93,7 @@
                       </div>
                       <code class="break-all pa-3" :inner-html.prop="tx | JSONtoHTML"></code>
                     </v-card>
-                    <v-btn flat small block @click="isJSONPanelOpen = !isJSONPanelOpen">
+                    <v-btn flat small block @click="panels = []">
                       <v-icon>fas fa-chevron-up</v-icon>
                     </v-btn>
                   </v-expansion-panel-content>
@@ -251,8 +249,7 @@ export default {
     confirmationSuccess: 20,
     error: "There was an error.",
     isError: false,
-    isHexPanelOpen: false,
-    isJSONPanelOpen: false
+    panels: []
   }),
   async created() {
     try {

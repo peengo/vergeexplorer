@@ -119,7 +119,7 @@
         <v-flex d-flex xs12>
           <v-card>
             <v-card-text>
-              <v-expansion-panel class="elevation-0" focusable v-model="isJSONpanelOpen">
+              <v-expansion-panel class="elevation-0" focusable expand v-model="panels">
                 <v-expansion-panel-content>
                   <template v-slot:header>
                     <div class="subheading">
@@ -132,7 +132,7 @@
                     </div>
                     <code class="break-all pa-3" :inner-html.prop="block | JSONtoHTML"></code>
                   </v-card>
-                  <v-btn flat small block @click="isJSONpanelOpen = !isJSONpanelOpen">
+                  <v-btn flat small block @click="panels = []">
                     <v-icon>fas fa-chevron-up</v-icon>
                   </v-btn>
                 </v-expansion-panel-content>
@@ -231,7 +231,7 @@ export default {
     confirmationSuccess: 20,
     error: "There was an error.",
     isError: false,
-    isJSONpanelOpen: false
+    panels: []
   }),
   async created() {
     try {

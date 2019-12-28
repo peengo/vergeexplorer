@@ -1,6 +1,6 @@
 <template>
   <v-tooltip v-model="copyTooltipShow" left>
-    <template v-slot:activator>
+    <template v-slot:activator="{ on }">
       <v-btn
         flat
         class="warning--text"

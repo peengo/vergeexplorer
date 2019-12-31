@@ -123,9 +123,9 @@
                       <span class="warning--text ml-2">[coinbase]</span>
                     </v-flex>
                     <v-flex xs12 class="monospace">
-                      <v-icon small left color="warning">fas fa-server</v-icon>
-                      <span class="accent--text">Miner/Pool:</span>
-                      <span class="success--text ml-2">[{{ coinbaseToMiner(input.coinbase) }}]</span>
+                      <v-icon small left color="warning">fas fa-file-signature</v-icon>
+                      <span class="accent--text">Miner/Pool</span>
+                      <span class="success--text ml-2">[{{ input.coinbase | coinbaseToMiner }}]</span>
                     </v-flex>
                   </template>
                   <template v-else>
@@ -293,21 +293,6 @@ export default {
     }
   },
   methods: {
-    coinbaseToMiner(coinbaseHex) {
-      const hex = String(coinbaseHex)
-      let str = '';
-      // convert from hex to ascii 
-      for (let i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
-          str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-      
-      // get miners signature via: `/minerid/`
-      const miner = str.match(/\/(.*)\//g);
-      if(miner && miner.length == 1) {
-        return miner[0].replace(/\//g, "")
-      }
-
-      return "Unknown Miner"
-    },
     async getTx(txid) {
       const {
         data: { data: tx }
@@ -357,6 +342,18 @@ export default {
       ));
 
       this.areRecipientsLoading = false;
+    }
+  },
+  filters: {
+    coinbaseToMiner(coinbaseHex) {
+      const hex = String(coinbaseHex);
+      let str = "";
+
+      // convert from hex to ascii
+      for (var n = 0; n < hex.length; n += 2)
+        str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+
+      return str;
     }
   },
   async beforeRouteUpdate(to, from, next) {

@@ -83,8 +83,23 @@
                 </div>
               </v-card-title>
               <v-list-tile>
-                <v-list-tile-content class="accent--text">Nonce</v-list-tile-content>
+                <v-list-tile-content class="accent--text">
+                  <div>
+                    <v-icon small left>fas fa-dice-one</v-icon>Nonce
+                  </div>
+                </v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.nonce }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile v-if="!areTxsLoading">
+                <v-list-tile-content class="accent--text">
+                  <div>
+                    <v-icon small left>fas fa-hammer</v-icon>Miner | Pool
+                  </div>
+                </v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  <a v-if="miner.link" :alt="miner.name" :href="miner.link">{{ miner.name }}</a>
+                  <span v-else>{{ miner.name }}</span>
+                </v-list-tile-content>
               </v-list-tile>
             </v-list>
           </v-card>
@@ -203,6 +218,8 @@ import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 import CopyToClipboard from "../components/CopyToClipboard.vue";
 
+import { pools } from "../utils/pools.js";
+
 export default {
   components: {
     Heading,
@@ -231,7 +248,8 @@ export default {
     confirmationSuccess: 20,
     error: "There was an error.",
     isError: false,
-    panels: []
+    panels: [],
+    miner: {}
   }),
   async created() {
     try {
@@ -243,6 +261,8 @@ export default {
         this.txs.length,
         this.limit
       ));
+
+      this.miner = this.matchPool(this.txs[0].vin[0].coinbase);
 
       this.isLoading = false;
     } catch (error) {
@@ -286,12 +306,23 @@ export default {
       ));
 
       this.areTxsLoading = false;
+    },
+    matchPool(coinbase) {
+      const decodedHex = this.$filters.coinbaseToMiner(coinbase);
+      const unknownMiner = { name: "Unknown" };
+
+      for (const poolKey of Object.keys(pools)) {
+        if (decodedHex.includes(poolKey)) return pools[poolKey];
+      }
+
+      return unknownMiner;
     }
   },
   async beforeRouteUpdate(to, from, next) {
     try {
       this.block = {};
       this.txs = [];
+      this.miner = {};
 
       this.isLoading = true;
 
@@ -306,6 +337,8 @@ export default {
         this.page * this.limit - this.limit,
         this.limit
       ));
+
+      this.miner = this.matchPool(this.txs[0].vin[0].coinbase);
 
       this.areTxsLoading = false;
       this.isLoading = false;

@@ -124,7 +124,7 @@
                     </v-flex>
                     <v-flex xs12 class="monospace">
                       <v-icon small left color="warning">fas fa-file-signature</v-icon>
-                      <span class="accent--text">Miner/Pool</span>
+                      <span class="accent--text">Decoded Signature</span>
                       <span class="success--text ml-2">[{{ input.coinbase | coinbaseToMiner }}]</span>
                     </v-flex>
                   </template>
@@ -342,18 +342,6 @@ export default {
       ));
 
       this.areRecipientsLoading = false;
-    }
-  },
-  filters: {
-    coinbaseToMiner(coinbaseHex) {
-      const hex = String(coinbaseHex);
-      let str = "";
-
-      // convert from hex to ascii
-      for (var n = 0; n < hex.length; n += 2)
-        str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
-
-      return str;
     }
   },
   async beforeRouteUpdate(to, from, next) {

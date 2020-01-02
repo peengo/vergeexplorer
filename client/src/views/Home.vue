@@ -89,7 +89,10 @@
             <div class="pb-2 break-all" :key="block.hash">
               <div class="mb-2">
                 <v-icon small class="mr-2">fas fa-cube</v-icon>
-                {{ block.height }}
+                <router-link
+                  class="primary--text monospace"
+                  :to="{ name: 'block', params: { hash: block.hash }}"
+                >{{ block.height }}</router-link>
               </div>
 
               <v-tooltip top open-delay="0" close-delay="0">

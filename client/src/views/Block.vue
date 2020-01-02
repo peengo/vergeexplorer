@@ -231,7 +231,8 @@ export default {
   data: () => ({
     headingBlock: {
       title: "Block",
-      icon: "fas fa-cube"
+      icon: "fas fa-cube",
+      append: ""
     },
     headingTxs: {
       title: "Transactions",
@@ -254,6 +255,7 @@ export default {
   async created() {
     try {
       this.block = await this.getBlock(this.$route.params.hash);
+      this.headingBlock.append = `#${this.block.height}`;
       this.headingTxs.append = `(${this.block.tx.length})`;
 
       ({ txs: this.txs, total: this.total } = await this.getBlockTxs(
@@ -327,6 +329,7 @@ export default {
       this.isLoading = true;
 
       this.block = await this.getBlock(to.params.hash);
+      this.headingBlock.append = `#${this.block.height}`;
       this.headingTxs.append = `(${this.block.tx.length})`;
 
       this.areTxsLoading = true;

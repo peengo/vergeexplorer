@@ -65,7 +65,8 @@ export default {
   data: () => ({
     heading: {
       title: "Peers",
-      icon: "fas fa-network-wired"
+      icon: "fas fa-network-wired",
+      append: ""
     },
     peers: [],
     error: "There was an error.",
@@ -76,6 +77,7 @@ export default {
     try {
       const peers = await this.getPeers();
       this.peers = peers.sort((a, b) => a - b);
+      this.heading.append = `(${this.peers.length})`;
 
       this.isLoading = false;
     } catch (error) {

@@ -58,7 +58,8 @@ router.get('/txs/:address/:skip/:limit', async (ctx) => {
 
         const aggrTotal = ios.aggregate([
             { $match: { address } },
-            { $group: { _id: { txid: '$txid' } } }
+            { $group: { _id: { txid: '$txid' } } },
+            { $count: 'count' }
         ]).toArray();
 
         const aggrIOs = ios.aggregate([
@@ -71,8 +72,12 @@ router.get('/txs/:address/:skip/:limit', async (ctx) => {
 
         let [total, txs] = await Promise.all([aggrTotal, aggrIOs]);
 
-        total = total.length;
-
+        if (typeof total[0] === 'undefined') {
+            total = 0;
+        } else {
+            total = total[0].count;
+        }
+        
         txs = txs.map(item => {
             const { type, value } = blockchain.getIOsValuesDiff(item.values);
 

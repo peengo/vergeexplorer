@@ -147,8 +147,10 @@
               </v-flex>
 
               <v-flex xs12 md12>
-                <div class="grey--text py-2">{{ tx.time | formatTime }} | 
-                  <span class="caption">{{ tx.time }}</span></div>
+                <div class="grey--text py-2">
+                  {{ tx.time | formatTime }} |
+                  <span class="caption">{{ tx.time }}</span>
+                </div>
                 <v-divider class="mx-1" v-if="index != txs.length - 1"></v-divider>
               </v-flex>
             </v-layout>
@@ -173,10 +175,10 @@ import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 
-import { getMarketData } from "../mixins.js";
+import { getMarketData, handleErrors } from "../mixins.js";
 
 export default {
-  mixins: [getMarketData],
+  mixins: [getMarketData, handleErrors],
   components: {
     Heading,
     ProgressCircular,
@@ -223,14 +225,7 @@ export default {
 
       this.isLoading = false;
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 404) {
-        this.error = error.response.data.error;
-        this.isError = true;
-      } else if (error.response.status == 500) {
-        this.isError = true;
-      } else {
-        this.$router.push({ path: "/404" });
-      }
+      this.handleErrors(error);
     } finally {
       this.isLoading = false;
     }
@@ -288,14 +283,7 @@ export default {
       this.areTxsLoading = false;
       this.isLoading = false;
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 404) {
-        this.error = error.response.data.error;
-        this.isError = true;
-      } else if (error.response.status == 500) {
-        this.isError = true;
-      } else {
-        this.$router.push({ path: "/404" });
-      }
+      this.handleErrors(error);
     } finally {
       this.isLoading = false;
 

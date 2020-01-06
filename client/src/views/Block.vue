@@ -89,7 +89,7 @@
                   </div>
                 </v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.nonce }}</v-list-tile-content>
-              </v-list-tile> -->
+              </v-list-tile>-->
               <v-list-tile v-if="!areTxsLoading">
                 <v-list-tile-content class="accent--text">
                   <div>
@@ -131,7 +131,7 @@
               <!-- <v-card-title>
                 <div class="subheading mr-5 accent--text">Merkle Root</div>
                 <div class="break-all monospace grey--text">{{ block.merkleroot }}</div>
-              </v-card-title> -->
+              </v-card-title>-->
             </v-list>
           </v-card>
         </v-flex>
@@ -222,10 +222,10 @@ import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 import CopyToClipboard from "../components/CopyToClipboard.vue";
 
-import { matchPool } from "../mixins.js";
+import { matchPool, handleErrors } from "../mixins.js";
 
 export default {
-  mixins: [matchPool],
+  mixins: [matchPool, handleErrors],
   components: {
     Heading,
     ProgressCircular,
@@ -273,14 +273,7 @@ export default {
 
       this.isLoading = false;
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 404) {
-        this.error = error.response.data.error;
-        this.isError = true;
-      } else if (error.response.status == 500) {
-        this.isError = true;
-      } else {
-        this.$router.push({ path: "/404" });
-      }
+      this.handleErrors(error);
     } finally {
       this.isLoading = false;
       this.areTxsLoading = false;
@@ -341,14 +334,7 @@ export default {
       this.areTxsLoading = false;
       this.isLoading = false;
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 404) {
-        this.error = error.response.data.error;
-        this.isError = true;
-      } else if (error.response.status == 500) {
-        this.isError = true;
-      } else {
-        this.$router.push({ path: "/404" });
-      }
+      this.handleErrors(error);
     } finally {
       this.isLoading = false;
       this.areTxsLoading = false;

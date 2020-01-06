@@ -43,3 +43,18 @@ export const matchPool = {
     }
   }
 }
+
+export const handleErrors = {
+  methods: {
+    handleErrors(error) {
+      if (error.response.status == 400 || error.response.status == 404) {
+        this.error = error.response.data.error;
+        this.isError = true;
+      } else if (error.response.status == 500) {
+        this.isError = true;
+      } else {
+        this.$router.push({ path: "/404" });
+      }
+    }
+  }
+}

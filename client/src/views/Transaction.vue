@@ -217,7 +217,10 @@ import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 import CopyToClipboard from "../components/CopyToClipboard.vue";
 
+import { handleErrors } from "../mixins.js";
+
 export default {
+  mixins: [handleErrors],
   components: {
     Heading,
     ProgressCircular,
@@ -280,14 +283,7 @@ export default {
 
       this.isLoading = false;
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 404) {
-        this.error = error.response.data.error;
-        this.isError = true;
-      } else if (error.response.status == 500) {
-        this.isError = true;
-      } else {
-        this.$router.push({ path: "/404" });
-      }
+      this.handleErrors(error);
     } finally {
       this.isLoading = false;
     }
@@ -382,14 +378,7 @@ export default {
       this.areRecipientsLoading = false;
       this.isLoading = false;
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 404) {
-        this.error = error.response.data.error;
-        this.isError = true;
-      } else if (error.response.status == 500) {
-        this.isError = true;
-      } else {
-        this.$router.push({ path: "/404" });
-      }
+      this.handleErrors(error);
     } finally {
       this.isLoading = false;
 

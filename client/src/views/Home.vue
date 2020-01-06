@@ -90,9 +90,18 @@
               <div class="mb-2">
                 <v-icon small class="mr-2">fas fa-cube</v-icon>
                 <router-link
-                  class="primary--text monospace"
+                  class="success--text monospace"
                   :to="{ name: 'block', params: { hash: block.hash }}"
                 >{{ block.height }}</router-link>
+                <span class="ml-5">
+                <v-icon small class="mr-2">fas fa-hammer</v-icon>
+                <a
+                  v-if="block.miner.link"
+                  :alt="block.miner.name"
+                  :href="block.miner.link"
+                >{{ block.miner.name }}</a>
+                <span v-else>{{ block.miner.name }} Miner</span>
+                </span>
               </div>
 
               <v-tooltip top open-delay="0" close-delay="0">
@@ -180,10 +189,10 @@ import Heading from "../components/Heading.vue";
 import ProgressCircular from "../components/ProgressCircular.vue";
 import Alert from "../components/Alert.vue";
 
-import { getInfo, getMarketData } from "../mixins.js";
+import { getInfo, getMarketData, matchPool } from "../mixins.js";
 
 export default {
-  mixins: [getInfo, getMarketData],
+  mixins: [getInfo, getMarketData, matchPool],
   components: {
     Heading,
     ProgressCircular,
@@ -212,11 +221,13 @@ export default {
   }),
   async created() {
     try {
-      const [info, blocks, txs] = await Promise.all([
+      let [info, blocks, txs] = await Promise.all([
         this.getInfo(),
         this.getBlocks(),
         this.getTxs()
       ]);
+
+      blocks = await this.attachMinersToBlocks(blocks);
 
       this.info = info;
       this.info.sync = (this.info.blocks_db / this.info.blocks_rpc) * 100;
@@ -251,17 +262,38 @@ export default {
 
       return txs;
     },
+    async getCoinbaseTxs(txids) {
+      const data = Promise.all(
+        txids.map(txid =>
+          this.$http.get(`/api/tx/${txid}`).then(({ data: { data } }) => data)
+        )
+      );
+
+      return data;
+    },
     async reloadBlocks() {
       try {
         this.areBlocksLoading = true;
         this.isBlocksSpinnerLoading = true;
 
-        this.blocks = await this.getBlocks();
+        let blocks = await this.getBlocks();
+        this.blocks = await this.attachMinersToBlocks(blocks);
 
         this.areBlocksLoading = false;
       } catch (error) {
         this.isError = true;
       }
+    },
+    async attachMinersToBlocks(blocks) {
+      const coinbaseTxids = blocks.map(block => block.tx[0]);
+      const coinbaseTxs = await this.getCoinbaseTxs(coinbaseTxids);
+
+      const blocksWithMiners = blocks.map((block, index) => ({
+        ...block,
+        miner: this.matchPool(coinbaseTxs[index].vin[0].coinbase)
+      }));
+
+      return blocksWithMiners;
     },
     async reloadTxs() {
       try {

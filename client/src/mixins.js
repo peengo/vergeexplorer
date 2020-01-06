@@ -26,3 +26,20 @@ export const getInfo = {
     }
   }
 }
+
+import { pools } from "./utils/pools.js";
+
+export const matchPool = {
+  methods: {
+    matchPool(coinbase) {
+      const decodedHex = this.$filters.coinbaseToMiner(coinbase);
+      const unknown = { name: "Unknown" };
+
+      for (const poolKey of Object.keys(pools)) {
+        if (decodedHex.includes(poolKey)) return pools[poolKey];
+      }
+
+      return unknown;
+    }
+  }
+}

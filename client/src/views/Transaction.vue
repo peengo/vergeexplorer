@@ -125,7 +125,7 @@
                     <v-flex xs12 class="monospace">
                       <v-icon small left color="warning">fas fa-file-signature</v-icon>
                       <span class="accent--text">Decoded Signature</span>
-                      <span class="success--text ml-2">[{{ input.coinbase | coinbaseToMiner }}]</span>
+                      <div class="ml-5">{{ input.coinbase | coinbaseToMiner }}</div>
                     </v-flex>
                   </template>
                   <template v-else>

@@ -82,14 +82,14 @@
                   <span class="caption">{{ block.time }}</span>
                 </div>
               </v-card-title>
-              <v-list-tile>
+              <!-- <v-list-tile>
                 <v-list-tile-content class="accent--text">
                   <div>
                     <v-icon small left>fas fa-dice-one</v-icon>Nonce
                   </div>
                 </v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.nonce }}</v-list-tile-content>
-              </v-list-tile>
+              </v-list-tile> -->
               <v-list-tile v-if="!areTxsLoading">
                 <v-list-tile-content class="accent--text">
                   <div>
@@ -109,6 +109,10 @@
           <v-card>
             <v-list>
               <v-list-tile>
+                <v-list-tile-content class="accent--text">Nonce</v-list-tile-content>
+                <v-list-tile-content class="align-end">{{ block.nonce }}</v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
                 <v-list-tile-content class="accent--text">Bits</v-list-tile-content>
                 <v-list-tile-content class="align-end">{{ block.bits }}</v-list-tile-content>
               </v-list-tile>
@@ -124,10 +128,10 @@
                 <div class="subheading mr-5 accent--text">Difficulty</div>
                 <div class="break-all">{{ block.difficulty }}</div>
               </v-card-title>
-              <v-card-title>
+              <!-- <v-card-title>
                 <div class="subheading mr-5 accent--text">Merkle Root</div>
                 <div class="break-all monospace grey--text">{{ block.merkleroot }}</div>
-              </v-card-title>
+              </v-card-title> -->
             </v-list>
           </v-card>
         </v-flex>
@@ -218,9 +222,10 @@ import Alert from "../components/Alert.vue";
 import Pagination from "../components/Pagination.vue";
 import CopyToClipboard from "../components/CopyToClipboard.vue";
 
-import { pools } from "../utils/pools.js";
+import { matchPool } from "../mixins.js";
 
 export default {
+  mixins: [matchPool],
   components: {
     Heading,
     ProgressCircular,
@@ -308,16 +313,6 @@ export default {
       ));
 
       this.areTxsLoading = false;
-    },
-    matchPool(coinbase) {
-      const decodedHex = this.$filters.coinbaseToMiner(coinbase);
-      const unknownMiner = { name: "Unknown" };
-
-      for (const poolKey of Object.keys(pools)) {
-        if (decodedHex.includes(poolKey)) return pools[poolKey];
-      }
-
-      return unknownMiner;
     }
   },
   async beforeRouteUpdate(to, from, next) {

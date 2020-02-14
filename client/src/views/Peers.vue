@@ -76,7 +76,10 @@ export default {
   async created() {
     try {
       const peers = await this.getPeers();
-      this.peers = peers.sort((a, b) => a - b);
+      this.peers = peers
+        .filter(peer => !peer.addr.includes("127.0.0.1"))
+        .sort((a, b) => a - b);
+
       this.heading.append = `(${this.peers.length})`;
 
       this.isLoading = false;

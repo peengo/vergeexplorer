@@ -13,7 +13,7 @@ These instructions will get you a copy of the project up and running on your loc
 * NodeJS v10.16.3
 * NPM v6.9.0
 * MongoDB v4.0.12 with Replica Set enabled and configured (required for ACID transactions)
-* Verge Daemon v6.0.1 (Fully Synced) -> verge-6.0.1-x86_64-linux-gnu.tar.gz [https://github.com/vergecurrency/VERGE/releases]
+* Verge Daemon v6.0.2 (Fully Synced) -> verge-6.0.2-x86_64-linux-gnu.tar.gz [https://github.com/vergecurrency/VERGE/releases]
 ```
 
 What is not covered here
@@ -41,7 +41,7 @@ cd ..
 cd client && npm install
 ```
 
-Download & extract from `verge-6.0.1-x86_64-linux-gnu.tar.gz` [https://github.com/vergecurrency/VERGE/releases]
+Download & extract from `verge-6.0.2-x86_64-linux-gnu.tar.gz` [https://github.com/vergecurrency/VERGE/releases]
 
 Create a `.VERGE` folder inside your home directory
 
@@ -51,7 +51,7 @@ Fill out `rpcuser=` and `rpcpassword=` fields in this file. You decide what this
 
 Start the Verge Daemon (RPC)
 ```
-./verge-6.0.1/bin/verged -daemon
+./verge-6.0.2/bin/verged -daemon
 ```
 
 This will take time to sync the blockchain. Alternatively and advisiably you can download the blockchain to speed up the blockchain syncing process

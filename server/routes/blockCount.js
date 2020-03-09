@@ -5,11 +5,11 @@ router.get('/', async (ctx) => {
     try {
         const { rpc } = ctx.locals;
 
-        const { result: peers, error: peersError } = await rpc.getPeerInfo();
+        let { result: blockCount, error: blockCountError } = await rpc.getBlockCount();
 
-        if (peersError) throw peersError;
+        if (blockCountError) throw blockCountError;
 
-        ctx.body = { data: peers };
+        ctx.body = { data: { blockcount: blockCount } };
     } catch (error) {
         console.error(error);
         ctx.throw(500);

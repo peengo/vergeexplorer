@@ -3,13 +3,11 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
     try {
-        const { rpc } = ctx.locals;
+        const { getTxOutSetInfo } = ctx.locals;
 
-        const { result: peers, error: peersError } = await rpc.getPeerInfo();
+        const moneySupply = getTxOutSetInfo.total_amount;
 
-        if (peersError) throw peersError;
-
-        ctx.body = { data: peers };
+        ctx.body = { data: { moneysupply: moneySupply } };
     } catch (error) {
         console.error(error);
         ctx.throw(500);

@@ -5,11 +5,9 @@ router.get('/', async (ctx) => {
     try {
         const { rpc } = ctx.locals;
 
-        const { result: peers, error: peersError } = await rpc.getPeerInfo();
+        let { result: difficulty } = await rpc.getDifficulty();
 
-        if (peersError) throw peersError;
-
-        ctx.body = { data: peers };
+        ctx.body = { data: { difficulty } };
     } catch (error) {
         console.error(error);
         ctx.throw(500);

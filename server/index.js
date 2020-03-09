@@ -70,6 +70,13 @@ router.use('/search', require('./routes/search').routes());
 router.use('/tx', require('./routes/tx').routes());
 router.use('/pending', require('./routes/pending').routes());
 
+// Add tests for this
+router.use('/difficulty', require('./routes/difficulty').routes());
+router.use('/blockcount', require('./routes/blockCount').routes());
+router.use('/blockhash', require('./routes/blockHash').routes());
+router.use('/moneysupply', require('./routes/moneySupply').routes());
+router.use('/balance', require('./routes/balance').routes());
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 

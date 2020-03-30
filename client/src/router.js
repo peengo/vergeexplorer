@@ -7,6 +7,8 @@ import Peers from "./views/Peers.vue";
 import Richlist from "./views/Richlist.vue";
 import Address from "./views/Address.vue";
 import Pending from "./views/Pending.vue";
+import APIinfo from "./views/APIinfo.vue";
+
 import NotFound from "./views/NotFound.vue";
 
 Vue.use(Router);
@@ -50,6 +52,12 @@ export default new Router({
       name: "pending",
       component: Pending
     },
+    {
+      path: "/APIinfo",
+      name: "APIinfo",
+      component: APIinfo
+    },
+
     {
       path: "*",
       component: NotFound,

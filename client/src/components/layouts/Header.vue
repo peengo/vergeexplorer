@@ -38,7 +38,9 @@ export default {
       { title: "Home", to: { name: "home" }, icon: "fas fa-cubes" },
       { title: "Richlist", to: { name: "richlist" }, icon: "fas fa-chart-pie" },
       { title: "Peers", to: { name: "peers" }, icon: "fas fa-network-wired" },
-      { title: "Pending", to: { name: "pending" }, icon: "far fa-hourglass" }
+      { title: "Pending", to: { name: "pending" }, icon: "far fa-hourglass" },
+      { title: "API", to: { name: "APIinfo" }, icon: "fas fa-info-circle" },
+      
     ],
     publicPath: process.env.BASE_URL
   })

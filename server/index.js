@@ -75,6 +75,7 @@ router.use('/difficulty', require('./routes/difficulty').routes());
 router.use('/blockcount', require('./routes/blockCount').routes());
 router.use('/blockhash', require('./routes/blockHash').routes());
 router.use('/moneysupply', require('./routes/moneySupply').routes());
+router.use('/moneysupplyplain', require('./routes/moneySupplyPlain').routes());
 router.use('/balance', require('./routes/balance').routes());
 
 app.use(router.routes());

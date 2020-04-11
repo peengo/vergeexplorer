@@ -29,6 +29,10 @@ Returns raw transaction representation for given transaction id<br />
 Returns current money supply<br />
 <a href="/api/moneysupply">/api/moneysupply</a></p>
 
+<p>* <strong>moneysupplyplain</strong><br />
+Returns current money supply as html/plain<br />
+<a href="/api/moneysupplyplain">/api/moneysupplyplain</a></p>
+
 <p>* <strong>address </strong>[address]<br />
 Returns information for given address<br />
 <a href="/api/address/DNvVCjFaic2aWV1zRMeJWxdi6HeVjFmX1S">/api/address/DNvVCjFaic2aWV1zRMeJWxdi6HeVjFmX1S</a></p>

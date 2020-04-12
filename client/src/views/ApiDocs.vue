@@ -6,7 +6,8 @@
           <v-card-text>
             <div style="word-break: break-all; text-align: left">
             <h2><strong>API Calls</strong></h2>
-
+            <p>&nbsp;</p>
+            
             <p>* <strong>difficulty</strong><br />
             Returns the current difficulty<br />
             <a href="/api/difficulty">/api/difficulty</a></p>

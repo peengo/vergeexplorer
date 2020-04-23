@@ -39,7 +39,7 @@ export default {
       { title: "Richlist", to: { name: "richlist" }, icon: "fas fa-chart-pie" },
       { title: "Peers", to: { name: "peers" }, icon: "fas fa-network-wired" },
       { title: "Pending", to: { name: "pending" }, icon: "far fa-hourglass" },
-      { title: "API", to: { name: "apidocs" }, icon: "fas fa-info-circle" },
+      { title: "API", to: { name: "apidocs" }, icon: "fas fa-book" },
       
     ],
     publicPath: process.env.BASE_URL

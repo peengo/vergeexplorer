@@ -1,0 +1,67 @@
+[
+    {
+        "title": "difficulty",
+        "description": "Returns the current difficulty",
+        "url": "/api/difficulty"
+    },
+    {
+        "title": "blockcount",
+        "description": "Returns the current block index",
+        "url": "/api/blockcount"
+    },
+    {
+        "title": "blockhash [block]",
+        "description": "Returns the hash for given block ",
+        "url": "/api/blockhash/3987654"
+    },
+    {
+        "title": "block [hash]",
+        "description": "Returns information about the block with the given hash",
+        "url": "/api/block/eae6842875064f49f7d81867e3051d82086eb01175d1bdc45b18109537d6d257"
+    },
+    {
+        "title": "tx [txid]",
+        "description": "Returns raw transaction representation for given transaction id",
+        "url": "/api/tx/4ac5d9c51642ab4d94a2a5d460b228d93e4aa6fcf73060f4c21dc881d041c75b"
+    },
+    {
+        "title": "moneysupply",
+        "description": "Returns current money supply",
+        "url": "/api/moneysupply"
+    },
+    {
+        "title": "moneysupply (plain)",
+        "description": "Returns current money supply as html/plain",
+        "url": "/api/moneysupply?plain"
+    },
+    {
+        "title": "address [address]",
+        "description": "Returns information for given address",
+        "url": "/api/address/DNvVCjFaic2aWV1zRMeJWxdi6HeVjFmX1S"
+    },
+    {
+        "title": "balance [address]",
+        "description": "Returns current balance for given address",
+        "url": "/api/balance/DNvVCjFaic2aWV1zRMeJWxdi6HeVjFmX1S"
+    },
+    {
+        "title": "info",
+        "description": "Returns various information",
+        "url": "/api/info"
+    },
+    {
+        "title": "tx [txid]",
+        "description": "Direct link to a transaction",
+        "url": "/tx/4ac5d9c51642ab4d94a2a5d460b228d93e4aa6fcf73060f4c21dc881d041c75b"
+    },
+    {
+        "title": "block [block]",
+        "description": "Direct link to a block",
+        "url": "/block/eae6842875064f49f7d81867e3051d82086eb01175d1bdc45b18109537d6d257"
+    },
+    {
+        "title": "address [address]",
+        "description": "Direct link to an address",
+        "url": "/address/DNvVCjFaic2aWV1zRMeJWxdi6HeVjFmX1S"
+    }
+]

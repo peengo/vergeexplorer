@@ -92,7 +92,36 @@ db.ios.createIndex({ time: 1 }, { background: true })
 db.ios.createIndex({ time: -1, type: -1 }, { background: true })
 ```
 
-### Running
+### PoS Bond And Unbond Indexing
+
+The explorer supports both legacy mainnet transactions and PoS bond/unbond
+outputs. It selects the address prefix automatically from the connected
+daemon's `getblockchaininfo.chain` (`main`, `test`, or `regtest`). Run separate
+explorer processes and databases for different networks. Ordinary RPC-provided
+addresses continue to be used unchanged.
+
+Bond and unbond outputs are attributed to their withdrawal address, not their
+staking or reward key. The displayed address balance includes these locked
+outputs; it is not a spendable-balance calculation. Null-data commitments and
+other scripts without a recognized address are excluded from address accounting.
+
+After updating, run `npm install` in `server` to install the address encoder.
+If an explorer database already indexed bond transactions without crediting
+their withdrawal addresses, stop the explorer API and sync process and rebuild
+the **explorer database** from genesis. Resuming at the failed unbond alone would
+debit balances that never received their corresponding bond credits. This does
+not require deleting or reindexing the daemon's blockchain or wallet. A legacy
+mainnet explorer that has never indexed these scripts does not need a rebuild
+for this change.
+
+The parser regression tests do not require a running daemon or database:
+
+```
+cd server
+npm run test:unit
+```
+
+### Starting The Explorer
 
 **Start syncing blockchain to the database**
 

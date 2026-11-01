@@ -1,5 +1,6 @@
 const { decimaljs } = require('./../config');
 const Decimal = require('decimal.js-light');
+const { getOutputAddress } = require('./scriptAddress');
 
 Decimal.set({
     precision: decimaljs.precision,
@@ -12,6 +13,7 @@ const VIN = 'vin',
     BOTH = 'both';
 
 const blockchain = {
+    pubKeyAddressPrefix: 30,
     hashRegExp: /^([A-Fa-f0-9]{64})$/,
     intRegExp: /^([0-9]{1,18})$/,
     addressRegExp: /^([A-Za-z0-9]{34})$/,
@@ -79,15 +81,16 @@ const blockchain = {
                     vin = localTxs.find(item => item.txid === v.txid);
                 }
 
-                // if (vin === undefined) {
-                //     // throw { missingTx: v.txid };
+                if (!vin || !Array.isArray(vin.vout) || !vin.vout[v.vout]) {
+                    throw new Error(`Missing previous output ${v.txid}:${v.vout}`);
+                }
 
-                //     console.error('TX NOT FOUND:', v.txid);
-                //     process.exit();
-                // }
+                const output = vin.vout[v.vout];
+                const address = getOutputAddress(output.scriptPubKey, this.pubKeyAddressPrefix);
 
-                const address = vin.vout[v.vout].scriptPubKey.addresses[0];
-                const value = vin.vout[v.vout].value.toString();
+                if (!address) continue;
+
+                const value = output.value.toString();
 
                 this._findAndSum(inputs, address, value, tx);
             }
@@ -101,8 +104,9 @@ const blockchain = {
         let recipients = [];
 
         for (const vout of tx.vout) {
-            if (Array.isArray(vout.scriptPubKey.addresses)) {
-                const address = vout.scriptPubKey.addresses[0];
+            const address = getOutputAddress(vout.scriptPubKey, this.pubKeyAddressPrefix);
+
+            if (address) {
                 const value = vout.value.toString();
 
                 this._findAndSum(recipients, address, value, tx);
@@ -310,7 +314,7 @@ const blockchain = {
 
         let vinTxInserts = [];
 
-        if (!inputs[0].hasOwnProperty(COINBASE)) {
+        if (inputs.length > 0 && !inputs[0].hasOwnProperty(COINBASE)) {
             vinTxInserts = this._getIOInserts(inputs, tx, VIN);
         }
 
